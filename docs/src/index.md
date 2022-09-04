@@ -10,6 +10,9 @@ Documentation for [MolecularEvolution](https://github.com/MurrellGroup/Molecular
 
 MolecularEvolution.jl exploits Julia's multiple dispatch, implementing a fully generic suite of likelihood calculations, branchlength optimization, topology optimization, and ancestral inference. Users can construct trees using already-defined data types and models. But users can define probability distributions over their own data types, and specify the behavior of these under their own model types, and can mix and match different models on the same phylogeny.
 
+### Authors:
+Venkatesh Kumar and Ben Murrell, with additional contributions by Sanjay Mohan, Alec Pankow, and Kenta Sato.
+
 ### Quick example: Likelihood calculations under phylogenetic Brownian motion:
 
 ```julia
