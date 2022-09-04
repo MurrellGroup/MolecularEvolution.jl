@@ -1,7 +1,7 @@
 #Model list should be a list of P matrices.
 function branch_LL_up(bl::Real,
         temp_message::Vector{Partition},
-        node::GeneralFelNode,
+        node::FelNode,
         model_list::Vector{<:BranchModel},
         partition_list)
     #Questionable:
@@ -22,7 +22,7 @@ end
 function branchlength_optim!(
         temp_message::Vector{Partition},
         message_to_set::Vector{Partition},
-        node::GeneralFelNode,
+        node::FelNode,
         models,
         partition_list,
         tol)
@@ -70,12 +70,12 @@ end
 
 
 """
-    branchlength_optim!(tree::GeneralFelNode, models; partition_list = nothing, tol = 1e-5)
+    branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
 
 Uses golden section search to optimize all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
 """
-function branchlength_optim!(tree::GeneralFelNode, models; partition_list = nothing, tol = 1e-5)
+function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
         temp_message = deepcopy(tree.message)
         message_to_set = deepcopy(tree.message)
 
@@ -87,5 +87,5 @@ function branchlength_optim!(tree::GeneralFelNode, models; partition_list = noth
 end
 
 #Overloading to allow for direct model and model vec inputs
-branchlength_optim!(tree::GeneralFelNode, models::Vector{<:BranchModel} ; partition_list = nothing, tol = 1e-5) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol)
-branchlength_optim!(tree::GeneralFelNode, model::BranchModel; partition_list = nothing, tol = 1e-5) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol)
+branchlength_optim!(tree::FelNode, models::Vector{<:BranchModel} ; partition_list = nothing, tol = 1e-5) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol)
+branchlength_optim!(tree::FelNode, model::BranchModel; partition_list = nothing, tol = 1e-5) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol)

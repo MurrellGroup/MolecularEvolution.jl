@@ -1,5 +1,5 @@
 begin
-    n = GeneralFelNode()
+    n = FelNode()
     n.branchlength = 0.1
     Q = [-2.78361 1.22755 0.850393 0.705665; 1.22755 -2.97174 0.96698 0.777209; 0.850393 0.96698 -2.25136 0.433984; 0.705665 0.777209 0.433984 -1.91686]
     m = DiagonalizedCTMC(Q)
@@ -7,7 +7,7 @@ begin
 end
 
 begin
-    n = GeneralFelNode()
+    n = FelNode()
     n.branchlength = 0.1
     Q = [-2.78361 1.22755 0.850393 0.705665; 1.22755 -2.97174 0.96698 0.777209; 0.850393 0.96698 -2.25136 0.433984; 0.705665 0.777209 0.433984 -1.91686]
     m = DiagonalizedCTMC(Q)
@@ -19,7 +19,7 @@ begin
 end
 
 begin
-    n = GeneralFelNode()
+    n = FelNode()
     n.branchlength = 1.0
     Q = [-1 1; 0.0 -0.0];
     m = DiagonalizedCTMC(Q)

@@ -1,7 +1,7 @@
 function nni_optim!(
         temp_message::Vector{Partition},
         message_to_set::Vector{Partition},
-        node::GeneralFelNode,
+        node::FelNode,
         models,
         partition_list;
         acc_rule = (x,y) -> x > y)
@@ -50,7 +50,7 @@ end
 function nni_optim!(
     temp_message::Vector{Partition},
     message_to_set::Vector{Partition},
-    node::GeneralFelNode,
+    node::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
     acc_rule = (x,y) -> x > y)
@@ -59,7 +59,7 @@ end
 function nni_optim!(
     temp_message::Vector{Partition},
     message_to_set::Vector{Partition},
-    node::GeneralFelNode,
+    node::FelNode,
     model::BranchModel,
     partition_list;
     acc_rule = (x,y) -> x > y)
@@ -146,7 +146,7 @@ function do_nni(node, temp_message, models::F;
     end
 end
 
-function nni_optim!(tree::GeneralFelNode, models; partition_list = nothing,acc_rule = (x,y) -> x > y)
+function nni_optim!(tree::FelNode, models; partition_list = nothing,acc_rule = (x,y) -> x > y)
         temp_message = deepcopy(tree.message)
         message_to_set = deepcopy(tree.message)
 

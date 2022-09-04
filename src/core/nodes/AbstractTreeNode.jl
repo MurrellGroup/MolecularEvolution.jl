@@ -93,7 +93,7 @@ In order to ensure that the `:parent` field is not hiding something different on
 """
 function deepequals(t1::T, t2::T) where T <: AbstractTreeNode
     equal_or_both_undef = (x,y,f) -> (!isdefined(x,f) && !isdefined(y,f)) || (isdefined(x,f) && isdefined(y,f) && deepequals(getfield(x, f), getfield(y, f)))
-    return mapreduce(f->equal_or_both_undef(t1, t2, f), (x,y) -> x && y, filter(x-> x != :parent, collect(fieldnames(GeneralFelNode))))
+    return mapreduce(f->equal_or_both_undef(t1, t2, f), (x,y) -> x && y, filter(x-> x != :parent, collect(fieldnames(FelNode))))
 end
 
 
@@ -330,7 +330,7 @@ end
 export getnodelist
 function getnodelist(node::T, nodelist::Array{T,1}=T[]) where T <: AbstractTreeNode
   push!(nodelist,node)
-  for childnode in node.children #Fixing this to avoid implementing iterate(::GeneralFelNode)
+  for childnode in node.children #Fixing this to avoid implementing iterate(::FelNode)
     getnodelist(childnode,nodelist)
   end
   return nodelist

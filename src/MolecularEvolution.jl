@@ -61,7 +61,7 @@ end
 
 export
     #Tree
-    GeneralFelNode,
+    FelNode,
     BranchModel,
     Partition,
     

@@ -30,7 +30,7 @@ function get_node_hashes(newt)
     all_names_hash = xor(leafhashes...);
     name2hash = Dict(zip(leafnames,leafhashes));
     hash_container = UInt64[]
-    node_container = GeneralFelNode[]
+    node_container = FelNode[]
     #This puts things in the containers
     node_hash_split(newt, hash_container, node_container, name2hash)
     #This makes a hash that matches everything except the given node

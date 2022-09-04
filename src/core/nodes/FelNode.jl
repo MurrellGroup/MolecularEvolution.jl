@@ -1,8 +1,8 @@
-#This  contains everything that refers to GeneralFelNode or to any of the abstract models or partitions.
+#This  contains everything that refers to FelNode or to any of the abstract models or partitions.
 
-mutable struct GeneralFelNode <: AbstractTreeNode
-  parent::Union{GeneralFelNode,Nothing}
-  children::Array{GeneralFelNode,1}
+mutable struct FelNode <: AbstractTreeNode
+  parent::Union{FelNode,Nothing}
+  children::Array{FelNode,1}
   branchlength::Float64
   name::AbstractString
   nodeindex::Int
@@ -13,14 +13,14 @@ mutable struct GeneralFelNode <: AbstractTreeNode
   message::Vector{Partition} #Vector of Partitions, where each Partition is P(obs|state,model)
   parent_message::Vector{Partition} #This the "downward" message, P(obs,state|model), but at the top of the branch, before it has been propped over the branch.
   child_messages::Vector{Vector{Partition}} #One "up" message" for each child, after prop. Cached to make felsenstein_down! avoid re-computing
-  GeneralFelNode(branchlength::Float64, name::AbstractString) = new(nothing,GeneralFelNode[],branchlength,name)
-  GeneralFelNode() = GeneralFelNode(0.0, "")
+  FelNode(branchlength::Float64, name::AbstractString) = new(nothing,FelNode[],branchlength,name)
+  FelNode() = FelNode(0.0, "")
 end
 
-broadcastable(x::GeneralFelNode) = Ref(x) #???
+broadcastable(x::FelNode) = Ref(x) #???
 
-function Base.show(io::IO, z::GeneralFelNode)
-    println(io, "GeneralFelNode")
+function Base.show(io::IO, z::FelNode)
+    println(io, "FelNode")
     #println(io, "Type: ", typeof(z.branchlength))
     println(io,"nodeindex: $(z.nodeindex)\nRoot: $(isroot(z))\nLeaf: $(isleafnode(z))")
     println(io, "Defined fields:")
@@ -29,7 +29,7 @@ function Base.show(io::IO, z::GeneralFelNode)
     end
 end
 
-function print_traversal(node::GeneralFelNode)
+function print_traversal(node::FelNode)
     print(node.nodeindex," ", node.branchlength, " ", node.name)
     if isdefined(node,:branch_params)
         print(" ", node.branch_params)
@@ -44,7 +44,7 @@ function print_traversal(node::GeneralFelNode)
     end
 end
 
-function set_node_indices!(root::GeneralFelNode; starting_index = 1)
+function set_node_indices!(root::FelNode; starting_index = 1)
     count = 1
     for node in getnodelist(root)
         node.nodeindex = count
@@ -54,11 +54,11 @@ end
 
 #Does this need a parametric type to prevent type mismatch?
 """
-    internal_message_init!(tree::GeneralFelNode, empty_message::Vector{<:Partition})
+    internal_message_init!(tree::FelNode, empty_message::Vector{<:Partition})
 
     Initializes the message template for each node in the tree, allocating space for each partition.
 """
-function internal_message_init!(tree::GeneralFelNode, empty_message::Vector{<:Partition})
+function internal_message_init!(tree::FelNode, empty_message::Vector{<:Partition})
     for node in getnodelist(tree)
         if !isleafnode(node)
             node.child_messages = [deepcopy(empty_message) for i in node.children]
@@ -69,15 +69,15 @@ function internal_message_init!(tree::GeneralFelNode, empty_message::Vector{<:Pa
 end
 
 """
-    internal_message_init!(tree::GeneralFelNode, partition::Partition)
+    internal_message_init!(tree::FelNode, partition::Partition)
 
     Initializes the message template for each node in the tree, as an array of the partition.
 """
-function MolecularEvolution.internal_message_init!(tree::GeneralFelNode, part_template::Partition)
+function MolecularEvolution.internal_message_init!(tree::FelNode, part_template::Partition)
     internal_message_init!(tree, [part_template])
 end
 
-function random_leaf_init!(tree::GeneralFelNode, empty_message::Vector{<:Partition})
+function random_leaf_init!(tree::FelNode, empty_message::Vector{<:Partition})
     for node in getleaflist(tree)
         node.message = deepcopy(empty_message)
         for part in node.message

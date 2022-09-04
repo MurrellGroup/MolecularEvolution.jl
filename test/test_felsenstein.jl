@@ -1,8 +1,8 @@
 begin
-    newt = gettreefromnewick("((A:0.023,B:0.234):0.124,(C:0.123,D:0.234):0.324);", GeneralFelNode);
+    newt = gettreefromnewick("((A:0.023,B:0.234):0.124,(C:0.123,D:0.234):0.324);", FelNode);
     Q = HKY85(5.0,0.1,0.2,0.3,0.4)
     m1 = DiagonalizedCTMC(Q)
-    function models(node::GeneralFelNode)
+    function models(node::FelNode)
         return [m1]
     end
     empty_mess = [NucleotidePartition(2)];

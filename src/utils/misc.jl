@@ -55,7 +55,7 @@ end
 
 #Sets up a tree, including root and lead messages.
 function populate_tree!(
-        tree::GeneralFelNode,
+        tree::FelNode,
         starting_message::Vector{<:Partition},
         names,
         data;
@@ -85,7 +85,7 @@ function populate_tree!(
 end
 
 function populate_tree!(
-    tree::GeneralFelNode,
+    tree::FelNode,
     starting_partition::Partition,
     names,
     data;
@@ -241,9 +241,9 @@ export tree_from_file
 """
     tree_from_file(treefile)
 
-Reads in a tree from a file, of type GeneralFelNode
+Reads in a tree from a file, of type FelNode
 """
 function tree_from_file(treefile)
     treestring = readlines(treefile)[1];
-    return gettreefromnewick(treestring, GeneralFelNode)
+    return gettreefromnewick(treestring, FelNode)
 end

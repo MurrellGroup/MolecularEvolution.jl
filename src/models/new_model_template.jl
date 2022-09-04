@@ -4,9 +4,9 @@
 #Should contain all code related to specific models.
 
 #When you define a new model, you also have to define some functions (some can be excluded if you only want some of the functionality):
-    #backward!(dest::NewPartitionType,source::NewPartitionType,model::NewModelType,node::GeneralFelNode)
+    #backward!(dest::NewPartitionType,source::NewPartitionType,model::NewModelType,node::FelNode)
         #This must mutate the dest to have the message at the top of the branch.
-    #forward!(dest::NewPartitionType,source::NewPartitionType,model::NewModelType,node::GeneralFelNode)
+    #forward!(dest::NewPartitionType,source::NewPartitionType,model::NewModelType,node::FelNode)
         #This must mutate the dest to have the message at the bottom of the branch.
     #eq_freq(model::NewModelType)
         #Returns the equilibrium frequency of the model. Typically for reversible models when getting root freqs.
@@ -67,7 +67,7 @@ end
 function backward!(dest::MyNewPartition,
         source::MyNewPartition,
         model::MyNewModel,
-        node::GeneralFelNode)
+        node::FelNode)
         error("backward!() not yet implemented for $(typeof(model)) and $(typeof(source)). Required for any inference.")
         #dest.state .= f(source.state) #You need to implement f(). Try and minimize allocation when this happens.
 end
@@ -75,7 +75,7 @@ end
 function forward!(dest::MyNewPartition,
         source::MyNewPartition,
         model::MyNewModel,
-        node::GeneralFelNode)
+        node::FelNode)
         error("forward!() not yet implemented for $(typeof(model)) and $(typeof(source)). Required for simulation, and any internal state inference or branch length optimization.")
         #dest.state .= f(source.state) #You need to implement f(). Try and minimize allocation when this happens.
 end

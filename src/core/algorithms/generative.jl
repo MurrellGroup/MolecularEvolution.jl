@@ -8,11 +8,11 @@ function sample_from_message!(message::Vector{<:Partition})
 end
 
 """
-sample_down!(node::GeneralFelNode,models,partition_list)
+sample_down!(node::FelNode,models,partition_list)
 
 Generates samples under the model. The root.parent_message is taken as the starting distribution, and node.message contains the sampled messages.
 """
-function sample_down!(node::GeneralFelNode,
+function sample_down!(node::FelNode,
     models,
     partition_list)
     model_list = models(node)
@@ -32,33 +32,33 @@ function sample_down!(node::GeneralFelNode,
 end
 
 """
-sample_down!(node::GeneralFelNode,models)
+sample_down!(node::FelNode,models)
 
 Generates samples under the model, matching the partition structure.
 """
-function sample_down!(node::GeneralFelNode,
+function sample_down!(node::FelNode,
     models; partition_list = 1:length(node.message))
     sample_down!(node,models,partition_list)
 end
 
 
 """
-sample_down!(node::GeneralFelNode,models::Vector{<:BranchModel},partition_list)
+sample_down!(node::FelNode,models::Vector{<:BranchModel},partition_list)
 
 Generates samples under the model, matching the partition structure.
 """
-function sample_down!(node::GeneralFelNode,
+function sample_down!(node::FelNode,
     models::Vector{<:BranchModel},
     partition_list = 1:length(node.message))
 sample_down!(node,x -> models,partition_list)
 end
 
 """
-sample_down!(node::GeneralFelNode,model::BranchModel,partition_list)
+sample_down!(node::FelNode,model::BranchModel,partition_list)
 
 Generates samples under the model, matching the partition structure.
 """
-function sample_down!(node::GeneralFelNode,
+function sample_down!(node::FelNode,
     models::BranchModel;
     partition_list = 1:length(node.message))
 sample_down!(node,x -> [models],partition_list)

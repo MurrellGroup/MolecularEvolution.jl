@@ -12,7 +12,7 @@ makedocs(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://MurrellGroup.github.io/MolecularEvolution.jl",
         edit_link="main",
-        assets=String[],
+        assets = ["assets/favicon.ico"],
     ),
     pages=[
         "Home" => "index.md",

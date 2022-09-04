@@ -32,7 +32,7 @@ function eq_freq(model::DiagonalizedCTMC)
     return (model.V[:,pos]).*model.Vi[pos,:]
 end
 
-function P_from_diagonalized_Q(model::DiagonalizedCTMC,node::GeneralFelNode)
+function P_from_diagonalized_Q(model::DiagonalizedCTMC,node::FelNode)
     return clamp.(model.V*Diagonal(exp.(model.D.*model.r.*node.branchlength))*model.Vi,0.0,Inf)
 end
 
@@ -41,7 +41,7 @@ end
 function backward!(dest::DiscretePartition,
         source::DiscretePartition,
         model::DiagonalizedCTMC,
-        node::GeneralFelNode)
+        node::FelNode)
 
     #P = model.V*Diagonal(exp.(model.D.*model.r.*node.branchlength))*model.Vi
     P = P_from_diagonalized_Q(model,node)
@@ -55,7 +55,7 @@ end
 function forward!(dest::DiscretePartition,
         source::DiscretePartition,
         model::DiagonalizedCTMC,
-        node::GeneralFelNode)
+        node::FelNode)
 
     P = P_from_diagonalized_Q(model,node)
     dest.state .= (source.state'*P)' #Perf check here?

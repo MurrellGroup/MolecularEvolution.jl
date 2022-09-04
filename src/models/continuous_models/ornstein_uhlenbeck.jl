@@ -12,7 +12,7 @@ end
 function forward!(dest::GaussianPartition,
         source::GaussianPartition,
         model::ZeroDriftOrnsteinUhlenbeck,
-        node::GeneralFelNode)
+        node::FelNode)
         dest.mean =  (e^(-node.branchlength*model.reversion))*(source.mean - model.mean) + model.mean
         dest.var = ((1 - e^(-2*node.branchlength*model.reversion))*model.volatility^2)/(2*model.reversion)
         dest.norm_const = source.norm_const

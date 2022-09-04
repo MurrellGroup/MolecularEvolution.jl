@@ -1,14 +1,14 @@
 """
-    felsenstein!(node::GeneralFelNode, models; partition_list = nothing)
+    felsenstein!(node::FelNode, models; partition_list = nothing)
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass up from the tips to the root.
 models must be a function that takes a node, and returns a Vector{BranchModel}. This lets you control which models gets used for which branch.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein!(tree::GeneralFelNode, models; partition_list = 1:length(tree.message))
+function felsenstein!(tree::FelNode, models; partition_list = 1:length(tree.message))
     stack = [(tree,1, true)]
     #Note to future self: I tried replacing this with an actual stack, but it wasn't a big enough perf diff to justify the extra dependency
-    #stack = Stack{Tuple{GeneralFelNode, Int64, Bool}}()
+    #stack = Stack{Tuple{FelNode, Int64, Bool}}()
     #push!(stack, (tree,1, true))
     node = nothing
     while length(stack) > 0
@@ -44,36 +44,36 @@ function felsenstein!(tree::GeneralFelNode, models; partition_list = 1:length(tr
 end
 
 """
-    felsenstein!(node::GeneralFelNode, models::Vector{<:BranchModel}; partition_list = nothing)
+    felsenstein!(node::FelNode, models::Vector{<:BranchModel}; partition_list = nothing)
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass up from the tips to the root.
 models can be a single model, or a vector of models, or a function that associates a node with a model.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein!(tree::GeneralFelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message))
+function felsenstein!(tree::FelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message))
     felsenstein!(tree, x -> models, partition_list = partition_list)
 end
 
 """
-    felsenstein!(node::GeneralFelNode, model::BranchModel; partition_list = nothing)
+    felsenstein!(node::FelNode, model::BranchModel; partition_list = nothing)
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass up from the tips to the root.
 models can be a single model, or a vector of models, or a function that associates a node with a model.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein!(tree::GeneralFelNode, model::BranchModel; partition_list = 1:length(tree.message))
+function felsenstein!(tree::FelNode, model::BranchModel; partition_list = 1:length(tree.message))
     felsenstein!(tree, x -> [model], partition_list = partition_list)
 end
 
 """
-    felsenstein_down!(node::GeneralFelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+    felsenstein_down!(node::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass down from the root to the tips.
 felsenstein!() should usually be called first.
 models must be a function that takes a node, and returns a Vector{BranchModel}. This lets you control which models gets used for which branch.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein_down!(tree::GeneralFelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+function felsenstein_down!(tree::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
     stack = [tree]
 	#curr = nothing
 	while length(stack) > 0
@@ -105,25 +105,25 @@ function felsenstein_down!(tree::GeneralFelNode, models; partition_list = 1:leng
 end
 
 """
-    felsenstein_down!(node::GeneralFelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+    felsenstein_down!(node::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass down from the root to the tips.
 felsenstein!() should usually be called first.
 models can be a single model, or a vector of models, or a function that associates a node with a model.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein_down!(tree::GeneralFelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+function felsenstein_down!(tree::FelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
     felsenstein_down!(tree, x -> models, partition_list = partition_list, temp_message = temp_message)
 end
 
 """
-    felsenstein_down!(node::GeneralFelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+    felsenstein_down!(node::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass down from the root to the tips.
 felsenstein!() should usually be called first.
 models can be a single model, or a vector of models, or a function that associates a node with a model.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein_down!(tree::GeneralFelNode, model::BranchModel; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+function felsenstein_down!(tree::FelNode, model::BranchModel; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
     felsenstein_down!(tree, x -> [model], partition_list = partition_list, temp_message = temp_message)
 end

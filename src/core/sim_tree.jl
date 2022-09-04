@@ -27,7 +27,7 @@ function inhomo_poisson_next_sample(rate_func,start_time; min_delta = 0.001, rat
 end
 
 function sim_tree_function(add_limit::Int,Ne_func,sample_rate_func; nstart = 1, time = 0.0, mutation_rate = 1.0)
-    nodes = [(GeneralFelNode(0.0,"tax$(i)"),time) for i in 1:nstart];
+    nodes = [(FelNode(0.0,"tax$(i)"),time) for i in 1:nstart];
     for n in nodes
         n[1].branch_params = [time]
     end
@@ -49,7 +49,7 @@ function sim_tree_function(add_limit::Int,Ne_func,sample_rate_func; nstart = 1, 
         end
         time = min(next_coal, next_add)
         if next_add < next_coal
-            push!(nodes,(GeneralFelNode(0.0,"tax$(node_counter)"),time))
+            push!(nodes,(FelNode(0.0,"tax$(node_counter)"),time))
             even_time = time - last_event
             last_event = time
             node_counter += 1
@@ -77,7 +77,7 @@ export sim_tree
 """
     sim_tree(add_limit::Int,Ne_func,sample_rate_func; nstart = 1, time = 0.0, mutation_rate = 1.0, T = Float64)
 
-Simulates a tree of type GeneralFelNode{T}. Allows an effective population size function (Ne_func),
+Simulates a tree of type FelNode{T}. Allows an effective population size function (Ne_func),
 as well as a sample rate function (sample_rate_func), which can also just be constants.
 
 Ne_func(t) = (sin(t/10)+1)*100.0 + 10.0

@@ -10,7 +10,7 @@ end
 function backward!(dest::GaussianPartition,
         source::GaussianPartition,
         model::BrownianMotion,
-        node::GeneralFelNode)
+        node::FelNode)
         dest.mean = source.mean - node.branchlength * model.mean_drift
         dest.var = source.var + node.branchlength * model.var_drift
         dest.norm_const = source.norm_const
@@ -19,7 +19,7 @@ end
 function forward!(dest::GaussianPartition,
         source::GaussianPartition,
         model::BrownianMotion,
-        node::GeneralFelNode)
+        node::FelNode)
         dest.mean = source.mean + node.branchlength * model.mean_drift
         dest.var = source.var + node.branchlength * model.var_drift
         dest.norm_const = source.norm_const

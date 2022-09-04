@@ -2,7 +2,7 @@
 
 #Need to add a version that migrates the node_data Dict to the Phylo representation
 #data_function must return a key,value pair
-function add_node_to_phylo_tree(molev_node::GeneralFelNode, phylo_tree, phylo_node, node_counter; copy_dict = true, data_function = (x -> Tuple{String, Float64}[]))
+function add_node_to_phylo_tree(molev_node::FelNode, phylo_tree, phylo_node, node_counter; copy_dict = true, data_function = (x -> Tuple{String, Float64}[]))
     for tup in data_function(molev_node)
         key,value = tup
         phylo_node.data[key] = value
@@ -28,7 +28,7 @@ end
 
 export get_phylo_tree
 
-function get_phylo_tree(molev_root::GeneralFelNode; data_function = (x -> Tuple{String, Float64}[]))
+function get_phylo_tree(molev_root::FelNode; data_function = (x -> Tuple{String, Float64}[]))
     phylo_tree = Phylo.RootedTree()
     node_counter = 1
     if molev_root.name != ""

@@ -17,7 +17,7 @@ end
 export bfs_mapreduce
 """Performs a BFS map-reduce over the tree, starting at a given node
 For each node, map_reduce is called as: 
-  map_reduce(curr_node::GeneralFelNode, prev_node::GeneralFelNode, aggregator)
+  map_reduce(curr_node::FelNode, prev_node::FelNode, aggregator)
 where prev_node is the previous node visited on the path from the start node to the current node
 It is expected to update the aggregator, and not return anything.
 
@@ -44,13 +44,13 @@ function node_distances(from_node::AbstractTreeNode)::Dict{<:AbstractTreeNode, F
         bl = curr_node.parent == prev_node ? curr_node.branchlength : prev_node.branchlength
         aggregator[curr_node] = aggregator[prev_node] + bl
     end
-    aggregator = Dict{GeneralFelNode, Float64}(from_node => 0)
+    aggregator = Dict{FelNode, Float64}(from_node => 0)
     bfs_mapreduce(from_node, map_reduce, aggregator)
     return aggregator
 end     
 
 "Provides a list of parent nodes nodes from this node up to the root node"
-function parent_list(node::GeneralFelNode)::Array{<:GeneralFelNode,1}
+function parent_list(node::FelNode)::Array{<:FelNode,1}
     list = [node]
     while !isnothing(node.parent)
         push!(list, node.parent)
@@ -64,7 +64,7 @@ export shortest_path_between_nodes
 Shortest path between nodes, returned as two lists, each starting with one of the two nodes, 
 and ending with the common ancestor
 """
-function shortest_path_between_nodes(node1::GeneralFelNode, node2::GeneralFelNode)::Tuple{Array{<:GeneralFelNode,1},Array{<:GeneralFelNode,1}}
+function shortest_path_between_nodes(node1::FelNode, node2::FelNode)::Tuple{Array{<:FelNode,1},Array{<:FelNode,1}}
     parent_list1 = parent_list(node1)
     parent_list2 = parent_list(node2)
     
@@ -83,7 +83,7 @@ For convenience, this is returned as two lists of form:
     [leaf_node, parent_node, .... root]
 Where the leaf_node nodes are selected to be the furthest away
 """
-function longest_path(root::GeneralFelNode)
+function longest_path(root::FelNode)
     dists = node_distances(root)
     #Pick the maximum distance, breaking ties using rand()
     #This is needed to prevent a comparison between nodes which is undefined
@@ -98,7 +98,7 @@ end
 
 export midpoint
 "Returns a midpoint as a node and a distance above it where the midpoint is"
-function midpoint(root::GeneralFelNode)::Tuple{<:GeneralFelNode, Float64}
+function midpoint(root::FelNode)::Tuple{<:FelNode, Float64}
     path1, path2 = longest_path(root)
     
     #compute the total branch lengths down from the root to either farthest node

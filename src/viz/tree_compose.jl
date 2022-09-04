@@ -3,7 +3,7 @@
 #NOTE: I rely a lot on dictionaries with nodes as a key.
 #This means that you cannot mutate the node contents and expect these to work.
 
-function tree_lines(root::GeneralFelNode;
+function tree_lines(root::FelNode;
     dot_size_dict = Dict(), dot_size_default = 0.0,
     dot_color_dict = Dict(), dot_color_default = "black",
     line_color_dict = Dict(), line_color_default = "black",
@@ -22,7 +22,7 @@ function tree_lines(root::GeneralFelNode;
 
     node_position_dict = Dict()
 
-    function tree_lines_traversal(node::GeneralFelNode,lines,depth::Real)
+    function tree_lines_traversal(node::FelNode,lines,depth::Real)
         start_depth = depth
         depth += node.branchlength
         end_depth = depth
@@ -69,7 +69,7 @@ end
 
 export simple_tree_draw
 """
-img = simple_tree_draw(tree::GeneralFelNode; canvas_width = 15cm, canvas_height = 15cm, line_color = "black", line_width = 0.1mm)
+img = simple_tree_draw(tree::FelNode; canvas_width = 15cm, canvas_height = 15cm, line_color = "black", line_width = 0.1mm)
 
 A line drawing of a tree with very few options.
 
@@ -80,7 +80,7 @@ using Cairo
 img |> PDF("imgout.pdf",10cm, 10cm)
 
 """
-function simple_tree_draw(tree::GeneralFelNode; canvas_width = 15cm, canvas_height = 15cm, line_color = "black", line_width = 0.1mm)
+function simple_tree_draw(tree::FelNode; canvas_width = 15cm, canvas_height = 15cm, line_color = "black", line_width = 0.1mm)
     set_default_graphic_size(canvas_width, canvas_height)
     line_array,dot_array,dot_sizes,nodelabels,dot_colors,line_colors,label_colors,node_position_dict = tree_lines(tree)
     return compose(context(0.00, 0.00, 1.0, 1.0, units=UnitBox(-0.05,-0.05,1.1,1.1)),(context(),line(line_array), stroke(line_color), linewidth(line_width)))
@@ -97,7 +97,7 @@ end
 export tree_draw
 #Tree draw doesn't allow the vertical lines either side of a node to be colored differently - this isn't ideal and it should be re-done to allow this.
 """
-    tree_draw(tree::GeneralFelNode;
+    tree_draw(tree::FelNode;
         canvas_width = 15cm, canvas_height = 15cm,
         stretch_for_labels = 2.0, draw_labels = true,
         line_width = 0.1mm, font_size = 4pt,
@@ -115,11 +115,11 @@ export tree_draw
 
 Draws a tree with a number of self-explanatory options.
 Dictionaries that map a node to a color/size are used to control per-node plotting options.
-"compose_dict" must be a GeneralFelNode->function(x,y) dictionary that returns a compose() struct.
+"compose_dict" must be a FelNode->function(x,y) dictionary that returns a compose() struct.
 
 Example using compose_dict
 str_tree = "(((((tax24:0.09731668728575642,(tax22:0.08792233964843627,tax18:0.9210388482867483):0.3200367900275155):0.6948314526087965,(tax13:1.9977212308725611,(tax15:0.4290074347886068,(tax17:0.32928401808187824,(tax12:0.3860215462534818,tax16:0.2197134841232339):0.1399122681886174):0.05744611946245004):1.4686085778061146):0.20724159879522402):0.4539334554156126,tax28:0.4885576926440158):0.002162260013924424,tax26:0.9451873777301325):3.8695419798779387,((tax29:0.10062813251515536,tax27:0.27653633028085006):0.04262434258357507,(tax25:0.009345653929737636,((tax23:0.015832941547076644,(tax20:0.5550597590956172,((tax8:0.6649025646927402,tax9:0.358506423199849):0.1439516404012261,tax11:0.01995439013213013):1.155181296134081):0.17930021667907567):0.10906638146207207,((((((tax6:0.013708993438720255,tax5:0.061144001556547097):0.1395453591567641,tax3:0.4713722705245479):0.07432598428904214,tax1:0.5993347898257291):1.0588025698844894,(tax10:0.13109032492533992,(tax4:0.8517302241963356,(tax2:0.8481963081549965,tax7:0.23754095940676642):0.2394313086297733):0.43596704123297675):0.08774657269409454):0.9345533723114966,(tax14:0.7089558245245173,tax19:0.444897137240675):0.08657675809803095):0.01632062723968511,tax21:0.029535281963725537):0.49502691718938285):0.25829576024240986):0.7339777396780424):4.148878039524972):0.0"
-newt = better_newick_import(str_tree, GeneralFelNode{Float64});
+newt = better_newick_import(str_tree, FelNode{Float64});
 newt = ladderize(newt);
 compose_dict = Dict()
 for n in getleaflist(newt)
@@ -135,7 +135,7 @@ OR
 using Cairo
 img |> PDF("imgout.pdf",10cm, 10cm)
 """
-function tree_draw(tree::GeneralFelNode;
+function tree_draw(tree::FelNode;
         canvas_width = 15cm, canvas_height = 15cm,
         stretch_for_labels = 2.0, draw_labels = true,
         line_width = 0.1mm, font_size = 4pt,
@@ -201,7 +201,7 @@ end
 
 #= Example
 str_tree = readlines("Datasets/Wertheim2011/AIV_neuroaminidase.tre")[1];
-newt = better_newick_import(str_tree, GeneralFelNode{Float64});
+newt = better_newick_import(str_tree, FelNode{Float64});
 newt = ladderize(newt);
 label_color_dict = Dict()
 for n in getleaflist(newt)
@@ -266,7 +266,7 @@ function radial_layout(node::AbstractTreeNode,node_loc_dict,node_data_dict, tota
     end
 end
 
-function radial_lines(root::GeneralFelNode,node_loc_dict)
+function radial_lines(root::FelNode,node_loc_dict)
     lines = Array{Array{Tuple{Float64,Float64},1},1}([])
     for node in getnodelist(root)
         if !isroot(node)
@@ -293,14 +293,14 @@ end
 #need to test this one
 #export simple_radial_tree_plot
 """
-    simple_radial_tree_plot(root::GeneralFelNode; canvas_width = 10cm, line_color = "black", line_width = 0.1mm)
+    simple_radial_tree_plot(root::FelNode; canvas_width = 10cm, line_color = "black", line_width = 0.1mm)
 
 Draws a radial tree. No frills. No labels. Canvas height is automatically determined to avoid distorting the tree.
 
-newt = better_newick_import("((A:1,B:1,C:1,D:1,E:1,F:1,G:1):1,(H:1,I:1):1);", GeneralFelNode{Float64});
+newt = better_newick_import("((A:1,B:1,C:1,D:1,E:1,F:1,G:1):1,(H:1,I:1):1);", FelNode{Float64});
 simple_radial_tree_plot(newt,line_width = 0.5mm,root_angle = 7/10)
 """
-function simple_radial_tree_plot(root::GeneralFelNode; canvas_width = 10cm, line_color = "black", line_width = 0.1mm, root_angle = 0.0)
+function simple_radial_tree_plot(root::FelNode; canvas_width = 10cm, line_color = "black", line_width = 0.1mm, root_angle = 0.0)
     node_data_dict = Dict()
     total_descendents = descendent_count(root,node_data_dict)
     node_loc_dict = Dict()
@@ -460,12 +460,12 @@ tree_draw(newt,line_width = 0.5mm,label_color_dict = d,
 end
 
 """
-    promote_internal(tree::GeneralFelNode)
+    promote_internal(tree::FelNode)
 
 Creates a new tree similar to the given tree, but with 'dummy' leaf nodes (w/ zero branchlength)
 representing each internal node (for drawing / evenly spacing labels internal nodes).
 """
-function promote_internal(tree::GeneralFelNode)
+function promote_internal(tree::FelNode)
     newt = deepcopy(tree)
     for node in getnonleaflist(newt)
         ch = deepcopy(node)

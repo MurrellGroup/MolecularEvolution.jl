@@ -1,3 +1,3 @@
 include("AbstractTreeNode.jl")
-include("GeneralFelNode.jl")
+include("FelNode.jl")
 include("base_tree_utils.jl")
