@@ -10,7 +10,7 @@ makedocs(;
     sitename="MolecularEvolution.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://murrellb.github.io/MolecularEvolution.jl",
+        canonical="https://MurrellGroup.github.io/MolecularEvolution.jl",
         edit_link="main",
         assets=String[],
     ),
