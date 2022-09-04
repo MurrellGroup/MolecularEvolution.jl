@@ -72,6 +72,13 @@ function reconstruct_marginal_node!(node_message_dict::Dict{GeneralFelNode,Vecto
 end
 
 export marginal_state_dict
+"""
+    marginal_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
+
+Takes in a tree and a model (which can be a single model, an array of models, or a function that maps GeneralFelNode->Array{<:BranchModel}), and
+returns a dictionary mapping nodes to their marginal reconstructions (ie. P(state|all observations,model)). A subset of partitions can be specified by partition_list,
+and a dictionary can be passed in to avoid re-allocating memory, in case you're running this over and over.
+"""
 function marginal_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
     return depth_first_reconstruction(tree, reconstruct_marginal_node!, model, partition_list = partition_list, node_message_dict = node_message_dict)
 end
@@ -99,6 +106,13 @@ end
 #For joint max reconstructions
 reconstruct_max_joint_node!(node_message_dict, node, model_array, partition_list) = dependent_reconstruction!(node_message_dict, node, model_array, partition_list, f! = max_partition!)
 export max_joint_state_dict
+"""
+    max_joint_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
+
+Takes in a tree and a model (which can be a single model, an array of models, or a function that maps GeneralFelNode->Array{<:BranchModel}), and
+returns a dictionary mapping nodes to their joint maximum likelihood reconstructions (ie. state, such that P(state|all observations,model) is maximized).
+A subset of partitions can be specified by partition_list, and a dictionary can be passed in to avoid re-allocating memory, in case you're running this over and over.
+"""
 function max_joint_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
     return depth_first_reconstruction(tree, reconstruct_max_joint_node!, model, partition_list = partition_list, node_message_dict = node_message_dict)
 end
@@ -106,6 +120,13 @@ end
 #For endpoint conditioned sampling - could consider merging this into the above function
 conditioned_sample_node!(node_message_dict, node, model_array, partition_list) = dependent_reconstruction!(node_message_dict, node, model_array, partition_list, f! = sample_partition!)
 export endpoint_conditioned_sample_state_dict
+"""
+    endpoint_conditioned_sample_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
+
+Takes in a tree and a model (which can be a single model, an array of models, or a function that maps GeneralFelNode->Array{<:BranchModel}), and draws samples under the model
+conditions on the leaf observations. These samples are stored in the node_message_dict, which is returned. A subset of partitions can be specified by partition_list, and a
+dictionary can be passed in to avoid re-allocating memory, in case you're running this over and over.
+"""
 function endpoint_conditioned_sample_state_dict(tree::GeneralFelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{GeneralFelNode,Vector{Partition}}())
     return depth_first_reconstruction(tree, conditioned_sample_node!, model, partition_list = partition_list, node_message_dict = node_message_dict)
 end

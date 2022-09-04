@@ -13,6 +13,8 @@ MolecularEvolution.jl exploits Julia's multiple dispatch, implementing a fully g
 ### Quick example: Likelihood calculations under phylogenetic Brownian motion:
 
 ```julia
+using MolecularEvolution, Plots
+
 #First simulate a tree, using a coalescent process
 tree = sim_tree(n=200)
 internal_message_init!(tree, GaussianPartition())
