@@ -5,7 +5,7 @@ DocMeta.setdocmeta!(MolecularEvolution, :DocTestSetup, :(using MolecularEvolutio
 
 makedocs(;
     modules=[MolecularEvolution],
-    authors="Ben Murrell <murrellb@gmail.com> and contributors",
+    authors="Ben Murrell <benjamin.murrell@ki.se> and contributors",
     repo="https://github.com/MurrellGroup/MolecularEvolution.jl/blob/{commit}{path}#{line}",
     sitename="MolecularEvolution.jl",
     format=Documenter.HTML(;
@@ -16,6 +16,12 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "quickstart.md",
+        "types.md",
+        "simulation.md",
+        "optimization.md",
+        "ancestors.md",
+        "viz.md"
     ],
 )
 
