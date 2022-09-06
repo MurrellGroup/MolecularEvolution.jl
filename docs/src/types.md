@@ -10,6 +10,8 @@ For a ```Partition``` type to be usable by MolecularEvolution.jl, the ```combine
 
 A ```BranchModel``` defines how ```Partition``` distributions evolve along branches. Two functions need to be implemented: ```backward!``` and ```forward!```. We imagine our trees with the root at the top, and ```forward!``` moves from root to tip, and ```backward!``` moves from tip to root. ```backward!(dest::P,src::P,m::BranchModel,n::FelNode)``` takes a src Partition, representing P(obs-below|state-at-bottom-of-branch), and modifies the dest Partition to be P(obs-below|state-at-top-of-branch), where the branch in question is the branch above the ```FelNode``` n. ```forward!``` goes in the opposite direction, from P(obs-above,state-at-top-of-branch) to P(obs-above,state-at-bottom-of-branch), with the ```Partitions``` now, confusingly, representing joint distributions.
 
+![](directions.svg)
+
 ## Messages
 
 Nodes on our trees work with messages, where a ```message``` is a vector of ```Partition``` structs. This is in case you wish to model multiple different data types on the same tree. Often, all the messages on the tree will just be arrays containing a single ```Partition```, but if you're accessing them you need to remember that they're in an array!
@@ -22,4 +24,14 @@ The set of algorithms needs to know which model to use for which partition, so t
 
 ## Algorithms
 
-To-do: list algorithms, describing what they compute, and what they modify.
+Felsenstein's algorithm recursively computes, for each node, the probability of all observations below that node, given the state at that node. Felsenstein's algorithm can be decomposed into the following combination of `backward!` and `combine!` operations:
+
+![](FelsensteinRecursion.svg)
+
+At the root node, we wind up with ``P(all_observations|root_state)``, and we can compute ``P(all_observations) = \sum_{state} P(all_observations|root_state) P(root_state)``.
+
+## Technical Weeds
+
+Scaling constants.
+
+Root state.
