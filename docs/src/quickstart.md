@@ -2,6 +2,8 @@
 
 ## Example 1: Amino acid ancestral reconstruction and visualization
 
+This example reads amino acid sequences from <a id="raw-url" href="https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.fasta">this FASTA file</a>, and a phylogeny from <a id="raw-url" href="https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.tre">this Newick tree file</a>. A [WAG](https://www.ebi.ac.uk/goldman-srv/WAG/) amino acid model, augmented to explicitly model gap (ie. '-') characters, and a global substitution rate is estimated by maximum likelihood. Under this optimized model, the distribution over ancestral amino acids is constructed for each node, and visualized in multiple ways.
+
 ```julia
 using MolecularEvolution, FASTX, Phylo, Plots
 
