@@ -1,10 +1,6 @@
 # Ancestral Reconstruction
 
-```@docs
-marginal_state_dict
-max_joint_state_dict
-endpoint_conditioned_sample_state_dict
-```
+Given a phylogeny, and observations on some set of leaf nodes, "ancestral reconstruction" describes a family of approaches for inferring the state of the ancestors, or the distribution over possible states of ancestors.
 
 ## Examples
 
@@ -99,3 +95,12 @@ Sampled states, conditioned on observed leaves:
 0.0542 - true value: 0.075
 0.498 - true value: 0.589
 ```
+
+## Functions
+
+```@docs
+marginal_state_dict
+max_joint_state_dict
+endpoint_conditioned_sample_state_dict
+```
+

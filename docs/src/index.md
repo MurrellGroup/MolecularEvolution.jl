@@ -28,6 +28,7 @@ sample_down!(tree, bm_model)
 ll(x) = log_likelihood!(tree,BrownianMotion(0.0,x))
 plot(0.7:0.001:1.6,ll, xlabel = "variance per unit time", ylabel = "log likelihood")
 ```
+![](quick_example.svg)
 
 ```@index
 ```
