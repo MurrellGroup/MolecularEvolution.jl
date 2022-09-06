@@ -2,7 +2,7 @@
 
 ## Example 1: Amino acid ancestral reconstruction and visualization
 
-This example reads amino acid sequences from [this FASTA file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.fasta)", and a phylogeny from [this Newick tree file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.tre). A [WAG](https://www.ebi.ac.uk/goldman-srv/WAG/) amino acid model, augmented to explicitly model gap (ie. '-') characters, and a global substitution rate is estimated by maximum likelihood. Under this optimized model, the distribution over ancestral amino acids is constructed for each node, and visualized in multiple ways.
+This example reads amino acid sequences from [this FASTA file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.fasta), and a phylogeny from [this Newick tree file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/MusAA_IGHV.tre). A [WAG](https://www.ebi.ac.uk/goldman-srv/WAG/) amino acid model, augmented to explicitly model gap (ie. '-') characters, and a global substitution rate is estimated by maximum likelihood. Under this optimized model, the distribution over ancestral amino acids is constructed for each node, and visualized in multiple ways.
 
 ```julia
 using MolecularEvolution, FASTX, Phylo, Plots
@@ -33,11 +33,19 @@ plot(opt_rate*0.87:0.001:opt_rate*1.15,ll,size = (500,250),
 ```
 ![](fig1.svg)
 
+Then set the model parameters to the maximum likelihood estimate, and reconstruct the ancestral states.
+
 ```julia
 m.r = opt_rate
 #Reconstructing the marginal distributions of amino acids at internal nodes
-d = marginal_state_dict(tree,m);
+d = marginal_state_dict(tree,m)
+```
 
+That's it! Everything else is for visualizing these ancestral states. We'll select a set of amino acid positions to visualize, corresponding to these two (red arrows) alignment columns:
+
+![](Alignment.png)
+
+```julia
 #The alignment indices we want to pay attention to in our reconstructions
 motif_inds = [52,53]
 
@@ -58,7 +66,7 @@ for n in getnodelist(tree)
             ])
 end
 
-#Transducing the MolecularEvolutino FelNode tree to a Phylo.jl tree, which migrates node_data as well
+#Transducing the MolecularEvolution FelNode tree to a Phylo.jl tree, which migrates node_data as well
 phylo_tree = get_phylo_tree(tree)
 node_unc = values_from_phylo_tree(phylo_tree,"uncertainty")
 
