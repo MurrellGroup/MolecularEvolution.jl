@@ -267,6 +267,6 @@ function obs2partition!(dest::CodonPartition,seq::String; code = universal_code)
 end
 
 
-function extract(part::CodonPartition; code = universal_code)
+function partition2obs(part::CodonPartition; code = universal_code)
     return join([code.sense_codons[argmax(part.state[:,i])] for i in 1:part.sites])
 end

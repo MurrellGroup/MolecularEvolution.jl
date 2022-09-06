@@ -9,6 +9,8 @@
 #5: Country state from leaf name functions?
 #6: Code to handle when the state comes in from a .csv with associated names, or something.
 
+#Should these be in CAPS? Should they be exported? 
+#export nucstring, gappynucstring, AAstring, gappyAAstring
 const nucstring = "ACGT"
 const gappynucstring = "ACGT-"
 const AAstring = "ACDEFGHIKLMNPQRSTVWY"
@@ -65,22 +67,22 @@ gappy_nuc_dict['S'] = [0.0, 1.0, 1.0, 0.0, 0.0]
 gappy_nuc_dict['N'] = [1.0, 1.0, 1.0, 1.0, 0.0]
 gappy_nuc_dict['-'] = [0.0, 0.0, 0.0, 0.0, 1.0]
 
-function extract(part::DiscretePartition,code::String)
+function partition2obs(part::DiscretePartition,code::String)
     #NOTE: NEED TO HANDLE CASES WHERE TWO STATES ARE EQUAL. RETURN AMBIG CHAR? MAYBE CUSTOM BEHAVIOR FOR IUPAC HERE.
     code_arr = collect(code) #Need to compare this to just indexing into the string?
     return join([code_arr[argmax(part.state[:,i])] for i in 1:part.sites])
 end
-function extract(part::NucleotidePartition)
-    extract(part,nucstring)
+function partition2obs(part::NucleotidePartition)
+    partition2obs(part,nucstring)
 end
-function extract(part::GappyNucleotidePartition)
-    extract(part,gappynucstring)
+function partition2obs(part::GappyNucleotidePartition)
+    partition2obs(part,gappynucstring)
 end
-function extract(part::AminoAcidPartition)
-    extract(part,AAstring)
+function partition2obs(part::AminoAcidPartition)
+    partition2obs(part,AAstring)
 end
-function extract(part::GappyAminoAcidPartition)
-    extract(part,gappyAAstring)
+function partition2obs(part::GappyAminoAcidPartition)
+    partition2obs(part,gappyAAstring)
 end
 
 

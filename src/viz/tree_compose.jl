@@ -543,7 +543,7 @@ function dashed_line(x, y)
 end
 
 function draw_partition(x, y, part::DiscretePartition; region=[], color_dict=Dict(), font_size=6pt)
-    ns = extract(part)
+    ns = partition2obs(part)
     if isempty(region)
         region = 1:length(ns)
     end

@@ -84,6 +84,6 @@ function obs2partition!(partition::GaussianPartition, obs::Float64)
     partition.norm_const = 0.0
 end
 
-function extract(partition::GaussianPartition)
+function partition2obs(partition::GaussianPartition)
     return partition.mean
 end

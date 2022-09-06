@@ -127,7 +127,7 @@ export
     eq_freq,
     populate_tree!,
     populate_message!,
-    extract
+    partition2obs
 
 end
 

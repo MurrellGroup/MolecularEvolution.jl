@@ -79,7 +79,7 @@ function populate_tree!(
             if tolerate_missing == 1
                 @warn warn_str
             end
-            uninformative_message!(message)
+            uninformative_message!(n.message)
         end
     end
 end
@@ -237,13 +237,25 @@ function binarize!(tree)
     end
 end
 
-export tree_from_file
+export read_newick_tree
 """
-    tree_from_file(treefile)
+read_newick_tree(treefile)
 
 Reads in a tree from a file, of type FelNode
 """
-function tree_from_file(treefile)
-    treestring = readlines(treefile)[1];
-    return gettreefromnewick(treestring, FelNode)
+function read_newick_tree(treefile::String; binarize = true, ladderize = true, strip_single_quotes = true)
+    treestring = read(treefile,String)
+    tree = gettreefromnewick(treestring, FelNode)
+    if binarize
+        binarize!(tree)
+    end
+    if ladderize
+        ladderize!(tree)
+    end
+    if strip_single_quotes
+        for n in getnodelist(tree)
+            n.name = replace(n.name,"'" => "")
+        end
+    end
+    return tree
 end
