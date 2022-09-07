@@ -1,5 +1,5 @@
 begin
-    f(x) = -(x-2)^2
+    f(x) = -(x - 2)^2
     m = golden_section_maximize(f, 1, 5, identity, 1e-20)
     @test m == 2.0
 end

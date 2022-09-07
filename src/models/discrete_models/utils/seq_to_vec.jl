@@ -20,7 +20,7 @@ const gappyAAstring = "ACDEFGHIKLMNPQRSTVWY-"
 function one_of_k_dict_from_iter(st)
     dic = Dict{Char,Vector{Float64}}(Dict())
     empty = zeros(length(st))
-    for (i,c) in enumerate(st)
+    for (i, c) in enumerate(st)
         dic[c] = copy(empty)
         dic[c][i] = 1.0
     end
@@ -67,49 +67,48 @@ gappy_nuc_dict['S'] = [0.0, 1.0, 1.0, 0.0, 0.0]
 gappy_nuc_dict['N'] = [1.0, 1.0, 1.0, 1.0, 0.0]
 gappy_nuc_dict['-'] = [0.0, 0.0, 0.0, 0.0, 1.0]
 
-function partition2obs(part::DiscretePartition,code::String)
+function partition2obs(part::DiscretePartition, code::String)
     #NOTE: NEED TO HANDLE CASES WHERE TWO STATES ARE EQUAL. RETURN AMBIG CHAR? MAYBE CUSTOM BEHAVIOR FOR IUPAC HERE.
     code_arr = collect(code) #Need to compare this to just indexing into the string?
-    return join([code_arr[argmax(part.state[:,i])] for i in 1:part.sites])
+    return join([code_arr[argmax(part.state[:, i])] for i = 1:part.sites])
 end
 function partition2obs(part::NucleotidePartition)
-    partition2obs(part,nucstring)
+    partition2obs(part, nucstring)
 end
 function partition2obs(part::GappyNucleotidePartition)
-    partition2obs(part,gappynucstring)
+    partition2obs(part, gappynucstring)
 end
 function partition2obs(part::AminoAcidPartition)
-    partition2obs(part,AAstring)
+    partition2obs(part, AAstring)
 end
 function partition2obs(part::GappyAminoAcidPartition)
-    partition2obs(part,gappyAAstring)
+    partition2obs(part, gappyAAstring)
 end
 
 
 
 #Creates new memory. This is currently required for the populate_tree function to do things automatically.
-function obs2partition!(dest::DiscretePartition,seq::String,dic::Dict)
+function obs2partition!(dest::DiscretePartition, seq::String, dic::Dict)
     #if length(seq) != dest.sites
     #    @warn "obs2partition!() is changing the number of sites in a partition."
     #end
-    dest.state = zeros(eltype(dest.state),dest.states,length(seq))
+    dest.state = zeros(eltype(dest.state), dest.states, length(seq))
     dest.sites = length(seq)
     dest.scaling = zeros(length(seq))
-    unmatched = ones(eltype(dest.state),dest.states)
-    for (i,c) in enumerate(uppercase(seq))
-        dest.state[:,i] = get(dic,c,unmatched)
+    unmatched = ones(eltype(dest.state), dest.states)
+    for (i, c) in enumerate(uppercase(seq))
+        dest.state[:, i] = get(dic, c, unmatched)
     end
 end
-function obs2partition!(dest::NucleotidePartition,seq::String)
-    obs2partition!(dest,seq,nuc_dict)
+function obs2partition!(dest::NucleotidePartition, seq::String)
+    obs2partition!(dest, seq, nuc_dict)
 end
-function obs2partition!(dest::GappyNucleotidePartition,seq::String)
-    obs2partition!(dest,seq,gappy_nuc_dict)
+function obs2partition!(dest::GappyNucleotidePartition, seq::String)
+    obs2partition!(dest, seq, gappy_nuc_dict)
 end
-function obs2partition!(dest::AminoAcidPartition,seq::String)
-    obs2partition!(dest,seq,AA_dict)
+function obs2partition!(dest::AminoAcidPartition, seq::String)
+    obs2partition!(dest, seq, AA_dict)
 end
-function obs2partition!(dest::GappyAminoAcidPartition,seq::String)
-    obs2partition!(dest,seq,gappy_AA_dict)
+function obs2partition!(dest::GappyAminoAcidPartition, seq::String)
+    obs2partition!(dest, seq, gappy_AA_dict)
 end
-
