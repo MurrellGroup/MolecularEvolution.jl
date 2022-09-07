@@ -4,14 +4,14 @@ mutable struct GaussianPartition <: ContinuousPartition
     mean::Float64
     var::Float64
     norm_const::Float64
-    function GaussianPartition(mean,var,norm_const)
-        new(mean,var,norm_const)
+    function GaussianPartition(mean, var, norm_const)
+        new(mean, var, norm_const)
     end
-    function GaussianPartition(mean,var)
-        new(mean,var,0.0)
+    function GaussianPartition(mean, var)
+        new(mean, var, 0.0)
     end
     function GaussianPartition()
-        new(0.0,1.0,0.0)
+        new(0.0, 1.0, 0.0)
     end
 end
 
@@ -27,17 +27,22 @@ function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
         return deepcopy(g2)
     end
     if g1.var == Inf && g2.var == Inf
-        return GaussianPartition((g1.mean+g2.mean)/2,Inf,0.0)
+        return GaussianPartition((g1.mean + g2.mean) / 2, Inf, 0.0)
     elseif g1.var == Inf
         return deepcopy(g2)
     elseif g2.var == Inf
         return deepcopy(g1)
     end
     res_gaussian = GaussianPartition()
-    res_gaussian.var = 1/(1/g1.var + 1/g2.var)
-    res_gaussian.mean = res_gaussian.var * (g1.mean/g1.var + g2.mean/g2.var)
+    res_gaussian.var = 1 / (1 / g1.var + 1 / g2.var)
+    res_gaussian.mean = res_gaussian.var * (g1.mean / g1.var + g2.mean / g2.var)
     # log of scaling constant
-    res_gaussian.norm_const = -0.5 * ( log(2 * pi * (g1.var * g2.var / res_gaussian.var)) + (g1.mean^2 / g1.var) + (g2.mean^2 / g2.var) - (res_gaussian.mean^2 / res_gaussian.var) )
+    res_gaussian.norm_const =
+        -0.5 * (
+            log(2 * pi * (g1.var * g2.var / res_gaussian.var)) +
+            (g1.mean^2 / g1.var) +
+            (g2.mean^2 / g2.var) - (res_gaussian.mean^2 / res_gaussian.var)
+        )
     res_gaussian.norm_const += (g1.norm_const + g2.norm_const)
     return res_gaussian
 end
@@ -47,8 +52,8 @@ function identity!(dest::GaussianPartition)
     dest.norm_const = 0.0
 end
 
-function combine!(dest::GaussianPartition,src::GaussianPartition)
-    new_g = merge_two_gaussians(dest,src)
+function combine!(dest::GaussianPartition, src::GaussianPartition)
+    new_g = merge_two_gaussians(dest, src)
     dest.mean = new_g.mean
     dest.var = new_g.var
     dest.norm_const = new_g.norm_const
@@ -67,7 +72,7 @@ end
 
 #And sampling
 function sample_partition!(partition::GaussianPartition)
-    partition.mean = randn()*sqrt(partition.var) + partition.mean
+    partition.mean = randn() * sqrt(partition.var) + partition.mean
     partition.var = 0.0
     partition.norm_const = 0.0
 end
@@ -77,7 +82,7 @@ function max_partition!(partition::GaussianPartition)
     partition.var = 0.0
     partition.norm_const = 0.0
 end
- 
+
 function obs2partition!(partition::GaussianPartition, obs::Float64)
     partition.mean = obs
     partition.var = 0.0

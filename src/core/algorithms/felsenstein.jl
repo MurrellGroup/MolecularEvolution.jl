@@ -7,7 +7,7 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
 function felsenstein!(tree::FelNode, models; partition_list = 1:length(tree.message))
-    stack = [(tree,1, true)]
+    stack = [(tree, 1, true)]
     #Note to future self: I tried replacing this with an actual stack, but it wasn't a big enough perf diff to justify the extra dependency
     #stack = Stack{Tuple{FelNode, Int64, Bool}}()
     #push!(stack, (tree,1, true))
@@ -17,39 +17,61 @@ function felsenstein!(tree::FelNode, models; partition_list = 1:length(tree.mess
         #println(node.nodeindex)
         if !isleafnode(node)
             if first
-                push!(stack, (node,ind,false))
-                for i in 1:length(node.children)
-                    push!(stack, (node.children[i],i,true))
+                push!(stack, (node, ind, false))
+                for i = 1:length(node.children)
+                    push!(stack, (node.children[i], i, true))
                 end
             end
             if !first
                 for part in partition_list
                     #Combine child messages into node message.
-                    combine!(node.message[part],[mess[part] for mess in node.child_messages],true)
+                    combine!(
+                        node.message[part],
+                        [mess[part] for mess in node.child_messages],
+                        true,
+                    )
                 end
                 if !isroot(node)
                     #Get the model list for the current branch.
                     model_list = models(node)
                     for part in partition_list
-                        backward!(node.parent.child_messages[ind][part],node.message[part],model_list[part],node)
+                        backward!(
+                            node.parent.child_messages[ind][part],
+                            node.message[part],
+                            model_list[part],
+                            node,
+                        )
                     end
                 end
             end
         else
             model_list = models(node)
             for part in partition_list
-                backward!(node.parent.child_messages[ind][part],node.message[part],model_list[part],node)
+                backward!(
+                    node.parent.child_messages[ind][part],
+                    node.message[part],
+                    model_list[part],
+                    node,
+                )
             end
         end
     end
 end
 
 
-function felsenstein!(tree::FelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message))
+function felsenstein!(
+    tree::FelNode,
+    models::Vector{<:BranchModel};
+    partition_list = 1:length(tree.message),
+)
     felsenstein!(tree, x -> models, partition_list = partition_list)
 end
 
-function felsenstein!(tree::FelNode, model::BranchModel; partition_list = 1:length(tree.message))
+function felsenstein!(
+    tree::FelNode,
+    model::BranchModel;
+    partition_list = 1:length(tree.message),
+)
     felsenstein!(tree, x -> [model], partition_list = partition_list)
 end
 
@@ -62,41 +84,83 @@ models can either be a single model (if the messages on the tree contain just on
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
-function felsenstein_down!(tree::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+function felsenstein_down!(
+    tree::FelNode,
+    models;
+    partition_list = 1:length(tree.message),
+    temp_message = deepcopy(tree.message),
+)
     stack = [tree]
-	#curr = nothing
-	while length(stack) > 0
-		node = pop!(stack)
-		model_list = models(node)
+    #curr = nothing
+    while length(stack) > 0
+        node = pop!(stack)
+        model_list = models(node)
 
-		if !isleafnode(node)
-        	for part in partition_list
-        	    forward!(temp_message[part],node.parent_message[part],model_list[part],node)
-        	end
-			#Note that this uses a nested loop over children and siblings.
-			#Thats fine for binary trees, but will blow up when we have massive polytomies.
-			#Which is stupid, because those are equivalent to binary trees with zero branch lengths.
-			#Either make this cleverer, or always binarize the trees.
-			for i in 1:length(node.children)
-				sib_inds = sibling_inds(node.children[i])
-				for part in partition_list
-					if sum(sib_inds) > 0
-						combine!((node.children[i]).parent_message[part],[mess[part] for mess in node.child_messages[sib_inds]],true)
-						combine!((node.children[i]).parent_message[part],[temp_message[part]],false)
-					else
-						combine!((node.children[i]).parent_message[part],[temp_message[part]],true)
-					end
-				end
-				push!(stack, node.children[i])
-			end
-		end
-	end
+        if !isleafnode(node)
+            for part in partition_list
+                forward!(
+                    temp_message[part],
+                    node.parent_message[part],
+                    model_list[part],
+                    node,
+                )
+            end
+            #Note that this uses a nested loop over children and siblings.
+            #Thats fine for binary trees, but will blow up when we have massive polytomies.
+            #Which is stupid, because those are equivalent to binary trees with zero branch lengths.
+            #Either make this cleverer, or always binarize the trees.
+            for i = 1:length(node.children)
+                sib_inds = sibling_inds(node.children[i])
+                for part in partition_list
+                    if sum(sib_inds) > 0
+                        combine!(
+                            (node.children[i]).parent_message[part],
+                            [mess[part] for mess in node.child_messages[sib_inds]],
+                            true,
+                        )
+                        combine!(
+                            (node.children[i]).parent_message[part],
+                            [temp_message[part]],
+                            false,
+                        )
+                    else
+                        combine!(
+                            (node.children[i]).parent_message[part],
+                            [temp_message[part]],
+                            true,
+                        )
+                    end
+                end
+                push!(stack, node.children[i])
+            end
+        end
+    end
 end
 
-function felsenstein_down!(tree::FelNode, models::Vector{<:BranchModel}; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
-    felsenstein_down!(tree, x -> models, partition_list = partition_list, temp_message = temp_message)
+function felsenstein_down!(
+    tree::FelNode,
+    models::Vector{<:BranchModel};
+    partition_list = 1:length(tree.message),
+    temp_message = deepcopy(tree.message),
+)
+    felsenstein_down!(
+        tree,
+        x -> models,
+        partition_list = partition_list,
+        temp_message = temp_message,
+    )
 end
 
-function felsenstein_down!(tree::FelNode, model::BranchModel; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
-    felsenstein_down!(tree, x -> [model], partition_list = partition_list, temp_message = temp_message)
+function felsenstein_down!(
+    tree::FelNode,
+    model::BranchModel;
+    partition_list = 1:length(tree.message),
+    temp_message = deepcopy(tree.message),
+)
+    felsenstein_down!(
+        tree,
+        x -> [model],
+        partition_list = partition_list,
+        temp_message = temp_message,
+    )
 end
