@@ -23,9 +23,9 @@ ll = function(rate; m = m)
 end
 opt_rate = golden_section_maximize(ll, 0.0, 10.0, identity, 1e-11);
 plot(opt_rate*0.87:0.001:opt_rate*1.15,ll,size = (500,250),
-    xlabel = &quot;rate&quot;,ylabel = &quot;log likelihood&quot;, legend = :none)</code></pre><p><img src="../fig1.svg" alt/></p><p>Then set the model parameters to the maximum likelihood estimate, and reconstruct the ancestral states.</p><pre><code class="language-julia hljs">m.r = opt_rate
+    xlabel = &quot;rate&quot;,ylabel = &quot;log likelihood&quot;, legend = :none)</code></pre><p><img src="../figures/fig1.svg" alt/></p><p>Then set the model parameters to the maximum likelihood estimate, and reconstruct the ancestral states.</p><pre><code class="language-julia hljs">m.r = opt_rate
 #Reconstructing the marginal distributions of amino acids at internal nodes
-d = marginal_state_dict(tree,m)</code></pre><p>That&#39;s it! Everything else is for visualizing these ancestral states. We&#39;ll select a set of amino acid positions to visualize, corresponding to these two (red arrows) alignment columns:</p><p><img src="../Alignment.png" alt/></p><pre><code class="language-julia hljs">#The alignment indices we want to pay attention to in our reconstructions
+d = marginal_state_dict(tree,m)</code></pre><p>That&#39;s it! Everything else is for visualizing these ancestral states. We&#39;ll select a set of amino acid positions to visualize, corresponding to these two (red arrows) alignment columns:</p><p><img src="../figures/Alignment.png" alt/></p><pre><code class="language-julia hljs">#The alignment indices we want to pay attention to in our reconstructions
 motif_inds = [52,53]
 
 #We&#39;ll compute a confidence score for the inferred marginal state
@@ -56,14 +56,14 @@ pl = plot(phylo_tree,
     linewidth = 1.5, size = (400, 800))
 
 savefig_tweakSVG(&quot;anc_tree_with_legend.svg&quot;, plot = pl)
-pl</code></pre><p><img src="../anc_tree_with_legend.svg" alt/></p><pre><code class="language-julia hljs">#Plotting, using discrete marker colors
+pl</code></pre><p><img src="../figures/anc_tree_with_legend.svg" alt/></p><pre><code class="language-julia hljs">#Plotting, using discrete marker colors
 pl = plot(phylo_tree, treetype = :fan,
     showtips = true, tipfont = 6, marker_group = &quot;motif&quot;, palette = :seaborn_bright,
     markeralpha = 0.75, markerstrokewidth = 0, margins = 2Plots.cm, legend = :topleft,
     linewidth = 1.5, size = (800, 800))
 
 savefig_tweakSVG(&quot;anc_circ_tree_with_legend.svg&quot;, plot = pl)
-pl</code></pre><p><img src="../anc_circ_tree_with_legend.svg" alt/></p><pre><code class="language-julia hljs">#Plotting using continuous color scales, and using marker size to show uncertainty in reconstructions
+pl</code></pre><p><img src="../figures/anc_circ_tree_with_legend.svg" alt/></p><pre><code class="language-julia hljs">#Plotting using continuous color scales, and using marker size to show uncertainty in reconstructions
 color_scale = :rainbow
 pl = plot(phylo_tree, showtips = true, tipfont = 6, marker_z = &quot;motif_color&quot;, line_z = &quot;motif_color&quot;,
     markersize = 10 .* sqrt.(node_unc), linecolor = color_scale, markercolor = color_scale, markeralpha = 0.75,
@@ -78,4 +78,4 @@ for i in 1:length(all_motifs)
 end
 
 savefig_tweakSVG(&quot;anc_tree_continuous.svg&quot;, plot = pl)
-pl</code></pre><p><img src="../anc_tree_continuous.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../types/">The MolecularEvolution.jl Framework »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 8 September 2022 23:20">Thursday 8 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+pl</code></pre><p><img src="../figures/anc_tree_continuous.svg" alt/></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../types/">The MolecularEvolution.jl Framework »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 8 September 2022 23:26">Thursday 8 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
