@@ -28,7 +28,7 @@ Felsenstein's algorithm recursively computes, for each node, the probability of 
 
 ![](figures/FelsensteinRecursion.svg)
 
-At the root node, we wind up with ``P(all_observations|root_state)``, and we can compute ``P(all_observations) = \sum_{state} P(all_observations|root_state) P(root_state)``.
+At the root node, we wind up with ``P(all observations|root state)``, and we can compute ``P(all observations) = \sum_{root state} P(all observations|root state) P(root state)``.
 
 ## Technical Weeds
 
