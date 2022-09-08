@@ -39,12 +39,11 @@ function sim_tree_function(
     time = 0.0,
     mutation_rate = 1.0,
 )
-    nodes = [(FelNode(0.0, "tax$(i)"), time) for i = 1:nstart]
+    nodes = Set((node = FelNode(0.0, "tax$(i)"), time = time) for i = 1:nstart)
     for n in nodes
-        n[1].branch_params = [time]
+        n.node.branch_params = [time]
     end
     node_counter = length(nodes) + 1
-    pairs = []
     last_event = 0.0
     while length(nodes) > 1 || node_counter < add_limit
         flag = false
@@ -64,28 +63,32 @@ function sim_tree_function(
         end
         time = min(next_coal, next_add)
         if next_add < next_coal
-            push!(nodes, (FelNode(0.0, "tax$(node_counter)"), time))
-            even_time = time - last_event
+            push!(nodes, (node = FelNode(0.0, "tax$(node_counter)"), time = time))
             last_event = time
             node_counter += 1
-        else
-            if length(nodes) > 1
-                inds = sample(1:length(nodes), 2, replace = false)
-                left = nodes[inds[1]]
-                right = nodes[inds[2]]
-                new_node = (mergenodes(left[1], right[1]), time)
-                new_node[1].branch_params = [time]
-                left[1].branchlength = (time - left[2]) * mutation_rate
-                right[1].branchlength = (time - right[2]) * mutation_rate
-                deleteat!(nodes, sort(inds))
-                push!(nodes, new_node)
-                event_time = time - last_event
-                last_event = time
-                flag = true
-            end
+        elseif length(nodes) > 1
+            left, right = sample2_without_replacement(nodes)
+            merged = (node = mergenodes(left.node, right.node), time = time)
+            left.node.branchlength = (time - left.time) * mutation_rate
+            right.node.branchlength = (time - right.time) * mutation_rate
+            delete!(nodes, left)
+            delete!(nodes, right)
+            push!(nodes, merged)
+            last_event = time
+            flag = true
         end
     end
-    return nodes[1][1]
+    return pop!(nodes).node
+end
+
+function sample2_without_replacement(S)
+    @assert length(S) > 1
+    x = rand(S)
+    y = rand(S)
+    while isequal(y, x)
+        y = rand(S)
+    end
+    return x, y
 end
 
 export sim_tree
