@@ -4,9 +4,9 @@ The two key steps in phylogenetic simulation are 1) simulating the phylogeny its
 
 ## Simulating phylogenies
 
-| :warning: WARNING          |
-|:---------------------------|
-| While our `sim_tree` function seems to produce trees with the right shape, and is good enough for eg. generating varied tree shapes to evaluate different phylogeny inference schemes under, it is not yet sufficiently checked and tested for use where the details of the coalescent need to be absolutely accurate. It could, for example, be off by a constant factor somewhere. So if you plan on using this in a such a manner for a publication, please check the `sim_tree` code (and let us know). |
+!!! warning
+
+    While our `sim_tree` function seems to produce trees with the right shape, and is good enough for eg. generating varied tree shapes to evaluate different phylogeny inference schemes under, it is not yet sufficiently checked and tested for use where the details of the coalescent need to be absolutely accurate. It could, for example, be off by a constant factor somewhere. So if you plan on using this in a such a manner for a publication, please check the `sim_tree` code (and let us know).
 
 If you just need a simple tree for testing things, then you can just use:
 
