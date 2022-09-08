@@ -14,7 +14,7 @@ If you just need a simple tree for testing things, then you can just use:
 tree = sim_tree(n=100)
 tree_draw(tree, draw_labels = false, canvas_height = 5cm)
 ```
-![](constant_pop_simple.svg)
+![](figures/constant_pop_simple.svg)
 
 This has the characteristic "coalescent under constant population size" look.
 
@@ -30,10 +30,10 @@ for sampling_rate in [5.0, 0.5, 0.05, 0.005]
     display(tree_draw(tree, draw_labels = false, canvas_height = 5cm))
 end
 ```
-![](constant_Ne_samp_rate_5.0.svg)
-![](constant_Ne_samp_rate_0.5.svg)
-![](constant_Ne_samp_rate_0.05.svg)
-![](constant_Ne_samp_rate_0.005.svg)
+![](figures/constant_Ne_samp_rate_5.0.svg)
+![](figures/constant_Ne_samp_rate_0.5.svg)
+![](figures/constant_Ne_samp_rate_0.05.svg)
+![](figures/constant_Ne_samp_rate_0.005.svg)
 
 Above, this rate was just a fixed constant value, but we can also let this be a function. In this example, we'll plot the tree alongside the sampling rate function, as well as the cumulative number of samples through time.
 
@@ -50,9 +50,9 @@ xvals = 0.0:0.1:mrd
 display(plot(xvals,s, xflip = true, size = (500,250), xlabel = "time",ylabel = "sampling rate", legend = :none))
 display(plot(xvals,x -> sum(x .> sample_times), xflip = true, size = (500,250), xlabel = "time",ylabel = "cumulative samples", legend = :none))
 ```
-![](stepwise_sampling_tree.svg)
-![](stepwise_sampling_sampling_rate.svg)
-![](stepwise_sampling_cum_samps.svg)
+![](figures/stepwise_sampling_tree.svg)
+![](figures/stepwise_sampling_sampling_rate.svg)
+![](figures/stepwise_sampling_cum_samps.svg)
 
 Note how the x axis of these plots is flipped, since the leaf furtherest from the root begins at time=0, and the coalescent runs backwards, from tip to root.
 
@@ -66,8 +66,8 @@ display(tree_draw(tree, draw_labels = false, canvas_height = 7cm, canvas_width =
 root_dists,_ = MolecularEvolution.root2tip_distances(tree)
 plot(0.0:0.1:maximum(root_dists),n, xflip = true, size = (500,250), xlabel = "time",ylabel = "effective population size", legend = :none)
 ```
-![](exp_growth_tree.svg)
-![](exp_growth_popsize.svg)
+![](figures/exp_growth_tree.svg)
+![](figures/exp_growth_popsize.svg)
 
 Logistic growth, with a relatively low sampling rate, provides a reasonable model of an emerging virus that was only sampled later in its growth trajectory, such as HIV.
 
@@ -83,9 +83,9 @@ mrd = maximum(root_dists)
 sample_times = mrd .- root_dists
 plot(0.0:0.1:mrd,x -> sum(x .> sample_times), xflip = true, size = (500,250), xlabel = "time",ylabel = "cumulative samples", legend = :none)
 ```
-![](logistic_growth_tree.svg)
-![](logistic_growth_popsize.svg)
-![](logistic_growth_cum_samps.svg)
+![](figures/logistic_growth_tree.svg)
+![](figures/logistic_growth_popsize.svg)
+![](figures/logistic_growth_cum_samps.svg)
 
 How about a virus with a seasonally varying effective population size, where sampling is proportional to case counts? Between seasons, the effective population size gets so low that the next seasons clade arises from a one or two lineages in the previous season.
 
@@ -103,9 +103,9 @@ mrd = maximum(root_dists)
 sample_times = mrd .- root_dists
 plot(0.0:0.1:mrd,x -> sum(x .> sample_times), xflip = true, size = (500,250), xlabel = "time",ylabel = "cumulative samples", legend = :none)
 ```
-![](seasonal_tree.svg)
-![](seasonal_popsize.svg)
-![](seasonal_cum_samps.svg)
+![](figures/seasonal_tree.svg)
+![](figures/seasonal_popsize.svg)
+![](figures/seasonal_cum_samps.svg)
 
 Finally, the `mutation_rate` argument multiplicatively scales the branch lengths.
 

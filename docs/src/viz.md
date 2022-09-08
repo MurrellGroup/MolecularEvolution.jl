@@ -27,7 +27,7 @@ pl = plot(phylo_tree,
     linewidth = 1.5, markercolor = :darkrainbow, size = (500, 500))
 ```
 
-![](simple_plot_example.svg)
+![](figures/simple_plot_example.svg)
 
 We also offer `savefig_tweakSVG("simple_plot_example.svg", plot = pl)` for some post-processing tricks that improve the exported trees, like rounding line caps, and `values_from_phylo_tree(phylo_tree,"mu")` which can extract stored quantities in the right order for passing into eg. `markersize` options when plotting.
 

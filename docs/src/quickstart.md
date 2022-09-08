@@ -31,7 +31,7 @@ opt_rate = golden_section_maximize(ll, 0.0, 10.0, identity, 1e-11);
 plot(opt_rate*0.87:0.001:opt_rate*1.15,ll,size = (500,250),
     xlabel = "rate",ylabel = "log likelihood", legend = :none)
 ```
-![](fig1.svg)
+![](figures/fig1.svg)
 
 Then set the model parameters to the maximum likelihood estimate, and reconstruct the ancestral states.
 
@@ -43,7 +43,7 @@ d = marginal_state_dict(tree,m)
 
 That's it! Everything else is for visualizing these ancestral states. We'll select a set of amino acid positions to visualize, corresponding to these two (red arrows) alignment columns:
 
-![](Alignment.png)
+![](figures/Alignment.png)
 
 ```julia
 #The alignment indices we want to pay attention to in our reconstructions
@@ -87,7 +87,7 @@ savefig_tweakSVG("anc_tree_with_legend.svg", plot = pl)
 pl
 ```
 
-![](anc_tree_with_legend.svg)
+![](figures/anc_tree_with_legend.svg)
 
 
 ```julia
@@ -100,7 +100,7 @@ pl = plot(phylo_tree, treetype = :fan,
 savefig_tweakSVG("anc_circ_tree_with_legend.svg", plot = pl)
 pl
 ```
-![](anc_circ_tree_with_legend.svg)
+![](figures/anc_circ_tree_with_legend.svg)
 
 ```julia
 #Plotting using continuous color scales, and using marker size to show uncertainty in reconstructions
@@ -120,7 +120,7 @@ end
 savefig_tweakSVG("anc_tree_continuous.svg", plot = pl)
 pl
 ```
-![](anc_tree_continuous.svg)
+![](figures/anc_tree_continuous.svg)
 
 
 
