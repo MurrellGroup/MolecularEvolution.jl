@@ -40,9 +40,6 @@ function sim_tree_function(
     mutation_rate = 1.0,
 )
     nodes = Set((node = FelNode(0.0, "tax$(i)"), time = time) for i = 1:nstart)
-    for n in nodes
-        n.node.branch_params = [time]
-    end
     node_counter = length(nodes) + 1
     last_event = 0.0
     while length(nodes) > 1 || node_counter < add_limit
@@ -78,7 +75,9 @@ function sim_tree_function(
             flag = true
         end
     end
-    return pop!(nodes).node
+    tree = pop!(nodes).node
+    ladderize!(tree)
+    return tree
 end
 
 function sample2_without_replacement(S)
