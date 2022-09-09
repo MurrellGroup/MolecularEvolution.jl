@@ -127,4 +127,4 @@ Finally, the `mutation_rate` argument multiplicatively scales the branch lengths
 
 ## Simulating evolution over phylogenies
 
-Coming soon.
+Coming soon. 
