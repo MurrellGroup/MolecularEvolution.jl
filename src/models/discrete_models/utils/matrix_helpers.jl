@@ -84,13 +84,26 @@ const JTTmatrix = [
 ]
 
 export char_proportions
+"""
+    char_proportions(seqs, alphabet::String)
+
+Takes a vector of sequences and returns a vector of the proportion of each character across all sequences.
+An example `alphabet` argument is `MolecularEvolution.AAstring`.
+"""
 function char_proportions(seqs, alphabet::String)
-    d = proportionmap(collect(join(seqs)))
+    d = proportionmap(collect(uppercase(join(seqs))))
     chars = collect(alphabet)
-    return [get(d, c, 0.0) for c in chars]
+    v = [get(d, c, 0.0) for c in chars]
+    return v ./ sum(v)
 end
 
 export gappy_Q_from_symmetric_rate_matrix
+"""
+    gappy_Q_from_symmetric_rate_matrix(sym_mat, gap_rate, eq_freqs)
+
+Takes a symmetric rate matrix and gap rate (governing mutations to and from gaps) and returns a gappy rate matrix.
+The equilibrium frequencies are multiplied on column-wise.
+"""
 function gappy_Q_from_symmetric_rate_matrix(sym_mat, gap_rate, eq_freqs)
     l = size(sym_mat)[1]
     Q = zeros(l + 1, l + 1)
@@ -103,4 +116,95 @@ function gappy_Q_from_symmetric_rate_matrix(sym_mat, gap_rate, eq_freqs)
         Q[i, i] -= sum(Q[i, :])
     end
     return Q
+end
+
+export reversibleQ
+"""
+    reversibleQ(param_vec,eq_freqs)
+
+Takes a vector of parameters and equilibrium frequencies and returns a reversible rate matrix.
+The parameters are the upper triangle of the rate matrix, with the diagonal elements omitted,
+and the equilibrium frequencies are multiplied column-wise.
+"""
+function reversibleQ(param_vec,eq_freqs)
+    l = length(param_vec)
+    n = Int64(ceil(sqrt(l*2)))
+    if !((Int((n*(n-1))/2) == l) && (length(eq_freqs) == n))
+        @error "Cannot make reversible Q matrix from $(l) rate and $(length(eq_freqs)) frequency parameters."
+    end
+    mat = zeros(n, n)
+    param_ind = 1
+    for i = 1:n
+        for j = i+1:n
+            mat[i, j] = param_vec[param_ind] * eq_freqs[j]
+            mat[j, i] = param_vec[param_ind] * eq_freqs[i]
+            param_ind += 1
+        end
+    end
+    for i = 1:n
+        mat[i, i] = -sum(mat[i, :])
+    end
+    return mat
+end
+
+export nonreversibleQ
+"""
+    nonreversibleQ(param_vec)
+
+Takes a vector of parameters and returns a nonreversible rate matrix.
+"""
+function nonreversibleQ(param_vec)
+    l = length(param_vec)
+    n = Int(1 / 2 * (1 + sqrt(1 + 4 * l)))
+    mat = zeros(n, n)
+    param_ind = 1
+    for i = 1:n
+        for j = i+1:n
+            mat[i, j] = param_vec[param_ind]
+            param_ind += 1
+            mat[j, i] = param_vec[param_ind]
+            param_ind += 1
+        end
+    end
+    for i = 1:n
+        mat[i, i] = -sum(mat[i, :])
+    end
+    return mat
+end
+
+logistic_trans(z::Real) = one(z) / (one(z) + exp(-z))
+export unc2probvec
+"""
+    unc2probvec(v)
+
+Takes an array of N-1 unbounded values and returns an array of N values that sums to 1. Typically useful for optimizing over categorical probability distributions.
+"""
+function unc2probvec(v)
+    l = length(v)
+    remaining = 1.0
+    o = zeros(l+1)
+    for i in 1:l
+        o[i] = remaining*logistic_trans(v[i] - log(l+1-i))
+        remaining -= o[i]
+    end
+    o[end] = max(0.0,remaining)
+    return o
+end
+
+
+export matrix_for_display
+"""
+    matrix_for_display(Q,labels)
+
+Takes a numerical matrix and a vector of labels, and returns a typically mixed type matrix with the numerical values and the labels.
+This is to easily visualize rate matrices in eg. the REPL.
+"""
+function matrix_for_display(Q,labels)
+    lab = vcat([0],labels)
+    A = hcat([lab for i in 1:length(lab)]...)
+    lab[1] = ""
+    A[:,1] .= lab
+    A[1,:] .= lab
+    A[2:end,2:end] .= Q
+    return A
 end

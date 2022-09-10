@@ -118,18 +118,23 @@ function expected_subs_per_site(Q, mu)
 end
 
 #Consider relocating this.
-export simple_tree_opt!
+export tree_polish!
 """
-    simple_tree_opt!(newt,models; tol = 10^-4, verbose = 0, topology = true)
+tree_polish!(newt, models; tol = 10^-4, verbose = 1, topology = true)
 
-Takes a tree and a model function, and optimizes branch lengths and, optionally, topology.
+Takes a tree and a model function, and optimizes branch lengths and, optionally, topology. Returns final LL. Set `verbose=0` to suppress output.
+Note: This is not intended for an exhaustive tree search (which requires different heuristics), but rather to polish a tree that is already relatively close to the optimum.
 """
-function simple_tree_opt!(newt, models; tol = 10^-4, verbose = 0, topology = true)
+function tree_polish!(newt, models; tol = 10^-4, verbose = 1, topology = true)
     LL = log_likelihood!(newt, models)
     verbose > 0 && println("LL: ", LL)
     d = Inf
-    verbose > 0 && println("Optimizing BLs")
     for i = 1:50
+        if topology
+            felsenstein_down!(newt, models)
+            nni_optim!(newt, models)
+            log_likelihood!(newt, models)
+        end
         felsenstein_down!(newt, models)
         branchlength_optim!(newt, models)
         newLL = log_likelihood!(newt, models)
@@ -140,23 +145,7 @@ function simple_tree_opt!(newt, models; tol = 10^-4, verbose = 0, topology = tru
         end
         LL = newLL
     end
-    if topology
-        verbose > 0 && println("Optimizing topology and BLs")
-        for i = 1:50
-            felsenstein_down!(newt, models)
-            branchlength_optim!(newt, models)
-            log_likelihood!(newt, models)
-            felsenstein_down!(newt, models)
-            nni_optim!(newt, models)
-            newLL = log_likelihood!(newt, models)
-            verbose > 0 && println("LL: ", newLL)
-            d = newLL - LL
-            if d < tol
-                break
-            end
-            LL = newLL
-        end
-    end
+    return LL
 end
 
 
@@ -187,12 +176,11 @@ function one_hot_sample(vec::Vector{<:Real})
     return sampled
 end
 
-#Figure out a type sig for this.
 function scaled_prob_domain(vec)
     return exp.(vec .- maximum(vec))
 end
 
-#The deprecated scale!!
+#The deprecated scale!
 function scale_cols_by_vec!(mat, vec)
     rmul!(mat, Diagonal(vec))
 end
@@ -210,25 +198,6 @@ function is_one_hot(vec::Vector{T}) where {T<:Real}
 end
 function is_one_hot(arr::Array{T,2}) where {T<:Real}
     return all(is_one_hot.(collect.(eachcol(arr))))
-end
-
-function vec2Q(param_vec)
-    l = length(param_vec)
-    n = Int(1 / 2 * (1 + sqrt(1 + 4 * l)))
-    mat = zeros(n, n)
-    param_ind = 1
-    for i = 1:n
-        for j = i+1:n
-            mat[i, j] = param_vec[param_ind]
-            param_ind += 1
-            mat[j, i] = param_vec[param_ind]
-            param_ind += 1
-        end
-    end
-    for i = 1:n
-        mat[i, i] = -sum(mat[i, :])
-    end
-    return mat
 end
 
 function binarize!(tree)
