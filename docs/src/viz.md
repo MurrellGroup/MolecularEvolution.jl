@@ -58,13 +58,14 @@ img = tree_draw(tree,draw_labels = false, line_width = 0.5mm, compose_dict = com
 This can then be exported with:
 
 ```julia
-img |> SVG("piechart_tree.svg",20cm, 20cm)
+savefig_tweakSVG("piechart_tree.svg",img)
 ```
 
 ## Functions
 
 ```@docs
 get_phylo_tree
-savefig_tweakSVG
 values_from_phylo_tree
+savefig_tweakSVG
+tree_draw
 ```

@@ -2,6 +2,7 @@ using MolecularEvolution
 using Documenter
 using Phylo
 using Plots
+using Compose
 using FASTX
 
 DocMeta.setdocmeta!(

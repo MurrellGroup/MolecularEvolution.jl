@@ -1,4 +1,5 @@
 [deps]
+Compose = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FASTX = "c2308a5c-f048-11e8-3e8a-31650f418d12"
 MolecularEvolution = "9f975960-e239-4209-8aa0-3d3ad5a82892"
