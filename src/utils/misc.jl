@@ -84,6 +84,19 @@ function populate_tree!(
     end
 end
 
+
+"""
+    populate_tree!(tree::FelNode, starting_message, names, data; init_all_messages = true, tolerate_missing = 1)
+
+Takes a tree, and a `starting_message` (which will serve as the memory template for populating messages all over the tree).
+`starting_message` can be a message (ie. a vector of Partitions), but will also work with a single Partition (although the tree)
+will still be populated with a length-1 vector of Partitions. Further, as long as `obs2partition` is implemented for your Partition type,
+the leaf nodes will be populated with the data from `data`, matching the names on each leaf.
+When a leaf on the tree has a name that doesn't match anything in `names`, then if
+    tolerate_missing = 0, an error will be thrown
+    tolerate_missing = 1, a warning will be thrown, and the message will be set to the uninformative message (requires identity!(::Partition) to be defined)
+    tolerate_missing = 2, the message will be set to the uninformative message, without warnings (requires identity!(::Partition) to be defined)
+"""
 function populate_tree!(
     tree::FelNode,
     starting_partition::Partition,
@@ -240,4 +253,46 @@ function read_newick_tree(
         end
     end
     return tree
+end
+
+export write_nexus
+"""
+    write_nexus(fname::String,tree::FelNode)
+
+Writes the tree as a nexus file, suitable for opening in eg. FigTree.
+Data in the `node_data` dictionary will be converted into annotations.
+Only tested for simple `node_data` formats and types.
+"""
+function write_nexus(fname::String,tree::FelNode)
+    old_names = [n.name for n in getnodelist(tree)]
+    open(fname, "w") do f
+        s = "#NEXUS\nbegin taxa;\n\tdimensions ntax="*string(length(getleaflist(tree)))*";\n\ttaxlabels\n"        
+        write(f, s)
+        #Transform all node names...
+        for n in getnodelist(tree) 
+            name_string = n.name
+            if isdefined(n,:node_data)
+                name_string *= "[&"
+                for k in keys(n.node_data)
+                    name_string *= string(k)*"="*string(n.node_data[k])*","
+                end
+
+                name_string = name_string[1:end-1] * "]"
+                n.name = name_string
+                #...but only write leaves to taxlabels block
+            end
+            if isleafnode(n) 
+                write(f, "\t"*name_string*"\n")
+            end
+        end
+        write(f, ";\nend;\n\n")
+        write(f, "begin trees;\n")
+        write(f, "\ttree tree_1 = [&R] ")
+        write(f, newick(tree))
+        write(f, "end;")
+    end
+    #Put the node names back the way you found them
+    for (i,n) in enumerate(getnodelist(tree))
+        n.name = old_names[i]
+    end
 end

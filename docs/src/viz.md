@@ -29,7 +29,7 @@ pl = plot(phylo_tree,
 
 ![](figures/simple_plot_example.svg)
 
-We also offer `savefig_tweakSVG("simple_plot_example.svg", plot = pl)` for some post-processing tricks that improve the exported trees, like rounding line caps, and `values_from_phylo_tree(phylo_tree,"mu")` which can extract stored quantities in the right order for passing into eg. `markersize` options when plotting.
+We also offer `savefig_tweakSVG("simple_plot_example.svg", pl)` for some post-processing tricks that improve the exported trees, like rounding line caps, and `values_from_phylo_tree(phylo_tree,"mu")` which can extract stored quantities in the right order for passing into eg. `markersize` options when plotting.
 
 For a more comprehensive list of things you can do with Phylo.jl plots, please see [their documentation](https://docs.ecojulia.org/Phylo.jl/stable/man/plotting/).
 
@@ -55,8 +55,10 @@ img = tree_draw(tree,draw_labels = false, line_width = 0.5mm, compose_dict = com
 
 ![](figures/piechart_tree.svg)
 
+This can then be exported with:
+
 ```julia
-img |> SVG("piechart_tree.svg",10cm, 10cm)
+img |> SVG("piechart_tree.svg",20cm, 20cm)
 ```
 
 ## Functions

@@ -81,18 +81,17 @@ end
 export savefig_tweakSVG
 
 """
-    savefig_tweakSVG(fname; hack_bounding_box = true, new_viewbox = nothing, linecap_round = true)
+    savefig_tweakSVG(fname, plot<:Plots.Plot; hack_bounding_box = true, new_viewbox = nothing, linecap_round = true)
 
 Note: Might only work if you're using the GR backend!!
 Saves a figure created using the `Phylo` `Plots` recipe, but tweaks the SVG after export.
 `new_viewbox` needs to be an array of 4 numbers, typically starting at `[0 0 plot_width*4 plot_height*4]`
 but this lets you add shifts, in case the plot is getting cut off.
 
-eg. `savefig_tweakSVG("export.svg", new_viewbox = [-100, -100, 3000, 4500])`
+eg. `savefig_tweakSVG("export.svg",pl, new_viewbox = [-100, -100, 3000, 4500])`
 """
 function savefig_tweakSVG(
-    fname;
-    plot = nothing,
+    fname, plot::Plots.Plot;
     hack_bounding_box = true,
     new_viewbox = nothing,
     linecap_round = true,
@@ -100,11 +99,7 @@ function savefig_tweakSVG(
     if !(fname[end-3:end] == ".svg")
         fname = fname * ".svg"
     end
-    if isnothing(plot)
-        Plots.savefig(fname)
-    else
-        Plots.savefig(plot, fname)
-    end
+    Plots.savefig(plot, fname)
     s = read(fname, String)
     if hack_bounding_box
         s = replace(s, r"<clipPath.*\n.*\n.*</clipPath>" => "")

@@ -578,6 +578,11 @@ function getnewickhelper(node::AbstractTreeNode)
 end
 
 export newick
+"""
+    newick(root)
+
+Returns a newick string representation of the tree.
+"""
 function newick(node::AbstractTreeNode)
     return string(getnewickhelper(node), ";")
 end

@@ -2,6 +2,7 @@ using MolecularEvolution
 using Documenter
 using Phylo
 using Plots
+using FASTX
 
 DocMeta.setdocmeta!(
     MolecularEvolution,
@@ -25,6 +26,7 @@ makedocs(;
         "Home" => "index.md",
         "framework.md",
         "examples.md",
+        "IO.md",
         "models.md",
         "simulation.md",
         "optimization.md",

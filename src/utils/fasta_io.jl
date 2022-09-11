@@ -1,6 +1,11 @@
 import .FASTX
 
 export read_fasta
+"""
+    read_fasta(filepath::String)
+
+Reads in a fasta file and returns a tuple of (seqnames, seqs).
+"""
 function read_fasta(filepath::String)
     reader = FASTX.FASTA.Reader(open(filepath, "r"))
     fasta_in = [record for record in reader]
@@ -10,6 +15,11 @@ function read_fasta(filepath::String)
 end
 
 export write_fasta
+"""
+    write_fasta(filepath::String, sequences::Vector{String}; seq_names = nothing)
+
+Writes a fasta file from a vector of sequences, with optional seq_names.
+"""
 function write_fasta(filepath::String, sequences::Vector{String}; seq_names = nothing)
     if seq_names === nothing
         seq_names = ["S$(i)" for i = 1:length(sequences)]

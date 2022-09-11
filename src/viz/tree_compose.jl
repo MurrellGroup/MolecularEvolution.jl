@@ -1007,3 +1007,38 @@ function highlighter_tree_draw(
         ), #axis
     )
 end
+
+export savefig_tweakSVG
+"""
+    savefig_tweakSVG(fname, plot::Context; width = 10cm, height = 10cm, linecap_round = true, white_background = true)
+
+Saves a figure created using the `Compose` approach, but tweaks the SVG after export.
+
+eg. `savefig_tweakSVG("export.svg",pl)`
+"""
+function savefig_tweakSVG(
+    fname, plot::Context;
+    width = 10cm,
+    height = 10cm,
+    linecap_round = true,
+    white_background = true
+)
+    if !(fname[end-3:end] == ".svg")
+        fname = fname * ".svg"
+    end
+    plot |> SVG(fname,width,height)
+    s = read(fname, String)
+    to_inject = "style=\""
+    
+    if white_background
+        to_inject *= "background-color:white; "
+    end
+    if linecap_round
+        to_inject *= "stroke-linecap:round"  
+    end
+    to_inject *= "\""
+    s = replace(s, "<svg xmlns" => "<svg "*to_inject* "\n   xmlns")
+    open(fname, "w") do f
+        write(f, s)
+    end
+end

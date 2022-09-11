@@ -83,7 +83,7 @@ pl = plot(phylo_tree,
     markeralpha = 0.75, markerstrokewidth = 0, margins = 2Plots.cm, legend = :topleft,
     linewidth = 1.5, size = (400, 800))
 
-savefig_tweakSVG("anc_tree_with_legend.svg", plot = pl)
+savefig_tweakSVG("anc_tree_with_legend.svg", pl)
 pl
 ```
 
@@ -97,7 +97,7 @@ pl = plot(phylo_tree, treetype = :fan,
     markeralpha = 0.75, markerstrokewidth = 0, margins = 2Plots.cm, legend = :topleft,
     linewidth = 1.5, size = (800, 800))
 
-savefig_tweakSVG("anc_circ_tree_with_legend.svg", plot = pl)
+savefig_tweakSVG("anc_circ_tree_with_legend.svg", pl)
 pl
 ```
 ![](figures/anc_circ_tree_with_legend.svg)
@@ -117,7 +117,7 @@ for i in 1:length(all_motifs)
     annotate!(0.1, motif_ys[i], all_motifs[i],7)
 end
 
-savefig_tweakSVG("anc_tree_continuous.svg", plot = pl)
+savefig_tweakSVG("anc_tree_continuous.svg", pl)
 pl
 ```
 ![](figures/anc_tree_continuous.svg)
