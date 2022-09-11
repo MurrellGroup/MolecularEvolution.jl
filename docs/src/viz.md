@@ -33,5 +33,36 @@ We also offer `savefig_tweakSVG("simple_plot_example.svg", plot = pl)` for some 
 
 For a more comprehensive list of things you can do with Phylo.jl plots, please see [their documentation](https://docs.ecojulia.org/Phylo.jl/stable/man/plotting/).
 
-## Coming soon.
-Examples using Compose dependent plots.
+## Drawing trees with `Compose.jl`.
+
+The `Compose.jl` in-house tree drawing offers extensive flexibility. Here is an example that plots a pie chart representing the marginal probability of each of the 4 possible nucleotides on all nodes on the tree:
+
+```julia
+using MolecularEvolution, Compose
+
+tree = sim_tree(40,1000.0,0.005,mutation_rate = 0.001)
+model = DiagonalizedCTMC(reversibleQ(ones(6),ones(4)./4))
+internal_message_init!(tree, NucleotidePartition(ones(4)./4,1))
+sample_down!(tree,model)
+d = marginal_state_dict(tree,model);
+
+compose_dict = Dict()
+for n in getnodelist(tree)
+    compose_dict[n] = (x,y)->pie_chart(x,y,d[n][1].state[:,1],size = 0.02, opacity = 0.75)
+end
+img = tree_draw(tree,draw_labels = false, line_width = 0.5mm, compose_dict = compose_dict)
+```
+
+![](figures/piechart_tree.svg)
+
+```julia
+img |> SVG("piechart_tree.svg",10cm, 10cm)
+```
+
+## Functions
+
+```@docs
+get_phylo_tree
+savefig_tweakSVG
+values_from_phylo_tree
+```

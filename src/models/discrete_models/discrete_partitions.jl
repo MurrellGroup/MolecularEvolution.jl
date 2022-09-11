@@ -90,6 +90,12 @@ mutable struct GappyAminoAcidPartition <: DiscretePartition
     end
 end
 
+"""
+    combine!(dest::P, src::P) where P<:Partition
+
+Combines evidence from two partitions of the same type, storing the result in dest.
+Note: You should overload this for your own Partititon types.
+"""
 function combine!(dest::DiscretePartition, src::DiscretePartition)
     # Update the state
     dest.state .*= src.state

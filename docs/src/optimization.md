@@ -2,6 +2,8 @@
 
 There are two distinct kinds of optimization: "global" model parameters, and then tree branchlengths and topology. These are kept distinct because we can use algorithmic tricks to dramatically improve the performance of the latter.
 
+The example below will set up and optimize a ["Generalized Time Reversible" nucleotide substitution model](https://en.wikipedia.org/wiki/Substitution_model), where there are 6 rate parameters that govern the symmetric part of a rate matrix, and 4 nucleotide frequencies (that sum to 1, so only 3 underlying parameters).
+
 ## Optimizing model parameters
 
 We first need to construct an objective function. A very common use case involves parameterizing a rate matrix (along with all the constraints this entails) from a flat parameter vector. `reversibleQ` can be convenient here, which takes a vector of parameters and equilibrium frequencies and returns a reversible rate matrix.
@@ -47,6 +49,7 @@ initial_params = (
         pi=zeros(3) #will be transformed into 4 eq freqs
 )
 flat_initial_params, unflatten = value_flatten(initial_params) #See ParameterHandling.jl docs
+num_params = length(flat_initial_params)
 
 #Set up a function that builds a model from these parameters
 function build_model_vec(params)
@@ -61,14 +64,11 @@ function objective(params::NamedTuple; tree = tree)
     tree.parent_message[1].state .= unc2probvec(params.pi)
     return -log_likelihood!(tree,build_model_vec(params)) #Note, negative of LL, because minimization
 end
-
-num_params = length(flat_initial_params)
 ```
 
 Then we'll set up an optimizer from `NLOpt`. See [this discussion](https://discourse.julialang.org/t/optim-what-optimiser-is-best-if-your-gradient-computation-is-slow/5487/12) and [this exploration](https://github.com/SciML/DiffEqParamEstim.jl/blob/master/test/lorenz_true_test.jl) of optimizers.
 
 ```julia
-#See: 
 opt = Opt(:LN_BOBYQA, num_params)
 #Note: NLopt requires a function that returns a gradient, even for gradient free methods, hence (x,y)->...
 min_objective!(opt, (x,y) -> (objective ∘ unflatten)(x)) #See ParameterHandling.jl docs for objective ∘ unflatten explanation
@@ -79,20 +79,28 @@ xtol_rel!(opt, 1e-12)
 _,mini,_ = NLopt.optimize(opt, flat_initial_params)
 final_params = unflatten(mini)
 
-optimzed_model = build_model_vec(final_params)
-println("Opt LL:",log_likelihood!(tree,optimzed_model))
+optimized_model = build_model_vec(final_params)
+println("Opt LL:",log_likelihood!(tree,optimized_model))
+```
+```
+Opt LL:-3783.226756522292
 ```
 
 We can view the optimized parameter values:
 
 ```
-@show final_params.rates
+println("Rates: ", round.(final_params.rates,sigdigits = 4))
+println("Pi:", round.(unc2probvec(final_params.pi),sigdigits = 4))
+```
+```
+Rates: [1.124, 2.102, 1.075, 0.9802, 1.605, 0.5536]
+Pi:[0.2796, 0.2192, 0.235, 0.2662]
 ```
 
 Or the entire optimized rate matrix:
 
 ```julia
-matrix_for_display(optimzed_model.Q,['A','C','G','T'])
+matrix_for_display(optimized_model.Q,['A','C','G','T'])
 ```
 ```
 Opt LL:-3783.226756522292
@@ -104,5 +112,51 @@ Opt LL:-3783.226756522292
  'T'   0.300663   0.35183    0.130093  -0.782586
 ```
 
+## Optimizing the tree topology and branch lengths
 
+With a tree and a model, we can also optimize the branch lengths and search, by [nearest neighbour interchange](https://en.wikipedia.org/wiki/Tree_rearrangement) for changes to the tree that improve the likelihood. Individually, these are performed by `nni_optim!` and `branchlength_optim!`, which need to have `felsenstein!` and `felsenstein_down!` called beforehand, but this is all bundled into:
 
+```julia
+tree_polish!(tree, optimized_model)
+```
+```
+LL: -3783.226756522292
+LL: -3782.345818028071
+LL: -3782.3231632207567
+LL: -3782.3211724011044
+LL: -3782.321068684831
+LL: -3782.3210622627776
+```
+
+And just to convince you this works, we can perturb the branch lengths, and see how the likelihood improves:
+
+```julia
+for n in getnodelist(tree)
+    n.branchlength *= (rand()+0.5)
+end
+tree_polish!(tree, optimzed_model)
+```
+
+```
+LL: -3805.4140940138795
+LL: -3782.884883999107
+LL: -3782.351780962518
+LL: -3782.322906364547
+LL: -3782.321183009534
+LL: -3782.3210398963506
+LL: -3782.3210271696703
+```
+
+!!! warning
+
+    `tree_polish!` probably won't find a good tree from a completely start. Different tree search heuristics are required for that.
+
+## Functions
+
+```@docs
+reversibleQ
+unc2probvec
+branchlength_optim!
+nni_optim!
+tree_polish!
+```

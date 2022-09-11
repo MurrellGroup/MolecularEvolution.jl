@@ -67,6 +67,13 @@ gappy_nuc_dict['S'] = [0.0, 1.0, 1.0, 0.0, 0.0]
 gappy_nuc_dict['N'] = [1.0, 1.0, 1.0, 1.0, 0.0]
 gappy_nuc_dict['-'] = [0.0, 0.0, 0.0, 0.0, 1.0]
 
+"""
+    partition2obs(part::Partition)
+
+Extracts the most likely state from a Partition, transforming it into a convenient type.
+For example, a NucleotidePartition will be transformed into a nucleotide sequence of type String.
+Note: You should overload this for your own Partititon types.
+"""
 function partition2obs(part::DiscretePartition, code::String)
     #NOTE: NEED TO HANDLE CASES WHERE TWO STATES ARE EQUAL. RETURN AMBIG CHAR? MAYBE CUSTOM BEHAVIOR FOR IUPAC HERE.
     code_arr = collect(code) #Need to compare this to just indexing into the string?

@@ -1,5 +1,7 @@
 using MolecularEvolution
 using Documenter
+using Phylo
+using Plots
 
 DocMeta.setdocmeta!(
     MolecularEvolution,
@@ -21,8 +23,9 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "quickstart.md",
-        "types.md",
+        "framework.md",
+        "examples.md",
+        "models.md",
         "simulation.md",
         "optimization.md",
         "ancestors.md",

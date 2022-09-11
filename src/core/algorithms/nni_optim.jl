@@ -225,7 +225,6 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize tree topology with all models).
 acc_rule allows you to specify a function that takes the current and proposed log likelihoods, and if true is returned the move is accepted.
 """
-
 function nni_optim!(
     tree::FelNode,
     models;

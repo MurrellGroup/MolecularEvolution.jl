@@ -4,7 +4,7 @@ The two key steps in phylogenetic simulation are 1) simulating the phylogeny its
 
 ## Simulating phylogenies
 
-!!! danger
+!!! warning
 
     While our `sim_tree` function seems to produce trees with the right shape, and is good enough for eg. generating varied tree shapes to evaluate different phylogeny inference schemes under, it is not yet sufficiently checked and tested for use where the details of the coalescent need to be absolutely accurate. It could, for example, be off by a constant factor somewhere. So if you plan on using this in a such a manner for a publication, please check the `sim_tree` code (and let us know).
 
@@ -127,4 +127,83 @@ Finally, the `mutation_rate` argument multiplicatively scales the branch lengths
 
 ## Simulating evolution over phylogenies
 
-Coming soon. 
+We'll begin by simulating a tree, like the last example:
+
+```julia
+using MolecularEvolution, FASTX, Phylo, Plots, CSV, DataFrames
+
+n(t) = exp(sin(t/10) * 2.0 + 4)
+s(t) = n(t)/100
+tree = sim_tree(500,n,s, mutation_rate = 0.005)
+```
+
+If we need to open this tree in an external program, we can extract the Newick string representing this tree, and write it to a file:
+
+```julia
+newick_string = newick(tree)
+open("flu_sim.tre","w") do io
+   println(io,newick_string)
+end
+```
+
+Then we can set up a model. In this case, it'll be a combination of a nucleotide model of sequence evolution and Brownian motion over a continuous character.
+
+```julia
+nuc_freqs = [0.2,0.3,0.3,0.2]
+nuc_rates = [1.0,2.0,1.0,1.0,1.6,0.5]
+nuc_model = DiagonalizedCTMC(reversibleQ(nuc_rates,nuc_freqs))
+bm_model = BrownianMotion(0.0,1.0)
+```
+
+As usual, we set up the `Partition` structure, and load this onto our tree:
+
+```julia
+message_template = [NucleotidePartition(nuc_freqs,300),GaussianPartition()]
+internal_message_init!(tree, message_template)
+```
+
+Then we sample data under our model:
+
+```julia
+sample_down!(tree, [nuc_model,bm_model])
+```
+
+We'll can visualize the Brownian component of the simulation by loading it into the `node_dict`, and converting to a `Phylo.jl` tree.
+
+```julia
+for n in getnodelist(tree)
+    n.node_data = Dict(["mu"=>n.message[2].mean])
+end
+phylo_tree = get_phylo_tree(tree)
+plot(phylo_tree, showtips = false, line_z = "mu", colorbar = :none,
+    linecolor = :darkrainbow, linewidth = 1.0, size = (600, 600))
+```
+![](figures/flu_tree_bm.svg)
+
+We can write the simulated data, including sequences and continuous characters, to a CSV:
+
+```julia
+df = DataFrame()
+df.names = [n.name for n in getleaflist(tree)]
+df.seqs = [partition2obs(n.message[1]) for n in getleaflist(tree)]
+df.mu = [partition2obs(n.message[2]) for n in getleaflist(tree)]
+CSV.write("flu_sim_seq_and_bm.csv",df)
+```
+
+Or we could export just the sequences as .fasta
+
+```julia
+write_fasta("flu_sim_seq_and_bm.fasta",df.seqs,seq_names = df.names)
+```
+
+Which will look something like this, when opened in [AliView](https://ormbunkar.se/aliview/)
+
+![](figures/flu_sim_alignment.png)
+
+## Functions
+
+```@docs
+sim_tree
+sample_down!
+partition2obs
+```

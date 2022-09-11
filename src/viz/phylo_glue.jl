@@ -41,6 +41,12 @@ end
 
 export get_phylo_tree
 
+"""
+    get_phylo_tree(molev_root::FelNode; data_function = (x -> Tuple{String,Float64}[]))
+
+Converts a FelNode tree to a Phylo tree. The `data_function` should return a list of tuples of the form (key, value) to be added to the Phylo tree `data` Dictionary.
+Any key/value pairs on the FelNode `node_data` Dict will also be added to the Phylo tree.
+"""
 function get_phylo_tree(molev_root::FelNode; data_function = (x -> Tuple{String,Float64}[]))
     phylo_tree = Phylo.RootedTree()
     node_counter = 1
@@ -61,6 +67,7 @@ function get_phylo_tree(molev_root::FelNode; data_function = (x -> Tuple{String,
 end
 
 export values_from_phylo_tree
+
 """
     values_from_phylo_tree(phylo_tree, key)
 
@@ -72,15 +79,16 @@ function values_from_phylo_tree(phylo_tree, key)
 end
 
 export savefig_tweakSVG
+
 """
     savefig_tweakSVG(fname; hack_bounding_box = true, new_viewbox = nothing, linecap_round = true)
 
 Note: Might only work if you're using the GR backend!!
-Saves a figure created using the Phylo Plots recipe, but tweaks the SVG after export.
-new_viewbox needs to be an array of 4 numbers, typically starting at [0 0 plot_width*4 plot_height*4]
+Saves a figure created using the `Phylo` `Plots` recipe, but tweaks the SVG after export.
+`new_viewbox` needs to be an array of 4 numbers, typically starting at `[0 0 plot_width*4 plot_height*4]`
 but this lets you add shifts, in case the plot is getting cut off.
 
-eg. savefig_tweakSVG("export.svg", new_viewbox = [-100, -100, 3000, 4500])
+eg. `savefig_tweakSVG("export.svg", new_viewbox = [-100, -100, 3000, 4500])`
 """
 function savefig_tweakSVG(
     fname;

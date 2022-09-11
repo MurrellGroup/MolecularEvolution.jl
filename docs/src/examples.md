@@ -1,4 +1,4 @@
-# Quick Start
+# Examples
 
 ## Example 1: Amino acid ancestral reconstruction and visualization
 
