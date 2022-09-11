@@ -30,11 +30,15 @@ Felsenstein's algorithm recursively computes, for each node, the probability of 
 
 At the root node, we wind up with ``P(O_{all}|R)``, where ``R`` is the state at the root, and we can compute ``P(O_{all}) = \sum_{R} P(O_{all}|R) P(R)``.
 
-## Technical Weeds
+## Technicalities
 
-Scaling constants.
+### Scaling constants
 
-Root state.
+Coming soon.
+
+### Root state
+
+Coming soon.
 
 ## Functions
 
