@@ -485,9 +485,9 @@ Returns logical indices of the siblings in the parent's child's vector.
 """
 function sibling_inds(node::AbstractTreeNode)
     if isroot(node)
-        return [false]
+        return falses(1)
     else
-        return Ref(node) .!= node.parent.children
+        return (node,) .!= node.parent.children
     end
 end
 

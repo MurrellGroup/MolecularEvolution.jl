@@ -18,8 +18,6 @@ mutable struct FelNode <: AbstractTreeNode
     FelNode() = FelNode(0.0, "")
 end
 
-broadcastable(x::FelNode) = Ref(x) #???
-
 function Base.show(io::IO, z::FelNode)
     println(io, "FelNode")
     #println(io, "Type: ", typeof(z.branchlength))
