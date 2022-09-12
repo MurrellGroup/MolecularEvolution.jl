@@ -102,9 +102,11 @@ function combine!(dest::DiscretePartition, src::DiscretePartition)
 
     # Re-scaling to prevent underflow
     dest.scaling .+= src.scaling
-    new_scaling = 1 ./ sum(dest.state, dims = 1)[:]
-    scale_cols_by_vec!(dest.state, new_scaling)
-    dest.scaling .+= -log.(new_scaling)
+    @views for j in axes(dest.state, 2)
+        scal = sum(dest.state[:,j])
+        dest.state[:,j] ./= scal
+        dest.scaling[j] += log(scal)
+    end
 end
 
 function identity!(dest::DiscretePartition)
