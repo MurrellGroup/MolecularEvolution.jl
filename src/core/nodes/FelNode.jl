@@ -62,10 +62,10 @@ end
 function internal_message_init!(tree::FelNode, empty_message::Vector{<:Partition})
     for node in getnodelist(tree)
         if !isleafnode(node)
-            node.child_messages = [deepcopy(empty_message) for i in node.children]
+            node.child_messages = [copymessage(empty_message) for _ in node.children]
         end
-        node.message = deepcopy(empty_message)
-        node.parent_message = deepcopy(empty_message)
+        node.message = copymessage(empty_message)
+        node.parent_message = copymessage(empty_message)
     end
 end
 
