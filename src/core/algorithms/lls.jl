@@ -15,10 +15,10 @@ function log_likelihood(tree::FelNode, model_func; partition_list = 1:length(tre
     temp_message = deepcopy(tree.parent_message[partition_list])
     models = model_func(tree)
     for (p, part) in enumerate(partition_list)
-        if tree.branchlength > 0.0 #Consider this - requires a (reasonable) assumption about model behavior.
+        #if tree.branchlength > 0.0 #Consider this - requires a (reasonable) assumption about model behavior.
+        #Note: This reasonable assumption was violated by the SWM partition, which uses "forward!" to set the partition weights from the model.
             forward!(temp_message[p], tree.parent_message[part], models[part], tree)
-        end
-        #BM: I think lots of code will break if eg. partition list = [2]
+        #end
         combine!(temp_message[p], tree.message[part])
     end
     return sum(total_LL.(temp_message))
@@ -34,6 +34,7 @@ partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over
 """
 log_likelihood(tree::FelNode, model::BranchModel; partition_list = 1:length(tree.message)) =
     log_likelihood(tree, x -> [model], partition_list = partition_list)
+    
 log_likelihood(
     tree::FelNode,
     models::Vector{<:BranchModel};

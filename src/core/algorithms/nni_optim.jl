@@ -218,7 +218,7 @@ end
 """
     nni_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
 
-Uses golden section search to optimize all branches recursively, maintaining the integrity of the messages.
+Considers local branch swaps for all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
 models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.

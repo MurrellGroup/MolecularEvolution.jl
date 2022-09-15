@@ -19,7 +19,8 @@ const eps = 1e-15
 
 
 abstract type Partition end
-abstract type DiscretePartition <: Partition end
+abstract type MultiSitePartition <: Partition end #Requires partition.scaling to be an array of log likelihoods, one per site
+abstract type DiscretePartition <: MultiSitePartition end #For convenience, all our DiscretePartitions are MultiSite
 abstract type ContinuousPartition <: Partition end
 
 abstract type BranchModel end
@@ -140,3 +141,6 @@ end
 #   - How would we represent this data structure. It seems like a DAG over trees, or something?
 #   c. Sample ancestral states conditioned on the endpoint - requires "sample" of partition.
 #These should all have consistent behavior in terms of what gets returned
+
+#Personal reading list:
+#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5395464/

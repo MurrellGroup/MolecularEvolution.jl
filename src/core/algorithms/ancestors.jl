@@ -155,8 +155,15 @@ function dependent_reconstruction!(
 end
 
 
+#BM: This algorithm starts from the standard felsenstein upward pass, and then selects the most likely state at the root.
+#Then, conditioned on that state, and the upward pass of the children of the root, it selects the max of each child.
+#This is something like: the maximum likelihood of internal node states, conditioned on the maximum marginal likelihood of the root state.
+#An interesting case to think about is when you're rooted on a leaf node, so the max marginal and max joint at the root are identical.
+#Then probs from that node will always incur a "max_partition!" call after combining with the upward pass to that node.
+#So where does that leave us?
+
 #For joint max reconstructions
-reconstruct_max_joint_node!(node_message_dict, node, model_array, partition_list) =
+reconstruct_cascading_max_node!(node_message_dict, node, model_array, partition_list) =
     dependent_reconstruction!(
         node_message_dict,
         node,
@@ -164,15 +171,16 @@ reconstruct_max_joint_node!(node_message_dict, node, model_array, partition_list
         partition_list,
         f! = max_partition!,
     )
-export max_joint_state_dict
+export cascading_max_state_dict
 """
-    max_joint_state_dict(tree::FelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{FelNode,Vector{Partition}}())
+    cascading_max_state_dict(tree::FelNode, model; partition_list = 1:length(tree.message), node_message_dict = Dict{FelNode,Vector{Partition}}())
 
 Takes in a tree and a model (which can be a single model, an array of models, or a function that maps FelNode->Array{<:BranchModel}), and
-returns a dictionary mapping nodes to their joint maximum likelihood reconstructions (ie. state, such that P(state|all observations,model) is maximized).
+returns a dictionary mapping nodes to their inferred ancestors under the following scheme: the state that maximizes the marginal likelihood is selected at the root,
+and then, for each node, the maximum likelihood state is selected conditioned on the maximized state of the parent node and the observations of all descendents.
 A subset of partitions can be specified by partition_list, and a dictionary can be passed in to avoid re-allocating memory, in case you're running this over and over.
 """
-function max_joint_state_dict(
+function cascading_max_state_dict(
     tree::FelNode,
     model;
     partition_list = 1:length(tree.message),
@@ -180,7 +188,7 @@ function max_joint_state_dict(
 )
     return depth_first_reconstruction(
         tree,
-        reconstruct_max_joint_node!,
+        reconstruct_cascading_max_node!,
         model,
         partition_list = partition_list,
         node_message_dict = node_message_dict,

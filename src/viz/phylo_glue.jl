@@ -81,7 +81,7 @@ end
 export savefig_tweakSVG
 
 """
-    savefig_tweakSVG(fname, plot<:Plots.Plot; hack_bounding_box = true, new_viewbox = nothing, linecap_round = true)
+    savefig_tweakSVG(fname, plot::Plots.Plot; hack_bounding_box = true, new_viewbox = nothing, linecap_round = true)
 
 Note: Might only work if you're using the GR backend!!
 Saves a figure created using the `Phylo` `Plots` recipe, but tweaks the SVG after export.

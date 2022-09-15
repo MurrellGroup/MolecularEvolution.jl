@@ -125,3 +125,138 @@ pl
 
 
 
+## Example 2: GTR+Gamma
+
+For site-to-site "random effects" rate variation, such as under the GTR+Gamma model, we need to use a "Site-Wise Mixture" model, or `SWMModel` with its `SWMPartition`.
+
+```julia
+#Set up a function that will return a set of rates that will, when equally weighted, VERY coarsely approx a Gamma distribution
+function equiprobable_gamma_grids(s,k)
+    grids = quantile(Gamma(s,1/s),1/2k:1/k:(1-1/2k))
+    grids ./ mean(grids)
+end
+
+#Read in seqs and tree, and populate the three  NucleotidePartitions
+seqnames, seqs = read_fasta("Data/MusNuc_IGHV.fasta")
+tree = read_newick_tree("Data/MusNuc_IGHV.tre")
+
+#Set up the Partition that will be replicated in the SWMModel
+initial_partition = NucleotidePartition(length(seqs[1]))
+
+#To be able to use unconstrained optimization, we use `ParameterHandling.jl`
+initial_params = (
+        rates=positive(ones(6)),
+        gam_shape=positive(1.0),
+        pi=zeros(3)
+)
+flat_initial_params, unflatten = value_flatten(initial_params)
+num_params = length(flat_initial_params)
+
+#Setting up the Site-Wise Mixture Partition:
+#Note: this constructor sets the weights of all categories to 1/rate_cats
+#That is fine for our equi-probable category model, but this will need to be different for other models.
+rate_cats = 5
+REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,rate_cats)
+populate_tree!(tree,REL_partition,seqnames,seqs)
+
+function build_model_vec(params; cats = rate_cats)
+    r_vals = equiprobable_gamma_grids(params.gam_shape,cats)
+    pi = unc2probvec(params.pi)
+    return MolecularEvolution.SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),r_vals)
+end
+
+function objective(params::NamedTuple; tree = tree)
+    v = unc2probvec(params.pi)
+    #Root freqs need to be set over all component partitions
+    for p in tree.parent_message[1].parts
+        p.state .= v
+    end
+    return -log_likelihood!(tree,build_model_vec(params))
+end
+
+opt = Opt(:LN_BOBYQA, num_params)
+
+min_objective!(opt, (x,y) -> (objective ∘ unflatten)(x))
+lower_bounds!(opt, [-5.0 for i in 1:num_params])
+upper_bounds!(opt, [5.0 for i in 1:num_params])
+xtol_rel!(opt, 1e-12)
+score,mini,did_it_work = NLopt.optimize(opt, flat_initial_params)
+
+final_params = unflatten(mini)
+optimized_model = build_model_vec(final_params)
+LL = log_likelihood!(tree,optimized_model)
+println(did_it_work)
+println("Opt LL:",LL)
+```
+```
+SUCCESS
+Opt LL:-3728.4761606135307
+```
+Other functions also work with these kinds of random-effects site-wise mixture models:
+```julia
+tree_polish!(tree,optimized_model)
+```
+```
+LL: -3728.4761606135307
+LL: -3728.1316616075173
+LL: -3728.121005993758
+LL: -3728.1202243978914
+LL: -3728.1201348447107
+```
+
+Sometimes we might want the rate values for each category to stay fixed, but optimize their weights:
+```julia
+#Using rate categories with fixed values
+fixed_cats = [0.00001,0.33,1.0,3.0,9.0]
+
+seqnames, seqs = read_fasta("Data/MusNuc_IGHV.fasta")
+tree = read_newick_tree("Data/MusNuc_IGHV.tre")
+
+initial_partition = NucleotidePartition(length(seqs[1]))
+
+initial_params = (
+        rates=positive(ones(6)),
+        cat_weights=zeros(length(fixed_cats)-1), #Category weights
+        pi=zeros(3) #Nuc freqs
+)
+flat_initial_params, unflatten = value_flatten(initial_params)
+num_params = length(flat_initial_params)
+
+REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
+populate_tree!(tree,REL_partition,seqnames,seqs)
+
+function build_model_vec(params; cats = fixed_cats)
+    cat_weights = unc2probvec(params.cat_weights)
+    pi = unc2probvec(params.pi)
+    m = MolecularEvolution.SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),cats)
+    m.weights .= cat_weights
+    return m
+end
+
+function objective(params::NamedTuple; tree = tree)
+    v = unc2probvec(params.pi)
+    for p in tree.parent_message[1].parts
+        p.state .= v
+    end
+    return -log_likelihood!(tree,build_model_vec(params))
+end
+
+opt = Opt(:LN_BOBYQA, num_params)
+
+min_objective!(opt, (x,y) -> (objective ∘ unflatten)(x))
+lower_bounds!(opt, [-5.0 for i in 1:num_params])
+upper_bounds!(opt, [5.0 for i in 1:num_params])
+xtol_rel!(opt, 1e-12)
+score,mini,did_it_work = NLopt.optimize(opt, flat_initial_params)
+
+final_params = unflatten(mini)
+optimized_model = build_model_vec(final_params)
+LL = log_likelihood!(tree,optimized_model)
+
+println(did_it_work)
+println("Opt LL:",LL)
+```
+```
+SUCCESS
+Opt LL:-3719.6290948420706
+```

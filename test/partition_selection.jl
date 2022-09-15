@@ -21,11 +21,11 @@ begin
     d = marginal_state_dict(tree, bm_models, partition_list = [2])
     @test typeof.(first(d)[2]) == typeof.(tree.message[[2]])
 
-    d = max_joint_state_dict(tree, bm_models)
+    d = cascading_max_state_dict(tree, bm_models)
     @test typeof.(first(d)[2]) == typeof.(tree.message)
-    d = max_joint_state_dict(tree, bm_models, partition_list = [1])
+    d = cascading_max_state_dict(tree, bm_models, partition_list = [1])
     @test typeof.(first(d)[2]) == typeof.(tree.message[[1]])
-    d = max_joint_state_dict(tree, bm_models, partition_list = [2])
+    d = cascading_max_state_dict(tree, bm_models, partition_list = [2])
     @test typeof.(first(d)[2]) == typeof.(tree.message[[2]])
 
     d = endpoint_conditioned_sample_state_dict(tree, bm_models)

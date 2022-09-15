@@ -50,11 +50,12 @@ Inferred internal means (±95% intervals):
 0.571±0.147 - true value: 0.589
 ```
 
-We can also find the values of the state for each node that are jointly most likely (in the case of Brownian motion, these just happen to be the same as the marginal means, but that isn't the case for other models):
+We can also find the values of the state for each node under the following scheme: the state that maximizes the marginal likelihood is selected at the root,
+and then, for each node, the maximum likelihood state is selected conditioned on the (maximized) state of the parent node and the observations of all descendents. This ensures that the combination of ancestral states is, jointly, high likelihood. In the case of Brownian motion, these just happen to be the same as the marginal means, but that isn't necessarily the case for other models:
 
 ```julia
-d = max_joint_state_dict(tree,bm_model)
-println("Inferred most likely (jointly) internal values:")
+d = cascading_max_state_dict(tree,bm_model)
+println("Inferred internal values:")
 for n in getnonleaflist(tree)
     m = d[n][1].mean
     println(r(m), " - true value: ",r(n.message[1].mean))
@@ -100,7 +101,7 @@ Sampled states, conditioned on observed leaves:
 
 ```@docs
 marginal_state_dict
-max_joint_state_dict
+cascading_max_state_dict
 endpoint_conditioned_sample_state_dict
 ```
 
