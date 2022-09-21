@@ -108,6 +108,24 @@ function weighted_prob_grid(part::SWMPartition{PType}) where {PType <: MultiSite
     return LL_grid, maxis
 end
 
+export SWM_prob_grid
+#Very duplicatey. Could replace the above (which is used in a few core calculations) with this, and then taking on the weights after.
+"""
+    SWM_prob_grid(part::SWMPartition{PType}) where {PType <: MultiSitePartition}
+
+Returns a matrix of probabilities for each site, for each model (in the probability domain - not logged!) as well as the log probability offsets
+"""
+function SWM_prob_grid(part::SWMPartition{PType}) where {PType <: MultiSitePartition}
+    LL_grid = zeros(part.models, part.sites)
+    for i in 1:part.models
+        LL_grid[i,:] .= site_LLs(part.parts[i])
+    end
+    maxis = maximum(LL_grid, dims = 1)[:]
+    LL_grid .-= maxis'
+    LL_grid .= exp.(LL_grid)
+    return LL_grid, maxis
+end
+
 #This calculates the weights for each component, given the log likelihoods of each component at each site.
 #And then samples which partition to use from these.
 #And sets the scaling consts for each partition to 0 if the site was picked, and -Inf if not picked.

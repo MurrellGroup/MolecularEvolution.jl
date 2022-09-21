@@ -260,3 +260,91 @@ println("Opt LL:",LL)
 SUCCESS
 Opt LL:-3719.6290948420706
 ```
+
+When you have a Site-Wise Mixture (ie. REL) model, the category weights can be handled "outside" of the main likelihood calculations. This means that they can be optimized very quickly, within an objective function that is optimizing over the other parameters. The following example uses an EM approach to do this:
+
+```julia
+using Distributions, FASTX, ParameterHandling, NLopt
+
+#Using rate categories with fixed values
+fixed_cats = [(i/5)^2 for i in 1:12]
+
+seqnames, seqs = read_fasta("Data/MusNuc_IGHV.fasta")
+tree = read_newick_tree("Data/MusNuc_IGHV.tre")
+
+initial_partition = NucleotidePartition(length(seqs[1]))
+
+initial_params = (
+        rates=positive(ones(6)),
+        pi=zeros(3) #Nuc freqs
+)
+flat_initial_params, unflatten = value_flatten(initial_params)
+num_params = length(flat_initial_params)
+
+REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
+populate_tree!(tree,REL_partition,seqnames,seqs)
+
+function build_model_vec(params; cats = fixed_cats)
+    pi = unc2probvec(params.pi)
+    m = SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),cats)
+    return m
+end
+
+#LL for a mixture when the grid of probabilities is pre-computed
+grid_ll(v,g) = sum(log.(sum((v./sum(v)) .* g,dims = 1)))
+
+#Note: we can get away with relatively few EM iterations within the optimization cycle (in this example at least)
+function opt_weights_and_LL(temp_part::SWMPartition{PType}; iters = 25) where {PType <: MolecularEvolution.MultiSitePartition}    
+    g,scals = SWM_prob_grid(temp_part) 
+    l = size(g)[1]
+    #We can optimize the category weights without re-computing felsenstein
+    #So it can make sense to do so within the optimization function
+    #Which means you don't need to optimize over as many parameters
+    θ = weightEM(g,ones(l)./l, iters = iters)
+    LL_optimizing_over_weights = grid_ll(θ,g) + sum(scals)
+    return θ,LL_optimizing_over_weights
+end
+
+function objective(params::NamedTuple; tree = tree)
+    v = unc2probvec(params.pi)
+    for p in tree.parent_message[1].parts
+        p.state .= v
+    end
+    felsenstein!(tree,build_model_vec(params))
+    #Optim inside optim
+    #We first need to handle the merge of the parent and root partitions - usually handled for us magically!
+    #Be careful: this example is hard-coded for a single partition
+    temp_part = deepcopy(tree.parent_message[1])
+    combine!(temp_part, tree.message[1])
+    θ,LL = opt_weights_and_LL(temp_part)
+    return -LL
+end
+
+opt = Opt(:LN_BOBYQA, num_params)
+
+min_objective!(opt, (x,y) -> (objective ∘ unflatten)(x))
+lower_bounds!(opt, [-5.0 for i in 1:num_params])
+upper_bounds!(opt, [5.0 for i in 1:num_params])
+xtol_rel!(opt, 1e-12)
+@time score,mini,did_it_work = NLopt.optimize(opt, flat_initial_params)
+
+final_params = unflatten(mini)
+optimized_model = build_model_vec(final_params)
+
+felsenstein!(tree,optimized_model)
+temp_part = deepcopy(tree.parent_message[1])
+combine!(temp_part, tree.message[1])
+θ,_ = opt_weights_and_LL(temp_part, iters = 1000) #polish weights for final pass - quick
+optimized_model.weights .= θ
+LL = log_likelihood!(tree,optimized_model)
+
+println(did_it_work, ":", score)
+println("Opt LL:",LL)
+```
+```
+3.932150 seconds (2.38 M allocations: 2.378 GiB, 10.78% gc time, 3.28% compilation time: 7% of which was recompilation)
+SUCCESS:3720.1347720900067
+Opt LL:-3719.4808937732614
+```
+
+This can be dramatically faster than trying to directly optimize over category weights when the number of categories grows. The above example took 140s with the direct approach.

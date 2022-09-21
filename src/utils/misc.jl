@@ -36,6 +36,27 @@ function scrape_figtree_colored_nexus(fname; custom_labels = String[])
 end
 =#
 
+export weightEM
+"""
+    weightEM(con_lik_matrix::Array{Float64,2}, θ; conc = 0.0, iters = 500)
+
+Takes a conditional likelihood matrix (#categories-by-sites) and a starting frequency vector θ (length(θ) = #categories) and
+optimizes θ (using Expectation Maximization. Maybe.). If conc > 0 then this gives something like variational bayes behavior for LDA. Maybe.
+"""
+function weightEM(con_lik_matrix::Array{Float64,2}, θ; conc = 0.0, iters = 500)
+    l,num_sites = size(con_lik_matrix)
+    ϕ = copy(con_lik_matrix)
+    @views for cyc in 1:iters
+        for i in 1:num_sites
+            ϕ[:,i] .= con_lik_matrix[:,i] .* θ
+            ϕ[:,i] .= ϕ[:,i] ./ sum(ϕ[:,i])
+        end
+        θ .= sum(ϕ, dims = 2)[:] .+ conc
+        θ ./= sum(θ)
+    end
+    return θ
+end
+
 function populate_message!(message::Vector{<:Partition}, data)
     if length(message) == 1
         obs2partition!(message[1], data)

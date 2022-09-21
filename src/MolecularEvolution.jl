@@ -75,6 +75,7 @@ export
     GappyNucleotidePartition,
     GappyAminoAcidPartition,
     CodonPartition,
+    MultiSitePartition,
 
     #Models
     DiscreteStateModel,
