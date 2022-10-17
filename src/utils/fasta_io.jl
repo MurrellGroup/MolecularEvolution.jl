@@ -11,7 +11,7 @@ function read_fasta(filepath::String)
     fasta_in = [record for record in reader]
     close(reader)
     return [String(FASTX.FASTA.identifier(rec)) for rec in fasta_in],
-    [String(FASTX.FASTA.sequence(rec)) for rec in fasta_in]
+    [uppercase(String(FASTX.FASTA.sequence(rec))) for rec in fasta_in]
 end
 
 export write_fasta

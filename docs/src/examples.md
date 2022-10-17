@@ -348,3 +348,156 @@ Opt LL:-3719.4808937732614
 ```
 
 This can be dramatically faster than trying to directly optimize over category weights when the number of categories grows. The above example took 140s with the direct approach.
+
+
+## Example 3: FUBAR
+This example reads codon sequences from [this FASTA file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/Flu.fasta), and a phylogeny from [this Newick tree file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/Flu.tre), and implements [`FUBAR`](https://academic.oup.com/mbe/article/30/5/1196/998247).
+
+```julia
+using MolecularEvolution, FASTX, ParameterHandling, NLopt, Plots
+
+#Read in seqs and tree
+seqnames, seqs = read_fasta("Data/Flu.fasta")
+tree = read_newick_tree("Data/Flu.tre")
+
+#Count F3x4 frequencies from the seqs, and estimate codon freqs from this
+f3x4 = MolecularEvolution.count_F3x4(seqs);
+eq_freqs = MolecularEvolution.F3x4_eq_freqs(f3x4);
+
+#Set up a codon partition (will default to Universal genetic code)
+initial_partition = CodonPartition(Int64(length(seqs[1])/3))
+initial_partition.state .= eq_freqs
+populate_tree!(tree,initial_partition,seqnames,seqs)
+
+#We'll use the empirical F3x4 freqs, fixed MG94 alpha=1, and optimize the nuc parameters and MG94 beta
+#Note: the nuc rates are confounded with alpha
+initial_params = (
+        rates=positive(ones(6)), #rates must be non-negative
+        beta = positive(1.0)
+)
+flat_initial_params, unflatten = value_flatten(initial_params) #See ParameterHandling.jl docs
+num_params = length(flat_initial_params)
+
+function build_model_vec(p; F3x4 = f3x4, alpha = 1.0)
+    #If you run into numerical issues with DiagonalizedCTMC, switch to GeneralCTMC instead
+    return DiagonalizedCTMC(MolecularEvolution.MG94_F3x4(alpha, p.beta, reversibleQ(p.rates,ones(4)), F3x4))
+end
+
+function objective(params::NamedTuple; tree = tree, eq_freqs = eq_freqs)
+    return -log_likelihood!(tree,build_model_vec(params))
+end
+
+opt = Opt(:LN_BOBYQA, num_params)
+min_objective!(opt, (x,y) -> (objective ∘ unflatten)(x))
+lower_bounds!(opt, [-5.0 for i in 1:num_params])
+upper_bounds!(opt, [5.0 for i in 1:num_params])
+xtol_rel!(opt, 1e-12)
+@time _,mini,_ = NLopt.optimize(opt, flat_initial_params)
+
+final_params = unflatten(mini)
+nucmat = reversibleQ(final_params.rates,ones(4))
+```
+```
+ 10.596546 seconds (840.87 k allocations: 5.221 GiB, 7.45% gc time, 0.35% compilation time: 25% of which was recompilation)
+4×4 Matrix{Float64}:
+ -9.41346    1.77048    6.85997    0.783008
+  1.77048   -7.24162    0.280525   5.19061
+  6.85997    0.280525  -8.651      1.5105
+  0.783008   5.19061    1.5105    -7.48412
+```
+The scaling of that nuc matrix reflects the fact that the we're using a tree that was estimated under a nuc model, but here we're optimizing a codon model. No issue: the nuc rates have absorbed this scaling difference.
+
+Now we set up a 20-by-20 grid, slicing the MG94 α and β parameters at the following values:
+```julia
+grid_values = 10 .^ (-1.35:0.152:1.6) .- 0.0423174293933042
+```
+```
+20-element Vector{Float64}:
+  0.0023509298217921012
+  0.021069541732388508
+  0.047632328759699305
+  0.08532645148783018
+  0.13881657986865603
+  0.2147221488835822
+  0.3224365175323036
+  0.4752894025572635
+  0.6921964387638108
+  1.0
+  1.4367909587749033
+  2.05662245423022
+  2.9361990000358853
+  4.184368713262725
+  5.95559333316179
+  8.469062952630463
+ 12.0358209216745
+ 17.09725564569095
+ 24.27972266134484
+ 34.47205650419232
+```
+
+Then we calculate the conditional likelihoods for each site. Note the 20-by-20 grid is stretched out into a length 400 vector to keep things simple. I'm avoiding `reshape` tricks to keep the grid structure clear.
+```julia
+LL_matrix = zeros(length(grid_values)^2,initial_partition.sites);
+alpha_vec = zeros(length(grid_values)^2);
+alpha_ind_vec = zeros(Int64,length(grid_values)^2);
+beta_vec = zeros(length(grid_values)^2);
+beta_ind_vec = zeros(Int64,length(grid_values)^2);
+
+i = 1
+@time for (a,alpha) in enumerate(grid_values)
+    for (b,beta) in enumerate(grid_values)
+        alpha_vec[i],beta_vec[i] = alpha, beta
+        alpha_ind_vec[i], beta_ind_vec[i] = a,b
+        m = DiagonalizedCTMC(MolecularEvolution.MG94_F3x4(alpha, beta, nucmat, f3x4))
+        felsenstein!(tree,m)
+        #This is because we need to include the eq freqs in the site LLs:
+        combine!(tree.message[1],tree.parent_message[1])
+        LL_matrix[i,:] .= MolecularEvolution.site_LLs(tree.message[1])
+        i += 1
+    end
+end
+prob_matrix = exp.(LL_matrix .- maximum(LL_matrix,dims = 1))
+prob_matrix ./= sum(prob_matrix,dims = 1);
+```
+
+Then we use an EM-like MAP algorithm to find the posterior grid weights, and visualize this surface:
+
+```julia
+LDAθ = weightEM(prob_matrix, ones(length(alpha_vec))./length(alpha_vec), conc = 0.4, iters = 5000);
+
+#A function to viz the grid surface
+function gridplot(alpha_ind_vec,beta_ind_vec,grid_values,θ; title = "")
+    scatter(alpha_ind_vec,beta_ind_vec, zcolor = θ, c = :darktest,
+    markersize = sqrt(length(alpha_ind_vec))/2, markershape=:square, markerstrokewidth=0.0, size=(550,500),
+    label = :none, xticks = (1:length(grid_values), round.(grid_values,digits = 3)), xrotation = 90,
+    yticks = (1:length(grid_values), round.(grid_values,digits = 3)), margin=6Plots.mm,
+    xlabel = "α", ylabel = "β", title = title)
+    plot!(1:length(grid_values),1:length(grid_values),color = "grey", style = :dash, label = :none)
+end
+
+gridplot(alpha_ind_vec,beta_ind_vec,grid_values,LDAθ)
+```
+![](figures/FUBAR_grid_surface.svg)
+
+We can see that the posterior distribution over sites is heavily concentrated at β<α. But are there any sites where β>α?
+
+```julia
+weighted_mat = prob_matrix .* LDAθ
+for site in 1:size(prob_matrix)[2]
+    pos = sum(weighted_mat[beta_vec .> alpha_vec,site])/sum(weighted_mat[:,site])
+    if pos > 0.9
+        println("Site $(site): P(β>α)=$(round(pos,digits = 4))")
+    end
+end
+```
+```
+Site 153: P(β>α)=0.9074
+Site 158: P(β>α)=0.9266
+Site 160: P(β>α)=0.9547
+```
+
+And let's visualize one of those sites:
+```julia
+gridplot(alpha_ind_vec,beta_ind_vec,grid_values, weighted_mat[:,160]./sum(weighted_mat[:,160]))
+```
+![](figures/FUBAR_site160.svg)
