@@ -9,6 +9,8 @@
 
 ### A Julia package for the flexible development of phylogenetic models.
 
+MolecularEvolution.jl is still in an experimental phase, and subject to change without notice. 
+
 MolecularEvolution.jl exploits Julia's multiple dispatch, implementing a fully generic suite of likelihood calculations, branchlength optimization, topology optimization, and ancestral inference. Users can define probability distributions over their own data types, and specify the behavior of these under their own model types.
 
 If the behavior you need is not already available in `MolecularEvolution.jl`:
@@ -33,7 +35,7 @@ In order of importance, we aim for the following:
   - While the above take precedence over speed, it should be possible to optimize your `Partition`, `combine!()`, `BranchModel`, `forward!()` and `backward!()` functions to obtain competative runtimes.
 
 ### Authors:
-Venkatesh Kumar and Ben Murrell, with additional contributions by Sanjay Mohan, Alec Pankow, Hassan Sadiq, and Kenta Sato.
+Ben Murrell and Venkatesh Kumar, with additional contributions by Sanjay Mohan, Alec Pankow, Hassan Sadiq, and Kenta Sato.
 
 ### Quick example: Likelihood calculations under phylogenetic Brownian motion:
 
