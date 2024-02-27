@@ -52,3 +52,43 @@ begin
     @test sum(abs, d.state .- [0.0367879 0.0735759 0.110364; 0.0732121 0.146424 0.219636]) <
           0.000001
 end
+
+begin #PiQ
+    n = FelNode()
+    n.branchlength = 1.0
+    dest = NucleotidePartition(10)
+    dest2 = NucleotidePartition(10)
+    src = NucleotidePartition(10)
+    src.state .= rand(4,10)
+
+    m = PiQ([0.1,0.2,0.3,0.4])
+
+    #Now construct a Q matrix that matches this model, where each column is equal to the PiQ freqs, except the diagonals which must be the negative sum of the rest of the rows
+    Q = [m.pi[j] for i in 1:4, j in 1:4]
+    for i in 1:4
+        Q[i,i] = -sum(Q[i,j] for j in 1:4 if j != i)
+    end
+    m2 = GeneralCTMC(Q)
+    
+    forward!(dest,src,m,n)
+    forward!(dest2,src,m2,n)
+
+    @test dest2.state ≈ dest.state
+
+    backward!(dest,src,m,n)
+    backward!(dest2,src,m2,n)
+
+    @test dest2.state ≈ dest.state
+
+    n.branchlength = 1000.0
+    forward!(dest,src,m,n)
+    forward!(dest2,src,m2,n)
+
+    @test dest2.state ≈ dest.state
+
+    n.branchlength = 1000.0
+    backward!(dest,src,m,n)
+    backward!(dest2,src,m2,n)
+
+    @test dest2.state ≈ dest.state
+end
