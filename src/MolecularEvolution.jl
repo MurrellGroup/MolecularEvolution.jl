@@ -116,6 +116,7 @@ export
     one_hot_sample,
     scaled_prob_domain,
     golden_section_maximize,
+    brents_method_minimize
     unit_transform,
     HKY85,
     P_from_diagonalized_Q,

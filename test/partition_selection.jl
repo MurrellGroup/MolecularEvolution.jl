@@ -4,7 +4,7 @@ begin
     nuc_partition = NucleotidePartition(10)
     nuc_partition.state .= 0.25
     internal_message_init!(tree, [nuc_partition, GaussianPartition()])
-    Q = HKY85(4.0, 0.25, 0.25, 0.25, 0.25) .* 0.001
+    Q = MolecularEvolution.HKY85(4.0, 0.25, 0.25, 0.25, 0.25) .* 0.001
     bm_models = [DiagonalizedCTMC(Q), BrownianMotion(0.0, 0.1)]
     sample_down!(tree, bm_models)
     log_likelihood!(tree, bm_models)
@@ -56,6 +56,10 @@ begin
     branchlength_optim!(tree, bm_models, partition_list = [1])
     branchlength_optim!(tree, bm_models, partition_list = [2])
     branchlength_optim!(tree, bm_models)
+    tree_branchlength_under_gss = tree.branchlength
+    branchlength_optim!(tree, bm_models, bl_optimizer=brents_method_minimize)
+    tree_branchlength_under_brent = tree.branchlength
+    @test isapprox(tree_branchlength_under_gss, tree_branchlength_under_brent, atol=1e-5)
     branchlength_optim!(tree, x -> bm_models, partition_list = [2])
     branchlength_optim!(tree, x -> bm_models)
 
