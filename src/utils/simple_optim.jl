@@ -84,7 +84,7 @@ function SPI_is_well_behaved(a, b, x, p, q, prev_prev_e, tol)
 end
 
 """
-    brents_method_minimize(f, a::Real, b::Real, t::Real; ε::Real=sqrt(eps()))
+    brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Real=sqrt(eps()))
 Brent's method for minimization.
 
 Given a function f with a single local minimum in
@@ -107,16 +107,16 @@ with an order that's usually atleast 1.3247...
 julia> f(x) = exp(-x) - cos(x)
 f (generic function with 1 method)
 
-julia> m = brents_method_minimize(f, -1, 2, 1e-7)
+julia> m = brents_method_minimize(f, -1, 2, identity, 1e-7)
 0.5885327257940255
 ```
 
 From: Richard P. Brent, "Algorithms for Minimization without Derivatives" (1973). Chapter 5.
 """
-function brents_method_minimize(f, a::Real, b::Real, t::Real; ε::Real=sqrt(eps))
+function brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Real=sqrt(eps))
     a, b = min(a, b), max(a, b)
     v = w = x = a + invphi2 * (b - a) #x is our best approximation
-    fv = fw = fx = f(x) #We must always have that fv >= fw >= fx (1)
+    fv = fw = fx = f(transform(x)) #We must always have that fv >= fw >= fx (1)
 
     e, prev_e = 0, 0 #e denotes the step we take in each cycle
     m = (a + b) / 2
@@ -141,7 +141,7 @@ function brents_method_minimize(f, a::Real, b::Real, t::Real; ε::Real=sqrt(eps)
             e = e > 0 ? tol : -tol
         end
         u = x + e
-        fu = f(u)
+        fu = f(transform(u))
         #Update variables such that we satisfy (1) and discard the non-optimal interval
         if fu <= fx
             if u < x
@@ -168,7 +168,7 @@ function brents_method_minimize(f, a::Real, b::Real, t::Real; ε::Real=sqrt(eps)
         m = (a + b) / 2
         tol = ε * abs(x) + t
     end
-    return x
+    return transform(x)
 end
 
 

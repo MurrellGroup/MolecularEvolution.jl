@@ -77,7 +77,7 @@ function branchlength_optim!(
         if bl_optimizer == golden_section_maximize
             opt = golden_section_maximize(fun, 0 + tol, 1 - tol, unit_transform, tol)
         elseif bl_optimizer == brents_method_minimize
-            opt = brents_method_minimize(x -> -fun(x), 0 + tol, 1 - tol, tol/3) #See ?brents_method_minimize
+            opt = brents_method_minimize(x -> -fun(x), 0 + tol, 1 - tol, unit_transform, tol/3) #See ?brents_method_minimize
         end
         if fun(opt) > fun(node.branchlength)
             node.branchlength = opt
