@@ -12,6 +12,9 @@ function unit_inv_transform(x::Real; k = 1.0)
     x / (x + k)
 end
 
+struct GoldenSection <: UnivariateOptimizer end
+struct BrentsMethod <: UnivariateOptimizer end
+
 """
 Golden section search.
 
@@ -67,6 +70,23 @@ function golden_section_maximize(f, a::Real, b::Real, transform, tol::Real)
     end
 end
 
+"""
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSection, tol::Real)
+Maximizes `f(x)` using a Golden Section Search. See `?golden_section_maximize`.
+# Examples
+
+```jldoctest
+julia> f(x) = -(x-2)^2
+f (generic function with 1 method)
+
+julia> m = univariate_maximize(f, 1, 5, identity, GoldenSection(), 1e-10)
+2.0000000000051843
+```
+"""
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSection, tol::Real)
+    return golden_section_maximize(f, a, b, transform, tol)
+end
+
 function brents_pq(x, w, v, fx, fw, fv)
     #These are some values used by the SPI in  Brent's method
     #x_new = x + p / q
@@ -91,7 +111,7 @@ Given a function f with a single local minimum in
 the interval (a,b), Brent's method returns an approximation
 of the x-value that minimizes f to an accuaracy between 2tol and 3tol,
 where tol is a combination of a relative and an absolute tolerance,
-`tol := ε|x| + t`. ε should be no smaller `2*eps`,
+tol := ε|x| + t. ε should be no smaller `2*eps`,
 and preferably not much less than `sqrt(eps)`, which is also the default value.
 eps is defined here as the machine epsilon in double precision.
 t should be positive.
@@ -169,6 +189,15 @@ function brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Rea
         tol = ε * abs(x) + t
     end
     return transform(x)
+end
+
+"""
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethod, t::Real; ε::Real=sqrt(eps))
+Maximizes `f(x)` using Brent's method.
+See `?brents_method_minimize`.
+"""
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethod, t::Real; ε::Real=sqrt(eps))
+    return brents_method_minimize(x -> -f(x), a, b, transform, t, ε = ε)
 end
 
 

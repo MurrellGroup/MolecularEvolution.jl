@@ -29,6 +29,8 @@ abstract type SimulationModel <: BranchModel end #Simulation models typically ca
 
 abstract type StatePath end
 
+abstract type UnivariateOptimizer end
+
 #include("core/core.jl")
 include("core/nodes/nodes.jl")
 include("core/algorithms/algorithms.jl")
@@ -116,7 +118,10 @@ export
     one_hot_sample,
     scaled_prob_domain,
     golden_section_maximize,
-    brents_method_minimize
+    GoldenSection,
+    brents_method_minimize,
+    BrentsMethod,
+    univariate_maximize,
     unit_transform,
     HKY85,
     P_from_diagonalized_Q,

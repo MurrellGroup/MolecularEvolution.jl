@@ -28,7 +28,7 @@ function branchlength_optim!(
     models,
     partition_list,
     tol;
-    bl_optimizer::Symbol=:golden_section_maximize
+    bl_optimizer::UnivariateOptimizer = GoldenSection()
 )
 
     #This bit of code should be identical to the regular downward pass...
@@ -74,11 +74,7 @@ function branchlength_optim!(
     if !isroot(node)
         model_list = models(node)
         fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-        if bl_optimizer == :golden_section_maximize
-            opt = golden_section_maximize(fun, 0 + tol, 1 - tol, unit_transform, tol)
-        elseif bl_optimizer == :brents_method_minimize
-            opt = brents_method_minimize(x -> -fun(x), 0 + tol, 1 - tol, unit_transform, tol/3) #See ?brents_method_minimize
-        end
+        opt = univariate_maximize(fun, 0 + tol, 1 - tol, unit_transform, bl_optimizer, tol)
         if fun(opt) > fun(node.branchlength)
             node.branchlength = opt
         end
@@ -94,16 +90,16 @@ end
 
 #BM: Check if running felsenstein_down! makes a difference.
 """
-    branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::Symbol=:golden_section_maximize)
+    branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOptimizer = GoldenSection())
 
 Uses golden section search, or optionally Brent's method, to optimize all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
 models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models).
-tol is the tolerance for the bl_optimizer which defaults to golden section search, and has Brent's method as an option by setting bl_optimizer=:brents_method_minimize.
+tol is the tolerance for the bl_optimizer which defaults to golden section search, and has Brent's method as an option by setting bl_optimizer=BrentsMethod().
 """
-function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::Symbol=:golden_section_maximize)
+function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOptimizer = GoldenSection())
     temp_message = deepcopy(tree.message)
     message_to_set = deepcopy(tree.message)
 
@@ -120,12 +116,12 @@ branchlength_optim!(
     models::Vector{<:BranchModel};
     partition_list = nothing,
     tol = 1e-5,
-    bl_optimizer::Symbol=:golden_section_maximize
+    bl_optimizer::UnivariateOptimizer = GoldenSection()
 ) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol, bl_optimizer=bl_optimizer)
 branchlength_optim!(
     tree::FelNode,
     model::BranchModel;
     partition_list = nothing,
     tol = 1e-5,
-    bl_optimizer::Symbol=:golden_section_maximize
+    bl_optimizer::UnivariateOptimizer = GoldenSection()
 ) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, bl_optimizer=bl_optimizer)

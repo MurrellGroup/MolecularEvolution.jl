@@ -4,7 +4,7 @@ begin
     nuc_partition = NucleotidePartition(10)
     nuc_partition.state .= 0.25
     internal_message_init!(tree, [nuc_partition, GaussianPartition()])
-    Q = MolecularEvolution.HKY85(4.0, 0.25, 0.25, 0.25, 0.25) .* 0.001
+    Q = HKY85(4.0, 0.25, 0.25, 0.25, 0.25) .* 0.001
     bm_models = [DiagonalizedCTMC(Q), BrownianMotion(0.0, 0.1)]
     sample_down!(tree, bm_models)
     log_likelihood!(tree, bm_models)
@@ -57,12 +57,12 @@ begin
     unopt_tree_copy = deepcopy(tree)
     branchlength_optim!(tree, bm_models, tol=tol)
     branchlength_sample_under_gss = tree.children[1].branchlength
-    branchlength_optim!(unopt_tree_copy, bm_models, tol=tol, bl_optimizer=:brents_method_minimize)
+    branchlength_optim!(unopt_tree_copy, bm_models, tol=tol, bl_optimizer=BrentsMethod())
     branchlength_sample_under_brent = unopt_tree_copy.children[1].branchlength
     @test isapprox(
         MolecularEvolution.unit_inv_transform(branchlength_sample_under_gss), #We're optimizing the untransformed values in the unit domain
         MolecularEvolution.unit_inv_transform(branchlength_sample_under_brent), 
-        atol=2*tol)
+        atol=4*tol) #Brent ensures an accuracy of 3*tol in this case, which is why we choose 4*tol.
     branchlength_optim!(tree, bm_models, partition_list = [1])
     branchlength_optim!(tree, bm_models, partition_list = [2])
     branchlength_optim!(tree, x -> bm_models, partition_list = [2])
