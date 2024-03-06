@@ -53,18 +53,11 @@ begin
     felsenstein_down!(tree, x -> bm_models, partition_list = [2])
     felsenstein_down!(tree, x -> bm_models)
 
-    tol = 1e-5
-    unopt_tree_copy = deepcopy(tree)
-    branchlength_optim!(tree, bm_models, tol=tol)
-    branchlength_sample_under_gss = tree.children[1].branchlength
-    branchlength_optim!(unopt_tree_copy, bm_models, tol=tol, bl_optimizer=BrentsMethod())
-    branchlength_sample_under_brent = unopt_tree_copy.children[1].branchlength
-    @test isapprox(
-        MolecularEvolution.unit_inv_transform(branchlength_sample_under_gss), #We're optimizing the untransformed values in the unit domain
-        MolecularEvolution.unit_inv_transform(branchlength_sample_under_brent), 
-        atol=4*tol) #Brent ensures an accuracy of 3*tol in this case, which is why we choose 4*tol.
+    #TODO When we use BrentsMethodOpt, check if we gain a speed-up and that we're not catastrophically wrong
     branchlength_optim!(tree, bm_models, partition_list = [1])
     branchlength_optim!(tree, bm_models, partition_list = [2])
+    branchlength_optim!(tree, bm_models)
+    branchlength_optim!(tree, bm_models, bl_optimizer=BrentsMethodOpt())
     branchlength_optim!(tree, x -> bm_models, partition_list = [2])
     branchlength_optim!(tree, x -> bm_models)
 

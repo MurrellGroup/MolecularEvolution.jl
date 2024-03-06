@@ -12,8 +12,8 @@ function unit_inv_transform(x::Real; k = 1.0)
     x / (x + k)
 end
 
-struct GoldenSection <: UnivariateOptimizer end
-struct BrentsMethod <: UnivariateOptimizer end
+struct GoldenSectionOpt <: UnivariateOpt end
+struct BrentsMethodOpt <: UnivariateOpt end
 
 """
 Golden section search.
@@ -71,7 +71,7 @@ function golden_section_maximize(f, a::Real, b::Real, transform, tol::Real)
 end
 
 """
-    univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSection, tol::Real)
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSectionOpt, tol::Real)
 Maximizes `f(x)` using a Golden Section Search. See `?golden_section_maximize`.
 # Examples
 
@@ -79,11 +79,11 @@ Maximizes `f(x)` using a Golden Section Search. See `?golden_section_maximize`.
 julia> f(x) = -(x-2)^2
 f (generic function with 1 method)
 
-julia> m = univariate_maximize(f, 1, 5, identity, GoldenSection(), 1e-10)
+julia> m = univariate_maximize(f, 1, 5, identity, GoldenSectionOpt(), 1e-10)
 2.0000000000051843
 ```
 """
-function univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSection, tol::Real)
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSectionOpt, tol::Real)
     return golden_section_maximize(f, a, b, transform, tol)
 end
 
@@ -192,11 +192,11 @@ function brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Rea
 end
 
 """
-    univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethod, t::Real; ε::Real=sqrt(eps))
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethodOpt, t::Real; ε::Real=sqrt(eps))
 Maximizes `f(x)` using Brent's method.
 See `?brents_method_minimize`.
 """
-function univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethod, t::Real; ε::Real=sqrt(eps))
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethodOpt, t::Real; ε::Real=sqrt(eps))
     return brents_method_minimize(x -> -f(x), a, b, transform, t, ε = ε)
 end
 
