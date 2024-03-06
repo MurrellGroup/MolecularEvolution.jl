@@ -12,6 +12,9 @@ function unit_inv_transform(x::Real; k = 1.0)
     x / (x + k)
 end
 
+struct GoldenSectionOpt <: UnivariateOpt end
+struct BrentsMethodOpt <: UnivariateOpt end
+
 """
 Golden section search.
 
@@ -65,6 +68,136 @@ function golden_section_maximize(f, a::Real, b::Real, transform, tol::Real)
     else
         return transform((c + b) / 2)#(c,b)
     end
+end
+
+"""
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSectionOpt, tol::Real)
+Maximizes `f(x)` using a Golden Section Search. See `?golden_section_maximize`.
+# Examples
+
+```jldoctest
+julia> f(x) = -(x-2)^2
+f (generic function with 1 method)
+
+julia> m = univariate_maximize(f, 1, 5, identity, GoldenSectionOpt(), 1e-10)
+2.0000000000051843
+```
+"""
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::GoldenSectionOpt, tol::Real)
+    return golden_section_maximize(f, a, b, transform, tol)
+end
+
+function brents_pq(x, w, v, fx, fw, fv)
+    #These are some values used by the SPI in  Brent's method
+    #x_new = x + p / q
+    p = (x - v)^2 * (fx - fw) - (x - w)^2 * (fx - fv)
+    q = 2 * ((x - v) * (fx - fw) - (x - w) * (fx - fv))
+    if q > 0
+        p = -p
+    end
+    q = abs(q)
+    return p, q
+end
+
+function SPI_is_well_behaved(a, b, x, p, q, prev_prev_e, tol)
+    return (q != 0 && a < x + p / q < b && abs(p / q) < abs(prev_prev_e) / 2 && abs(prev_prev_e) > tol)
+end
+
+"""
+    brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Real=sqrt(eps()))
+Brent's method for minimization.
+
+Given a function f with a single local minimum in
+the interval (a,b), Brent's method returns an approximation
+of the x-value that minimizes f to an accuaracy between 2tol and 3tol,
+where tol is a combination of a relative and an absolute tolerance,
+tol := ε|x| + t. ε should be no smaller `2*eps`,
+and preferably not much less than `sqrt(eps)`, which is also the default value.
+eps is defined here as the machine epsilon in double precision.
+t should be positive.
+
+The method combines the stability of a Golden Section Search and the superlinear convergence
+Successive Parabolic Interpolation has under certain conditions. The method never converges much slower
+than a Fibonacci search and for a sufficiently well-behaved f, convergence can be exptected to be superlinear,
+with an order that's usually atleast 1.3247...
+
+# Examples
+
+```jldoctest
+julia> f(x) = exp(-x) - cos(x)
+f (generic function with 1 method)
+
+julia> m = brents_method_minimize(f, -1, 2, identity, 1e-7)
+0.5885327257940255
+```
+
+From: Richard P. Brent, "Algorithms for Minimization without Derivatives" (1973). Chapter 5.
+"""
+function brents_method_minimize(f, a::Real, b::Real, transform, t::Real; ε::Real=sqrt(eps))
+    a, b = min(a, b), max(a, b)
+    v = w = x = a + invphi2 * (b - a) #x is our best approximation
+    fv = fw = fx = f(transform(x)) #We must always have that fv >= fw >= fx (1)
+
+    e, prev_e = 0, 0 #e denotes the step we take in each cycle
+    m = (a + b) / 2
+    tol = ε * abs(x) + t
+
+    while abs(x - m) > 2*tol - (b - a) / 2
+        prev_prev_e = prev_e
+        prev_e = e
+        p, q = brents_pq(x, w, v, fx, fw, fv)
+        if SPI_is_well_behaved(a, b, x, p, q, prev_prev_e, tol)
+            #Then we do a "parabolic interpolation" step
+            e = p / q
+            u = x + e
+            if u - a < 2*tol || b - u < 2*tol #f must not be evaluated too close to a or b
+                e = x < m ? tol : -tol
+            end
+        else #We fall back to a "golden section" step
+            prev_e = x < m ? b - x : a - x #We want our prev_prev_e to inherit this value, since two GSS steps two iterations apart differ by a factor of invphi2
+            e = invphi2 * prev_e
+        end
+        if abs(e) < tol #f must not be evaluated too close to x
+            e = e > 0 ? tol : -tol
+        end
+        u = x + e
+        fu = f(transform(u))
+        #Update variables such that we satisfy (1) and discard the non-optimal interval
+        if fu <= fx
+            if u < x
+                b = x
+            else
+                a = x
+            end
+            v, fv = w, fw
+            w, fw = x, fx
+            x, fx = u, fu
+        else
+            if u < x
+                a = u
+            else
+                b = u
+            end
+            if fu <= fw || w == x
+                v, fv = w, fw
+                w, fw = u, fu
+            elseif fu <= fv || v == x || v == w
+                v, fv = u, fu
+            end
+        end
+        m = (a + b) / 2
+        tol = ε * abs(x) + t
+    end
+    return transform(x)
+end
+
+"""
+    univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethodOpt, t::Real; ε::Real=sqrt(eps))
+Maximizes `f(x)` using Brent's method.
+See `?brents_method_minimize`.
+"""
+function univariate_maximize(f, a::Real, b::Real, transform, optimizer::BrentsMethodOpt, t::Real; ε::Real=sqrt(eps))
+    return brents_method_minimize(x -> -f(x), a, b, transform, t, ε = ε)
 end
 
 

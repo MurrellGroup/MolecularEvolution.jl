@@ -53,9 +53,11 @@ begin
     felsenstein_down!(tree, x -> bm_models, partition_list = [2])
     felsenstein_down!(tree, x -> bm_models)
 
+    #TODO When we use BrentsMethodOpt, check if we gain a speed-up and that we're not catastrophically wrong
     branchlength_optim!(tree, bm_models, partition_list = [1])
     branchlength_optim!(tree, bm_models, partition_list = [2])
     branchlength_optim!(tree, bm_models)
+    branchlength_optim!(tree, bm_models, bl_optimizer=BrentsMethodOpt())
     branchlength_optim!(tree, x -> bm_models, partition_list = [2])
     branchlength_optim!(tree, x -> bm_models)
 
