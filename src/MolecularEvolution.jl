@@ -23,6 +23,13 @@ abstract type MultiSitePartition <: Partition end #Requires partition.scaling to
 abstract type DiscretePartition <: MultiSitePartition end #For convenience, all our DiscretePartitions are MultiSite
 abstract type ContinuousPartition <: Partition end
 
+function Base.copy(p::P) where P <: Partition
+    return P(ntuple(i -> copy(getfield(p, i)), fieldcount(P))...)
+end
+
+# not-so-deep copy
+copymessage(msg::Vector{<:Partition}) = [copy(x) for x in msg]
+
 abstract type BranchModel end
 abstract type DiscreteStateModel <: BranchModel end
 abstract type SimulationModel <: BranchModel end #Simulation models typically can't propogate uncertainty, and aren't used for inference
