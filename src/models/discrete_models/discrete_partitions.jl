@@ -10,20 +10,26 @@ function copy_partition_to!(dest::T, src::T) where {T<:DiscretePartition}
     dest.scaling .= src.scaling
 end
 
+#Overloading the copy_partition to avoid deepcopy.
+function copy_partition(src::T) where {T<:DiscretePartition}
+    return T(ntuple(i -> copy(getfield(src, i)), fieldcount(T))...)
+end
+
 #I should add a constructor that constructs a DiscretePartition from an existing array.
 mutable struct CustomDiscretePartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
     sites::Int
     scaling::Array{Float64,1}
-    function CustomDiscretePartition(states, sites)
-        new(zeros(states, sites), states, sites, zeros(sites))
-    end
-    function CustomDiscretePartition(freq_vec::Vector{Float64}, sites::Int64) #Add this constructor to all partition types
-        state_arr = zeros(length(freq_vec), sites)
-        state_arr .= freq_vec
-        new(state_arr, length(freq_vec), sites, zeros(sites))
-    end
+end
+
+CustomDiscretePartition(states, sites) =
+    CustomDiscretePartition(zeros(states, sites), states, sites, zeros(sites))
+
+function CustomDiscretePartition(freq_vec::Vector{Float64}, sites::Int64) #Add this constructor to all partition types
+    state_arr = zeros(length(freq_vec), sites)
+    state_arr .= freq_vec
+    return CustomDiscretePartition(state_arr, length(freq_vec), sites, zeros(sites))
 end
 
 mutable struct NucleotidePartition <: DiscretePartition
@@ -31,15 +37,15 @@ mutable struct NucleotidePartition <: DiscretePartition
     states::Int
     sites::Int
     scaling::Array{Float64,1}
-    function NucleotidePartition(sites)
-        new(zeros(4, sites), 4, sites, zeros(sites))
-    end
-    function NucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
-        @assert length(freq_vec) == 4
-        state_arr = zeros(4, sites)
-        state_arr .= freq_vec
-        new(state_arr, 4, sites, zeros(sites))
-    end
+end
+
+NucleotidePartition(sites) = NucleotidePartition(zeros(4, sites), 4, sites, zeros(sites))
+
+function NucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
+    @assert length(freq_vec) == 4
+    state_arr = zeros(4, sites)
+    state_arr .= freq_vec
+    return NucleotidePartition(state_arr, 4, sites, zeros(sites))
 end
 
 mutable struct GappyNucleotidePartition <: DiscretePartition
@@ -47,15 +53,15 @@ mutable struct GappyNucleotidePartition <: DiscretePartition
     states::Int
     sites::Int
     scaling::Array{Float64,1}
-    function GappyNucleotidePartition(sites)
-        new(zeros(5, sites), 5, sites, zeros(sites))
-    end
-    function GappyNucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
-        @assert length(freq_vec) == 5
-        state_arr = zeros(5, sites)
-        state_arr .= freq_vec
-        new(state_arr, 5, sites, zeros(sites))
-    end
+end
+
+GappyNucleotidePartition(sites) = GappyNucleotidePartition(zeros(5, sites), 5, sites, zeros(sites))
+
+function GappyNucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
+    @assert length(freq_vec) == 5
+    state_arr = zeros(5, sites)
+    state_arr .= freq_vec
+    return GappyNucleotidePartition(state_arr, 5, sites, zeros(sites))
 end
 
 mutable struct AminoAcidPartition <: DiscretePartition
@@ -63,15 +69,15 @@ mutable struct AminoAcidPartition <: DiscretePartition
     states::Int
     sites::Int
     scaling::Array{Float64,1}
-    function AminoAcidPartition(sites)
-        new(zeros(20, sites), 20, sites, zeros(sites))
-    end
-    function AminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
-        @assert length(freq_vec) == 20
-        state_arr = zeros(20, sites)
-        state_arr .= freq_vec
-        new(state_arr, 20, sites, zeros(sites))
-    end
+end
+
+AminoAcidPartition(sites) = AminoAcidPartition(zeros(20, sites), 20, sites, zeros(sites))
+
+function AminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
+    @assert length(freq_vec) == 20
+    state_arr = zeros(20, sites)
+    state_arr .= freq_vec
+    return AminoAcidPartition(state_arr, 20, sites, zeros(sites))
 end
 
 mutable struct GappyAminoAcidPartition <: DiscretePartition
@@ -79,15 +85,15 @@ mutable struct GappyAminoAcidPartition <: DiscretePartition
     states::Int
     sites::Int
     scaling::Array{Float64,1}
-    function GappyAminoAcidPartition(sites)
-        new(zeros(21, sites), 21, sites, zeros(sites))
-    end
-    function GappyAminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
-        @assert length(freq_vec) == 21
-        state_arr = zeros(21, sites)
-        state_arr .= freq_vec
-        new(state_arr, 21, sites, zeros(sites))
-    end
+end
+
+GappyAminoAcidPartition(sites) = GappyAminoAcidPartition(zeros(21, sites), 21, sites, zeros(sites))
+
+function GappyAminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
+    @assert length(freq_vec) == 21
+    state_arr = zeros(21, sites)
+    state_arr .= freq_vec
+    return GappyAminoAcidPartition(state_arr, 21, sites, zeros(sites))
 end
 
 """
