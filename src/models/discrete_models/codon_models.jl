@@ -325,6 +325,10 @@ mutable struct CodonPartition <: DiscretePartition
             zeros(sites),
         )
     end
+    function CodonPartition(state, states, sites, scaling; code = universal_code)
+        @assert size(state) == (states, sites) && states == length(code.sense_codons)
+        new(state, states, sites, scaling)
+    end
 end
 
 #Make this handle IUPAC ambigs sensible. Any codon compatible with the ambig should get a 1.0
