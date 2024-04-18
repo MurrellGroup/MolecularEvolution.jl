@@ -15,6 +15,11 @@ mutable struct GaussianPartition <: ContinuousPartition
     end
 end
 
+#Overloading the copy_partition to avoid deepcopy.
+function copy_partition(src::GaussianPartition)
+    return GaussianPartition(src.mean, src.var, src.norm_const)
+end
+
 #From the first section of http://www.tina-vision.net/docs/memos/2003-003.pdf
 function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
     #Handling some edge cases. These aren't mathematically sensible. A gaussian with "Inf" variance will behave like a 1,1,1,1 vector in discrete felsenstein.
