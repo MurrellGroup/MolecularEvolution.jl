@@ -10,6 +10,7 @@ export LazyPartition
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     partition::Union{PType, Nothing}
     memoryblocks::Vector{PType} #A stack that is meant for LazyPartitions in the same tree to share
+    obs #Leaf nodes can store their observations here in a preferably compact data structure
 
     function LazyPartition{PType}(partition) where {PType <: Partition}
         new(partition, Vector{PType}())
@@ -42,7 +43,7 @@ but for consistency, we might as well do it for all types?
 """
 I store:
     - References to partitions in a global stack
-    - Sequences at leafnodes
+    - Observations in the obs field of the LazyPartition
 
 To achieve a maximum amount of memoryblocks available during felsenstein!, the workflow of backward! and combine! is this:
     - We pop a memoryblock of the stack and put it in dest.partition prior to a backward!.
@@ -58,11 +59,12 @@ function backward!(
 ) where {PType <: Partition}
     if isleafnode(node)
         source.partition = pop!(source.memoryblocks)
-        lazy_obs2partition!(source.partition, node.node_data["obs"])
+        #Transform source.obs to the appropriate format
+        lazy_obs2partition!(source.partition, source.obs)
         # In the case of CodonPartition, we need to enforce scaling being zeros (which we do with lazy_obs2partition)
     end
     dest.partition = pop!(source.memoryblocks)
-    (isnothing(source.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in the source and dest LazyPartition must be something to propagate it backwards."))
+    (isnothing(source.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in the source and dest LazyPartition must be something in order to propagate it backwards."))
     backward!(dest.partition, source.partition, model, node)
     push!(source.memoryblocks, source.partition)
     source.partition = nothing
@@ -94,36 +96,7 @@ function lazysort!(node)
     return maximum(maximum_active_partitions)
 end
 
-#Might not keep this, just for testing the principal
-function populate_tree!(
-    tree::FelNode,
-    starting_message::LazyPartition,
-    names,
-    data;
-    init_all_messages = true,
-    tolerate_missing = 1, #0 = error if missing; 1 = warn and set to missing data; 2 = set to missing data
-    leaf_name_transform = x -> x
-)
-    if init_all_messages
-        internal_message_init!(tree, starting_message)
-    else
-        tree.parent_message = copy_message(starting_message)
-    end
-    name_dic = Dict(zip(names, 1:length(names)))
-    for n in getleaflist(tree)
-        if haskey(name_dic, n.name)
-            n.node_data = Dict("obs" => data[name_dic[leaf_name_transform(n.name)]])
-        else
-            warn_str = n.name * " on tree but not found in names."
-            if tolerate_missing == 0
-                @error warn_str
-            end
-            if tolerate_missing == 1
-                @warn warn_str
-            end
-            uninformative_message!(n.message)
-        end
-    end
+#Store the obs in the dest LazyPartition
+function obs2partition!(dest::LazyPartition, obs)
+    dest.obs = obs
 end
-
-#TODO Figure out how to generalize `populate_message` for LazyPartition, as we actually want to store the seqs in node_data
