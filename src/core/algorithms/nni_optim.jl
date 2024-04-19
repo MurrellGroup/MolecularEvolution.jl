@@ -23,7 +23,7 @@ function nni_optim!(
     end
     @assert length(node.children) <= 2
     for i = 1:length(node.children)
-        new_temp = deepcopy(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
+        new_temp = copy_message(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
         sib_inds = sibling_inds(node.children[i])
         for part in partition_list
             combine!(
@@ -116,7 +116,7 @@ function do_nni(
     if length(node.children) == 0 || node.parent === nothing
         return false
     else
-        temp_message2 = deepcopy(temp_message)
+        temp_message2 = copy_message(temp_message)
         model_list = models(node)
         #current score
         for part in partition_list
@@ -231,8 +231,8 @@ function nni_optim!(
     partition_list = nothing,
     acc_rule = (x, y) -> x > y,
 )
-    temp_message = deepcopy(tree.message)
-    message_to_set = deepcopy(tree.message)
+    temp_message = copy_message(tree.message)
+    message_to_set = copy_message(tree.message)
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)

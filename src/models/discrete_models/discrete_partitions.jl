@@ -167,7 +167,7 @@ function eq_freq_from_template(
     model::DiscreteStateModel,
     partition_template::DiscretePartition,
 )
-    out_partition = deepcopy(partition_template)
+    out_partition = copy_partition(partition_template)
     eq_freq_vec = eq_freq(model) #This will dispatch correctly for existing models.
     out_partition.state .= repeat(eq_freq_vec, outer = [1, out_partition.sites])
     return out_partition
@@ -178,7 +178,7 @@ function equilibrium_message(
     model_vec::Vector{<:DiscreteStateModel},
     message_template::Vector{<:DiscretePartition},
 )
-    out_mess = deepcopy(message_template)
+    out_mess = copy_message(message_template)
     for part = 1:length(message_template)
         eq_freq_vec = eq_freq(model_vec[part])
         out_mess[part].state .= repeat(eq_freq_vec, outer = [1, out_mess[part].sites])

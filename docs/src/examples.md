@@ -314,7 +314,7 @@ function objective(params::NamedTuple; tree = tree)
     #Optim inside optim
     #We first need to handle the merge of the parent and root partitions - usually handled for us magically!
     #Be careful: this example is hard-coded for a single partition
-    temp_part = deepcopy(tree.parent_message[1])
+    temp_part = copy_partition(tree.parent_message[1])
     combine!(temp_part, tree.message[1])
     θ,LL = opt_weights_and_LL(temp_part)
     return -LL
@@ -332,7 +332,7 @@ final_params = unflatten(mini)
 optimized_model = build_model_vec(final_params)
 
 felsenstein!(tree,optimized_model)
-temp_part = deepcopy(tree.parent_message[1])
+temp_part = copy_partition(tree.parent_message[1])
 combine!(temp_part, tree.message[1])
 θ,_ = opt_weights_and_LL(temp_part, iters = 1000) #polish weights for final pass - quick
 optimized_model.weights .= θ

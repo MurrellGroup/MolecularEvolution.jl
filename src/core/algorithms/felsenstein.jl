@@ -76,7 +76,7 @@ function felsenstein!(
 end
 
 """
-    felsenstein_down!(node::FelNode, models; partition_list = 1:length(tree.message), temp_message = deepcopy(tree.message))
+    felsenstein_down!(node::FelNode, models; partition_list = 1:length(tree.message), temp_message = copy_message(tree.message))
 
 Should usually be called on the root of the tree. Propagates Felsenstein pass down from the root to the tips.
 felsenstein!() should usually be called first.
@@ -88,7 +88,7 @@ function felsenstein_down!(
     tree::FelNode,
     models;
     partition_list = 1:length(tree.message),
-    temp_message = deepcopy(tree.message),
+    temp_message = copy_message(tree.message),
 )
     stack = [tree]
     #curr = nothing
@@ -141,7 +141,7 @@ function felsenstein_down!(
     tree::FelNode,
     models::Vector{<:BranchModel};
     partition_list = 1:length(tree.message),
-    temp_message = deepcopy(tree.message),
+    temp_message = copy_message(tree.message),
 )
     felsenstein_down!(
         tree,
@@ -155,7 +155,7 @@ function felsenstein_down!(
     tree::FelNode,
     model::BranchModel;
     partition_list = 1:length(tree.message),
-    temp_message = deepcopy(tree.message),
+    temp_message = copy_message(tree.message),
 )
     felsenstein_down!(
         tree,

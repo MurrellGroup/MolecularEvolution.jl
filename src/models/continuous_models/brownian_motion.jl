@@ -31,7 +31,7 @@ end
 
 #If you want to use a root prior, you can set these values explicitly.
 function eq_freq_from_template(model::BrownianMotion, partition_template::GaussianPartition)
-    out_partition = deepcopy(partition_template)
+    out_partition = copy_partition(partition_template)
     out_partition.mean = 0.0
     out_partition.var = Inf
     out_partition.norm_const = 0.0
