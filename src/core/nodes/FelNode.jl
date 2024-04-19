@@ -78,7 +78,7 @@ end
 
 function random_leaf_init!(tree::FelNode, empty_message::Vector{<:Partition})
     for node in getleaflist(tree)
-        node.message = deepcopy(empty_message)
+        node.message = copy_message(empty_message)
         for part in node.message
             for site = 1:part.sites
                 part.state[rand(1:part.states), site] = 1.0
@@ -92,7 +92,7 @@ function mixed_type_equilibrium_message(
     model_vec::Vector{<:BranchModel},
     message_template::Vector{<:Partition},
 )
-    out_mess = deepcopy(message_template)
+    out_mess = copy_message(message_template)
     for part = 1:length(message_template)
         out_mess[part] = eq_freq_from_template(model_vec[part], message_template[part])
     end

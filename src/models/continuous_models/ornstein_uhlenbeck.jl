@@ -33,7 +33,7 @@ function eq_freq_from_template(
     model::ZeroDriftOrnsteinUhlenbeck,
     partition_template::GaussianPartition,
 )
-    out_partition = deepcopy(partition_template)
+    out_partition = copy_partition(partition_template)
     out_partition.mean = model.mean
     out_partition.var = (model.volatility^2) / (2 * model.reversion)
     out_partition.norm_const = 0.0

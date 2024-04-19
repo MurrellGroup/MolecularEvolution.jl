@@ -27,16 +27,16 @@ function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
     if g1.var == 0 && g2.var == 0 && g1.var != g2.var
         error("both gaussians have 0 variance but different means")
     elseif g1.var == 0
-        return deepcopy(g1)
+        return copy_partition(g1)
     elseif g2.var == 0
-        return deepcopy(g2)
+        return copy_partition(g2)
     end
     if g1.var == Inf && g2.var == Inf
         return GaussianPartition((g1.mean + g2.mean) / 2, Inf, 0.0)
     elseif g1.var == Inf
-        return deepcopy(g2)
+        return copy_partition(g2)
     elseif g2.var == Inf
-        return deepcopy(g1)
+        return copy_partition(g1)
     end
     res_gaussian = GaussianPartition()
     res_gaussian.var = 1 / (1 / g1.var + 1 / g2.var)

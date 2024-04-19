@@ -12,7 +12,7 @@ end
 
 function log_likelihood(tree::FelNode, model_func; partition_list = 1:length(tree.message))
     #Just combines root message with equilibrium message
-    temp_message = deepcopy(tree.parent_message[partition_list])
+    temp_message = copy_message(tree.parent_message[partition_list])
     models = model_func(tree)
     for (p, part) in enumerate(partition_list)
         #if tree.branchlength > 0.0 #Consider this - requires a (reasonable) assumption about model behavior.

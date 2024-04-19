@@ -98,7 +98,7 @@ function reconstruct_marginal_node!(
 )
     #Note: these family of functions can be passed a dictionary for repeat use, but then the "structure" must be unchanged.
     if !haskey(node_message_dict, node)
-        node_message_dict[node] = deepcopy(node.message[partition_list])
+        node_message_dict[node] = copy_message(node.message[partition_list])
     end
     m = node_message_dict[node]
     for (p, part) in enumerate(partition_list)
@@ -140,7 +140,7 @@ function dependent_reconstruction!(
     f! = x -> nothing,
 )
     if !haskey(node_message_dict, node)
-        node_message_dict[node] = deepcopy(node.message[partition_list])
+        node_message_dict[node] = copy_message(node.message[partition_list])
     end
     m = node_message_dict[node]
     for (p, part) in enumerate(partition_list)

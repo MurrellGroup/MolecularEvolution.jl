@@ -39,7 +39,7 @@ function branchlength_optim!(
             forward!(temp_message[part], node.parent_message[part], model_list[part], node)
         end
         for i = 1:length(node.children)
-            new_temp = deepcopy(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
+            new_temp = copy_message(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
             sib_inds = sibling_inds(node.children[i])
             for part in partition_list
                 combine!(
@@ -100,8 +100,8 @@ partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over
 tol is the absolute tolerance for the bl_optimizer which defaults to golden section search, and has Brent's method as an option by setting bl_optimizer=BrentsMethodOpt().
 """
 function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt())
-    temp_message = deepcopy(tree.message)
-    message_to_set = deepcopy(tree.message)
+    temp_message = copy_message(tree.message)
+    message_to_set = copy_message(tree.message)
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)
