@@ -20,12 +20,12 @@ mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     end
 end
 
-function copy_partition(src::LazyPartition{PType}) where {PType}
+function copy_partition(src::LazyPartition{PType}) where {PType <: Partition}
     partition = isnothing(src.partition) ? nothing : copy_partition(src.partition)
-    return LazyPartition(partition, src.memoryblocks) #We want to have a reference to the same stack
+    return LazyPartition{PType}(partition, src.memoryblocks) #We want to have a reference to the same stack
 end
 
-function combine!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType}
+function combine!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
     (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them."))
     combine!(dest.partition, src.partition)
     push!(src.memoryblocks, src.partition)
@@ -55,7 +55,7 @@ function backward!(
     source::LazyPartition{PType},
     model::BranchModel,
     node::FelNode,
-) where {PType}
+) where {PType <: Partition}
     if isleafnode(node)
         source.partition = pop!(source.memoryblocks)
         lazy_obs2partition!(source.partition, node.node_data["obs"])
@@ -72,7 +72,7 @@ function site_LLs(dest::LazyPartition)
     return site_LLs(dest.partition)
 end
 
-function copy_partition_to!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType}
+function copy_partition_to!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
     dest.partition = src.partition
     src.partition = nothing #Hmm, we might not always want to wipe the src?
 end
@@ -107,7 +107,7 @@ function populate_tree!(
     if init_all_messages
         internal_message_init!(tree, starting_message)
     else
-        tree.parent_message = deepcopy(starting_message)
+        tree.parent_message = copy_message(starting_message)
     end
     name_dic = Dict(zip(names, 1:length(names)))
     for n in getleaflist(tree)
@@ -126,25 +126,4 @@ function populate_tree!(
     end
 end
 
-function internal_message_init!(tree::FelNode, empty_message::LazyPartition{T}) where {T <: Partition}
-    for node in getnodelist(tree)
-        if !isleafnode(node)
-            node.child_messages = []
-            for _ in node.children
-                child_message = LazyPartition{T}(nothing)
-                child_message.memoryblocks = empty_message.memoryblocks
-                push!(node.child_messages, [child_message])
-            end
-        end
-
-        message = LazyPartition{T}(nothing)
-        parent_message = LazyPartition{T}(nothing)
-        message.memoryblocks = empty_message.memoryblocks
-        parent_message.memoryblocks = empty_message.memoryblocks
-        node.message = [message]
-        node.parent_message = [parent_message]
-    end
-end
-
-#TODO Get `copy_partition` working, then I will only have to implement copy_partition(src::LazyPartition)
 #TODO Figure out how to generalize `populate_message` for LazyPartition, as we actually want to store the seqs in node_data
