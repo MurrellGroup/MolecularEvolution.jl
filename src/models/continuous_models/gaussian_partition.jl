@@ -15,6 +15,11 @@ mutable struct GaussianPartition <: ContinuousPartition
     end
 end
 
+#Overloading the copy_partition to avoid deepcopy.
+function copy_partition(src::GaussianPartition)
+    return GaussianPartition(src.mean, src.var, src.norm_const)
+end
+
 #From the first section of http://www.tina-vision.net/docs/memos/2003-003.pdf
 function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
     #Handling some edge cases. These aren't mathematically sensible. A gaussian with "Inf" variance will behave like a 1,1,1,1 vector in discrete felsenstein.
@@ -22,16 +27,16 @@ function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
     if g1.var == 0 && g2.var == 0 && g1.var != g2.var
         error("both gaussians have 0 variance but different means")
     elseif g1.var == 0
-        return deepcopy(g1)
+        return copy_partition(g1)
     elseif g2.var == 0
-        return deepcopy(g2)
+        return copy_partition(g2)
     end
     if g1.var == Inf && g2.var == Inf
         return GaussianPartition((g1.mean + g2.mean) / 2, Inf, 0.0)
     elseif g1.var == Inf
-        return deepcopy(g2)
+        return copy_partition(g2)
     elseif g2.var == Inf
-        return deepcopy(g1)
+        return copy_partition(g1)
     end
     res_gaussian = GaussianPartition()
     res_gaussian.var = 1 / (1 / g1.var + 1 / g2.var)

@@ -10,6 +10,11 @@ function copy_partition_to!(dest::T, src::T) where {T<:DiscretePartition}
     dest.scaling .= src.scaling
 end
 
+#Overloading the copy_partition to avoid deepcopy.
+function copy_partition(src::T) where {T<:DiscretePartition}
+    return T(copy(src.state), src.states, src.sites, copy(src.scaling))
+end
+
 #I should add a constructor that constructs a DiscretePartition from an existing array.
 mutable struct CustomDiscretePartition <: DiscretePartition
     state::Array{Float64,2}
@@ -23,6 +28,10 @@ mutable struct CustomDiscretePartition <: DiscretePartition
         state_arr = zeros(length(freq_vec), sites)
         state_arr .= freq_vec
         new(state_arr, length(freq_vec), sites, zeros(sites))
+    end
+    function CustomDiscretePartition(state, states, sites, scaling)
+        @assert size(state) == (states, sites)
+        new(state, states, sites, scaling)
     end
 end
 
@@ -40,6 +49,10 @@ mutable struct NucleotidePartition <: DiscretePartition
         state_arr .= freq_vec
         new(state_arr, 4, sites, zeros(sites))
     end
+    function NucleotidePartition(state, states, sites, scaling)
+        @assert size(state) == (states, sites) && states == 4
+        new(state, states, sites, scaling)
+    end
 end
 
 mutable struct GappyNucleotidePartition <: DiscretePartition
@@ -55,6 +68,10 @@ mutable struct GappyNucleotidePartition <: DiscretePartition
         state_arr = zeros(5, sites)
         state_arr .= freq_vec
         new(state_arr, 5, sites, zeros(sites))
+    end
+    function GappyNucleotidePartitionPartition(state, states, sites, scaling)
+        @assert size(state) == (states, sites) && states == 5
+        new(state, states, sites, scaling)
     end
 end
 
@@ -72,6 +89,10 @@ mutable struct AminoAcidPartition <: DiscretePartition
         state_arr .= freq_vec
         new(state_arr, 20, sites, zeros(sites))
     end
+    function AminoAcidPartition(state, states, sites, scaling)
+        @assert size(state) == (states, sites) && states == 20
+        new(state, states, sites, scaling)
+    end
 end
 
 mutable struct GappyAminoAcidPartition <: DiscretePartition
@@ -87,6 +108,10 @@ mutable struct GappyAminoAcidPartition <: DiscretePartition
         state_arr = zeros(21, sites)
         state_arr .= freq_vec
         new(state_arr, 21, sites, zeros(sites))
+    end
+    function GappyAminoAcidPartition(state, states, sites, scaling)
+        @assert size(state) == (states, sites) && states == 21
+        new(state, states, sites, scaling)
     end
 end
 
@@ -142,7 +167,7 @@ function eq_freq_from_template(
     model::DiscreteStateModel,
     partition_template::DiscretePartition,
 )
-    out_partition = deepcopy(partition_template)
+    out_partition = copy_partition(partition_template)
     eq_freq_vec = eq_freq(model) #This will dispatch correctly for existing models.
     out_partition.state .= repeat(eq_freq_vec, outer = [1, out_partition.sites])
     return out_partition
@@ -153,7 +178,7 @@ function equilibrium_message(
     model_vec::Vector{<:DiscreteStateModel},
     message_template::Vector{<:DiscretePartition},
 )
-    out_mess = deepcopy(message_template)
+    out_mess = copy_message(message_template)
     for part = 1:length(message_template)
         eq_freq_vec = eq_freq(model_vec[part])
         out_mess[part].state .= repeat(eq_freq_vec, outer = [1, out_mess[part].sites])

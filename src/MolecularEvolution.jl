@@ -129,6 +129,8 @@ export
 
     #things the user might overload
     copy_partition_to!,
+    copy_partition,
+    copy_message,
     equilibrium_message,
     sample_partition!,
     obs2partition!,

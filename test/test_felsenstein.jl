@@ -9,14 +9,14 @@ begin
     newt.parent_message = equilibrium_message([m1], empty_mess)
     internal_message_init!(newt, empty_mess)
     for n in getnodelist(newt)
-        n.message = deepcopy(empty_mess)
+        n.message = copy_message(empty_mess)
     end
     for n in getnodelist(newt)
         n.message[1].state = [1.0 0.0; 0.0 0.0; 0.0 0.0; 0.0 1.0]
     end
     n = getleaflist(newt)[1]
     n.message[1].state = [0.0 1.0; 0.0 0.0; 0.0 0.0; 1.0 0.0]
-    null_mess = deepcopy(newt.message)
+    null_mess = copy_message(newt.message)
     newt.parent_message = equilibrium_message([m1], empty_mess)
     # TODO: The following code results in a method error.
     #felsenstein_up!(null_mess,newt,models,1:length(null_mess))

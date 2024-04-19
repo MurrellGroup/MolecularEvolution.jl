@@ -86,7 +86,7 @@ function populate_tree!(
     if init_all_messages
         internal_message_init!(tree, starting_message)
     else
-        tree.parent_message = deepcopy(starting_message)
+        tree.parent_message = copy_message(starting_message)
     end
     name_dic = Dict(zip(names, 1:length(names)))
     for n in getleaflist(tree)

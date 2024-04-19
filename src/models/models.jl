@@ -22,6 +22,20 @@ function copy_partition_to!(dest::GaussianPartition,src::GaussianPartition)
 end
 =#
 
+#Fallback method. This should be overloaded to avoid deepcopy wherever performance requires it
+function copy_partition(src::T) where {T <: Partition}
+    return deepcopy(src)
+end
+
+#Example overloading for GaussianPartition:
+#=
+function copy_partition(src::GaussianPartition)
+    return GaussianPartition(src.mean, src.var, src.norm_const)
+end
+=#
+
+copy_message(msg::Vector{<:Partition}) = [copy_partition(x) for x in msg]
+
 #This is a function shared for all models - perhaps move this elsewhere
 function combine!(dest::T, source_arr::Vector{<:T}, wipe::Bool) where {T<:Partition}
     #Init to be equal to 1, then multiply everything on.
