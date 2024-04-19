@@ -46,8 +46,17 @@ mutable struct SWMPartition{PType} <: Partition where {PType <: MultiSitePartiti
         new{PType}(parts, ones(l)./l, parts[1].sites, parts[1].states, l)
     end
     function SWMPartition{PType}(part::PType, n_parts::Int) where {PType <: MultiSitePartition}
-        SWMPartition{PType}([deepcopy(part) for i in 1:n_parts])
+        SWMPartition{PType}([copy_partition(part) for i in 1:n_parts])
     end
+    function SWMPartition{PType}(parts::Vector{PType}, weights::Vector{Float64}, sites::Int, states::Int, models::Int) where {PType <: MultiSitePartition}
+        @assert length(parts) == length(weights)
+        new{PType}(parts, weights, sites, states, models)
+    end
+end
+
+#Overloading the copy_partition to avoid deepcopy.
+function copy_partition(src::SWMPartition{PType}) where {PType <: MultiSitePartition}
+    return SWMPartition{PType}(copy_partition.(src.parts), copy(src.weights), src.sites, src.states, src.models)
 end
 
 function combine!(dest::SWMPartition{PType},src::SWMPartition{PType}) where {PType<:MultiSitePartition}
@@ -157,7 +166,7 @@ You'll need to have this implemented for certain helper functionality if you're 
 """
 function mix(swm_part::SWMPartition{PType} ) where {PType <: DiscretePartition}
     prob_grid,_ = weighted_prob_grid(swm_part)
-    out = deepcopy(swm_part.parts[1])
+    out = copy_partition(swm_part.parts[1])
     out.scaling .= 0.0
     out.state .= 0.0
     for i in 1:swm_part.models
@@ -190,7 +199,7 @@ function site_LLs(part::SWMPartition)
 end
 
 function eq_freq_from_template(model::SWMModel,partition_template::SWMPartition{PType}) where {PType<:MultiSitePartition}
-    out_partition = deepcopy(partition_template)
+    out_partition = copy_partition(partition_template)
     for i in 1:length(out_partition.parts)
         out_partition.parts[i] = eq_freq_from_template(model.models[i], out_partition.parts[i])
     end
