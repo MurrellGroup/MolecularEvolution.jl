@@ -23,7 +23,14 @@ mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
 end
 
 function copy_partition(src::LazyPartition{PType}) where {PType <: Partition}
-    partition = isnothing(src.partition) ? nothing : copy_partition(src.partition)
+    if isnothing(src.partition)
+        partition = nothing
+    elseif isempty(src.memoryblocks)
+        partition = copy_partition(src.partition)
+    else #Avoid allocating new memory
+        partition = pop!(src.memoryblocks)
+        copy_partition_to!(partition, src.partition)
+    end
     return LazyPartition{PType}(partition, src.memoryblocks) #We want to have a reference to the same stack
 end
 
@@ -80,7 +87,9 @@ function forward!(
 end
 
 function site_LLs(dest::LazyPartition)
-    return site_LLs(dest.partition)
+    result = site_LLs(dest.partition)
+    safe_release_partition!(dest) #All necessary information from dest is extracted into result
+    return result
 end
 
 function copy_partition_to!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
@@ -116,6 +125,3 @@ end
 function obs2partition!(dest::LazyPartition, obs)
     dest.obs = obs
 end
-
-#TODO popping from the stack in copy_partition if possible, pushing back to stack after site_LLs?
-#TODO forward!

@@ -375,6 +375,7 @@ function lazy_obs2partition!(dest::CodonPartition, seq::String; code = universal
             dest.state[cod_ind, j] = 1.0
         end
     end
+    fill!(dest.scaling, 0.0)
     return countmap(problem_codons)
 end
 
