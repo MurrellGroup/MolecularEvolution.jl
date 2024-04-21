@@ -10,14 +10,15 @@ export LazyPartition
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     partition::Union{PType, Nothing}
     memoryblocks::Vector{PType} #A stack that is meant for LazyPartitions in the same tree to share
+    static::Bool #Does the LazyPartition keep its partition during a message passing wave? Defaults to false
     obs #Leaf nodes can store their observations here in a preferably compact data structure
 
     function LazyPartition{PType}(partition) where {PType <: Partition}
-        new(partition, Vector{PType}())
+        new(partition, Vector{PType}(), false)
     end
 
     function LazyPartition{PType}(partition, memoryblocks) where {PType <: Partition}
-        new(partition, memoryblocks)
+        new(partition, memoryblocks, false)
     end
 end
 
@@ -29,8 +30,7 @@ end
 function combine!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
     (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them."))
     combine!(dest.partition, src.partition)
-    push!(src.memoryblocks, src.partition)
-    src.partition = nothing
+    safe_release_partition!(src)
 end
 
 
@@ -66,8 +66,17 @@ function backward!(
     dest.partition = pop!(source.memoryblocks)
     (isnothing(source.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in the source and dest LazyPartition must be something in order to propagate it backwards."))
     backward!(dest.partition, source.partition, model, node)
-    push!(source.memoryblocks, source.partition)
-    source.partition = nothing
+    safe_release_partition!(source)
+end
+
+function forward!(
+    dest::LazyPartition{PType},
+    source::LazyPartition{PType},
+    model::BranchModel,
+    node::FelNode,
+) where {PType <: Partition}
+    forward!(dest.partition, source.partition, model, node)
+    safe_release_partition!(source)
 end
 
 function site_LLs(dest::LazyPartition)
@@ -96,7 +105,17 @@ function lazysort!(node)
     return maximum(maximum_active_partitions)
 end
 
+function safe_release_partition!(src::LazyPartition)
+    if !src.static
+        push!(src.memoryblocks, src.partition)
+        src.partition = nothing
+    end
+end
+
 #Store the obs in the dest LazyPartition
 function obs2partition!(dest::LazyPartition, obs)
     dest.obs = obs
 end
+
+#TODO popping from the stack in copy_partition if possible, pushing back to stack after site_LLs?
+#TODO forward!
