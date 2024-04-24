@@ -125,3 +125,44 @@ end
 function obs2partition!(dest::LazyPartition, obs)
     dest.obs = obs
 end
+
+export lazyprep!
+"""
+    lazyprep!(tree::FelNode, eq_message::Vector{<:Partition}; partition_list = 1:length(tree.message))
+
+1. Perform a lazysort! on tree to obtain the optimal tree for a lazy felsenstein! prop
+2. Fix tree.parent_message to the equilibrium message
+3. Add sufficiently many partitions to memoryblocks needed for a felsenstein! prop
+"""
+function lazyprep!(tree::FelNode, eq_message::Vector{<:Partition}; partition_list = 1:length(tree.message))
+    @assert length(eq_message) == length(partition_list)
+    maximum_active_partitions = lazysort!(tree)
+    for (p, part) in enumerate(partition_list)
+        parent_message = tree.parent_message[part]
+        parent_message.partition = eq_message[p]
+        parent_message.static = true
+        for _ = 1:maximum_active_partitions+1
+            push!(parent_message.memoryblocks, partition_from_template(eq_message[p]))
+        end
+    end
+    return maximum_active_partitions
+end
+
+#Return a new instance of T with the same shape as partition_template. Here, we don't care about the values stored within the partition.
+#Fallback method. This should be overloaded with usage of undef to increase performance
+function partition_from_template(partition_template::T) where {T <: Partition}
+    return copy_partition(partition_template)
+end
+
+function partition_from_template(partition_template::T) where {T <: DiscretePartition}
+    states, sites = partition_template.states, partition_template.sites
+    return T(Array{Float64, 2}(undef, states, sites), states, sites, Array{Float64, 1}(undef, sites))
+end
+
+function partition_from_template(partition_template::SWMPartition{PType}) where {PType <: MultiSitePartition}
+    return SWMPartition{PType}(partition_from_template.(partition_template.parts), 
+        copy(partition_template.weights),
+        partition_template.sites,
+        partition_template.states,
+        partition_template.models)
+end
