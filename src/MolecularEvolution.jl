@@ -131,6 +131,7 @@ export
     copy_partition_to!,
     copy_partition,
     copy_message,
+    partition_from_template,
     equilibrium_message,
     sample_partition!,
     obs2partition!,

@@ -64,7 +64,7 @@ function backward!(
     model::BranchModel,
     node::FelNode,
 ) where {PType <: Partition}
-    if isleafnode(node)
+    if isleafnode(node) && isdefined(source, :obs)
         source.partition = pop!(source.memoryblocks)
         #Transform source.obs to the appropriate format
         lazy_obs2partition!(source.partition, source.obs)
