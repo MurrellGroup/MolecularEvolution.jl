@@ -94,54 +94,37 @@ begin #PiQ
 end
 
 begin #LazyPartition
-    """
-    n = FelNode()
-    n.branchlength = 1.0
-    #Create some CodonPartitions
-    sites = 10
-    codon_dest = CodonPartition(sites)
-    codon_dest.state .= rand(length(MolecularEvolution.universal_code.sense_codons))
-    codon_src = CodonPartition(sites)
-    codon_src.state .= rand(length(MolecularEvolution.universal_code.sense_codons))
+    #Lazysort
+    tree = sim_tree(n=15)
+    lazy_tree = deepcopy(tree)
 
-    #Wrap copies of them in LazyPartitions
-    memoryblocks = Vector{CodonPartition}()
-    lazy_dest = LazyPartition{CodonPartition}(deepcopy(codon_dest))
-    lazy_src = LazyPartition{CodonPartition}(deepcopy(codon_src))
-    lazy_dest.memoryblocks, lazy_src.memoryblocks = memoryblocks
+    maximum_active_partitions = MolecularEvolution.lazysort!(lazy_tree)
+    #@show maximum_active_partitions, treedepth(tree), length(getnodelist(tree))
 
-    #Check that the state is the same after a combine!
-    combine!(codon_dest, codon_src)
-    combine!(lazy_dest, lazy_src)
-
-    @test codon_dest.state ≈ lazy_dest.partition.state
-    @test isnothing(lazy_src.partition)
-    
-    #Switch order such that lazy_dest.partition is nothing
-    codon_dest, codon_src = codon_src, codon_dest
-    lazy_dest, lazy_src = lazy_src, lazy_dest
-
-    #Check that the state is the same after a backward!
-    model = GeneralCTMC(MolecularEvolution.MG94_F3x4(1, 1, reversibleQ([1.0,2.0,1.0,1.0,1.6,0.5],[0.2,0.3,0.3,0.2]), [0.2 0.3 0.3 0.2; 0.25 0.25 0.25 0.25; 0.3 0.2 0.2 0.3]))
-    backward!(codon_dest, codon_src, model, n)
-    backward!(lazy_dest, lazy_src, model, n)
-
-    @test codon_dest.state ≈ lazy_dest.partition.state
-    """
-
-    unopt_tree = sim_tree(n=15)
-    opt_tree = deepcopy(unopt_tree)
-
-    maximum_active_partitions = MolecularEvolution.lazysort!(opt_tree)
-    #@show maximum_active_partitions, treedepth(unopt_tree), length(getnodelist(unopt_tree))
-
-    @test maximum_active_partitions <= treedepth(unopt_tree)
-    @test maximum_active_partitions <= floor(log2(length(getnodelist(unopt_tree)))) + 1
+    @test maximum_active_partitions <= treedepth(tree)
+    @test maximum_active_partitions <= floor(log2(length(getnodelist(tree)))) + 1
     
     """
-    p1 = plot(get_phylo_tree(unopt_tree), size=(400, 400))
-    p2 = plot(get_phylo_tree(opt_tree), size=(400,400))
+    p1 = plot(get_phylo_tree(tree), size=(400, 400))
+    p2 = plot(get_phylo_tree(lazy_tree), size=(400,400))
     plot(p1, p2, layout=(2,1))
     """
-    #TODO test this on a tree! Both speed, allocs memory usage.
+
+    #Felsenstein
+    seqnames, seqs = read_fasta("../docs/src/MusAA_IGHV.fasta")
+    tree = read_newick_tree("../docs/src/MusAA_IGHV.tre")
+    AA_freqs = char_proportions(seqs,MolecularEvolution.gappyAAstring)
+    Q = gappy_Q_from_symmetric_rate_matrix(WAGmatrix,1.0,AA_freqs)
+    m = DiagonalizedCTMC(Q)
+    
+    eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
+    initial_partition = LazyPartition{GappyAminoAcidPartition}(nothing)
+    populate_tree!(tree,[initial_partition,eq_partition],seqnames,collect(zip(seqs, seqs)))
+    @show maximum_active_partitions = lazyprep!(tree, [eq_partition], partition_list=1:1)
+
+    felsenstein!(tree, [m, m])
+    @test tree.message[1].partition.state == tree.message[2].state
+    @test MolecularEvolution.total_LL(tree.message[1]) == MolecularEvolution.total_LL(tree.message[2])
+    log_likelihood!(tree, [m, m])
+    @test length(initial_partition.memoryblocks) == maximum_active_partitions+1
 end
