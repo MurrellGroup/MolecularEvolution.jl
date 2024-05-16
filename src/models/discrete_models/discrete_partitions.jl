@@ -15,6 +15,12 @@ function copy_partition(src::T) where {T<:DiscretePartition}
     return T(copy(src.state), src.states, src.sites, copy(src.scaling))
 end
 
+#Overloading the partition_from_template with usage of undef.
+function partition_from_template(partition_template::T) where {T <: DiscretePartition}
+    states, sites = partition_template.states, partition_template.sites
+    return T(Array{Float64, 2}(undef, states, sites), states, sites, Array{Float64, 1}(undef, sites))
+end
+
 #I should add a constructor that constructs a DiscretePartition from an existing array.
 mutable struct CustomDiscretePartition <: DiscretePartition
     state::Array{Float64,2}

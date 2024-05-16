@@ -59,6 +59,15 @@ function copy_partition(src::SWMPartition{PType}) where {PType <: MultiSiteParti
     return SWMPartition{PType}(copy_partition.(src.parts), copy(src.weights), src.sites, src.states, src.models)
 end
 
+#Overloading the partition_from_template with (indirect) usage of undef
+function partition_from_template(partition_template::SWMPartition{PType}) where {PType <: MultiSitePartition}
+    return SWMPartition{PType}(partition_from_template.(partition_template.parts), 
+        copy(partition_template.weights),
+        partition_template.sites,
+        partition_template.states,
+        partition_template.models)
+end
+
 function combine!(dest::SWMPartition{PType},src::SWMPartition{PType}) where {PType<:MultiSitePartition}
     for i in 1:length(dest.parts)
         combine!(dest.parts[i], src.parts[i])

@@ -34,6 +34,20 @@ function copy_partition(src::GaussianPartition)
 end
 =#
 
+#Return a new instance of T with the same shape as partition_template. Here, we don't care about the values stored within the partition.
+#Fallback method. This should be overloaded with usage of undef to increase performance
+function partition_from_template(partition_template::T) where {T <: Partition}
+    return copy_partition(partition_template)
+end
+
+#Example overloading for DiscretePartition:
+#=
+function partition_from_template(partition_template::T) where {T <: DiscretePartition}
+    states, sites = partition_template.states, partition_template.sites
+    return T(Array{Float64, 2}(undef, states, sites), states, sites, Array{Float64, 1}(undef, sites))
+end
+=#
+
 copy_message(msg::Vector{<:Partition}) = [copy_partition(x) for x in msg]
 
 #This is a function shared for all models - perhaps move this elsewhere
