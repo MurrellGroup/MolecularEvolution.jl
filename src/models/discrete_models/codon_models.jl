@@ -341,17 +341,18 @@ function obs2partition!(dest::CodonPartition, seq::String; code = universal_code
         error("Sequence length does not match partition")
     end
 
-    for i = 1:Int(length(seq) / 3)
-        c = seq[3*(i-1)+1:3*(i-1)+3]
+    @views for j in axes(dest.state, 2)
+        c = seq[3*(j-1)+1:3*(j-1)+3]
         cod_ind = get(code.string2sense, c, -1)
         if cod_ind == -1
-            dest.state[:, i] = ones(eltype(dest.state), dest.states)
+            fill!(dest.state[:, j], 1.0)
             push!(problem_codons, c)
         else
-            dest.state[:, i] = zeros(eltype(dest.state), dest.states)
-            dest.state[cod_ind, i] = 1.0
+            fill!(dest.state[:, j], 0.0)
+            dest.state[cod_ind, j] = 1.0
         end
     end
+    fill!(dest.scaling, 0.0)
     return countmap(problem_codons)
 end
 

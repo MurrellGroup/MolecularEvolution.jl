@@ -94,18 +94,20 @@ end
 
 
 
-#Creates new memory. This is currently required for the populate_tree function to do things automatically.
 function obs2partition!(dest::DiscretePartition, seq::String, dic::Dict)
-    #if length(seq) != dest.sites
-    #    @warn "obs2partition!() is changing the number of sites in a partition."
-    #end
-    dest.state = zeros(eltype(dest.state), dest.states, length(seq))
-    dest.sites = length(seq)
-    dest.scaling = zeros(length(seq))
-    unmatched = ones(eltype(dest.state), dest.states)
-    for (i, c) in enumerate(uppercase(seq))
-        dest.state[:, i] = get(dic, c, unmatched)
+    if length(seq) != dest.sites
+        error("Sequence length does not match partition")
     end
+
+    @views for j in axes(dest.state, 2)
+        value = get(dic, uppercase(seq[j]), -1)
+        if value == -1
+            fill!(dest.state[:, j], 1.0)
+        else
+            dest.state[:, j] .= value
+        end
+    end
+    fill!(dest.scaling, 0.0)
 end
 function obs2partition!(dest::NucleotidePartition, seq::String)
     obs2partition!(dest, seq, nuc_dict)
