@@ -120,7 +120,7 @@ begin #LazyPartition
     eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
     initial_partition = LazyPartition{GappyAminoAcidPartition}(nothing)
     populate_tree!(tree,[initial_partition,eq_partition],seqnames,collect(zip(seqs, seqs)))
-    @show maximum_active_partitions = lazyprep!(tree, [eq_partition], partition_list=1:1)
+    maximum_active_partitions = lazyprep!(tree, [eq_partition], partition_list=1:1)
 
     felsenstein!(tree, [m, m])
     @test tree.message[1].partition.state == tree.message[2].state

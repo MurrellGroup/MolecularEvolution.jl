@@ -356,29 +356,6 @@ function obs2partition!(dest::CodonPartition, seq::String; code = universal_code
     return countmap(problem_codons)
 end
 
-function lazy_obs2partition!(dest::CodonPartition, seq::String; code = universal_code)
-    problem_codons = String[]
-    if mod(length(seq), 3) != 0
-        error("Codon sequences must be divisible by 3")
-    end
-    if length(seq) / 3 != dest.sites
-        error("Sequence length does not match partition")
-    end
-
-    @views for j in axes(dest.state, 2)
-        c = seq[3*(j-1)+1:3*(j-1)+3]
-        cod_ind = get(code.string2sense, c, -1)
-        if cod_ind == -1
-            fill!(dest.state[:, j], 1.0)
-            push!(problem_codons, c)
-        else
-            fill!(dest.state[:, j], 0.0)
-            dest.state[cod_ind, j] = 1.0
-        end
-    end
-    fill!(dest.scaling, 0.0)
-    return countmap(problem_codons)
-end
 
 function partition2obs(part::CodonPartition; code = universal_code)
     return join([code.sense_codons[argmax(part.state[:, i])] for i = 1:part.sites])
