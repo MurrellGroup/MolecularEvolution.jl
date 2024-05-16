@@ -1,7 +1,7 @@
 include("continuous_models/continuous_models.jl")
 include("discrete_models/discrete_models.jl")
 include("compound_models/swm.jl")
-include("lazy_partition.jl")
+include("lazy_models/lazy_partition.jl")
 
 
 #BM: New way - avoids user having to define identity! function for new partitions - need to do a performance comparison vs the old way.

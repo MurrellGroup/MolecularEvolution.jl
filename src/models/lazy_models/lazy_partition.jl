@@ -1,8 +1,8 @@
 export LazyPartition
 """
 With this data structure, you can wrap a partition of choice. With a worst case memory complexity of O(log(n)), where n is the number of nodes, functionality is provided for:
-- log_likelihood!
-- felsenstein!
+- `log_likelihood!`
+- `felsenstein!`
 (Further functionality is under development)
 """
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
