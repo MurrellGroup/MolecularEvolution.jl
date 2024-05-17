@@ -44,7 +44,7 @@ function copy_partition(src::LazyPartition{PType}) where {PType <: Partition}
 end
 
 function combine!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
-    (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them."))
+    (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them.\nNote that LazyPartition can only be used for an upward Felsenstein pass."))
     combine!(dest.partition, src.partition)
     safe_release_partition!(src)
 end
@@ -77,6 +77,7 @@ function forward!(
     model::BranchModel,
     node::FelNode,
 ) where {PType <: Partition}
+    (isnothing(source.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined for a forward! call.\nNote that LazyPartition can only be used for an upward Felsenstein pass."))
     forward!(dest.partition, source.partition, model, node)
     safe_release_partition!(source)
 end
