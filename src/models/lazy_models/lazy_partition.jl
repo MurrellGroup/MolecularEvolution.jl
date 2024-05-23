@@ -3,6 +3,7 @@ export LazyPartition
 With this data structure, you can wrap a partition of choice. With a worst case memory complexity of O(log(n)), where n is the number of nodes, functionality is provided for:
 - `log_likelihood!`
 - `felsenstein!`
+- `sample_down`
 (Further functionality is under development)
 """
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
@@ -77,7 +78,14 @@ function forward!(
     model::BranchModel,
     node::FelNode,
 ) where {PType <: Partition}
-    (isnothing(source.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined for a forward! call.\nNote that LazyPartition can only be used for an upward Felsenstein pass."))
+    isnothing(source.partition) && throw(ArgumentError("The partition field in the source LazyPartition must be defined for a forward! call.\nNote that LazyPartition can only be used for an upward Felsenstein pass or sample_down!."))
+    if isnothing(dest.partition)
+        isempty(dest.memoryblocks) && throw(ArgumentError("There needs to be atleast 1 available memoryblock for a forward!.\nNote that LazyPartition can only be used for an upward Felsenstein pass or sample_down!."))
+        dest.partition = pop!(dest.memoryblocks)
+    end
+    if !isroot(node) && node == node.parent.children[end] #We no longer need source to be static
+        source.static = false #Maybe this is something we only want to do during sample_down!
+    end
     forward!(dest.partition, source.partition, model, node)
     safe_release_partition!(source)
 end
@@ -126,22 +134,55 @@ end
 
 export lazyprep!
 """
-    lazyprep!(tree::FelNode, eq_message::Vector{<:Partition}; partition_list = 1:length(tree.message))
+    function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction = 'U')
 
-1. Perform a lazysort! on tree to obtain the optimal tree for a lazy felsenstein! prop
-2. Fix tree.parent_message to the equilibrium message
-3. Add sufficiently many partitions to memoryblocks needed for a felsenstein! prop
+1. Perform a lazysort! on tree to obtain the optimal tree for a lazy felsenstein! prop, or a sample_down!
+2. Fix tree.parent_message to an initial message
+3. Add sufficiently many partitions to memoryblocks needed for a felsenstein! prop, or a sample_down!
+4. Specialized preparations based on the direction of the operations (forward!, backward!). 'U' - Up, 'D' - Down
 """
-function lazyprep!(tree::FelNode, eq_message::Vector{<:Partition}; partition_list = 1:length(tree.message))
-    @assert length(eq_message) == length(partition_list)
-    maximum_active_partitions = lazysort!(tree)
+function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction = 'U')
+    @assert length(initial_message) == length(partition_list)
+    maximum_active_partitions = lazysort!(tree) + 1 # the +1 comes from using an extra temporary memoryblock during backward!
     for (p, part) in enumerate(partition_list)
-        parent_message = tree.parent_message[part]
-        parent_message.partition = eq_message[p]
-        parent_message.static = true
-        for _ = 1:maximum_active_partitions+1 # the +1 comes from using an extra temporary memoryblock during backward!
-            push!(parent_message.memoryblocks, partition_from_template(eq_message[p]))
+        parent_part = tree.parent_message[part]
+        parent_part.partition = initial_message[p]
+        parent_part.static = true
+        for _ = 1:maximum_active_partitions
+            push!(parent_part.memoryblocks, partition_from_template(initial_message[p]))
+        end
+    end
+    if direction == 'D'
+        for node in getnodelist(tree)
+            if isleafnode(node)
+                property = :obs
+                value = nothing #Signal that something should end up here
+            else
+                property = :static
+                value = true #Static until finished with all forwarding as source
+            end
+            setproperty!.(node.message[partition_list], property, value)
         end
     end
     return maximum_active_partitions
 end
+
+lazyprep!(
+    tree::FelNode, 
+    initial_partition::Partition; 
+    partition_list = 1:length(tree.message), 
+    direction = 'U'
+) = lazyprep!(tree, [initial_partition], partition_list = partition_list, direction = direction)
+
+
+#The reason we can have the same sort for felsenstein! and sample_down! is that two negatives cancels out. Upward vs. Downward + Recursive vs. Iterative (stack)
+function sample_partition!(part::LazyPartition)
+    sample_partition!(part.partition)
+    if !isdefined(part, :obs)
+        return
+    end
+    part.obs = partition2obs(part.partition)
+    safe_release_partition!(part)
+end
+
+#TODO use multiple dispatch in direction, default to save all samples during sample_down

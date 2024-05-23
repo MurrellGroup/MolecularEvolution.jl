@@ -120,11 +120,38 @@ begin #LazyPartition
     eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
     initial_partition = LazyPartition{GappyAminoAcidPartition}(nothing)
     populate_tree!(tree,[initial_partition,eq_partition],seqnames,collect(zip(seqs, seqs)))
-    maximum_active_partitions = lazyprep!(tree, [eq_partition], partition_list=1:1)
+    maximum_active_partitions = lazyprep!(tree, eq_partition, partition_list=1:1)
 
     felsenstein!(tree, [m, m])
     @test tree.message[1].partition.state == tree.message[2].state
     @test MolecularEvolution.total_LL(tree.message[1]) == MolecularEvolution.total_LL(tree.message[2])
     log_likelihood!(tree, [m, m])
-    @test length(initial_partition.memoryblocks) == maximum_active_partitions+1
+    @test length(initial_partition.memoryblocks) == maximum_active_partitions
+
+    #Sample Down
+
+    #Lazy
+    tree = sim_tree(n=200)
+    initial_partition = GaussianPartition()
+    lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
+    internal_message_init!(tree, lazy_initial_partition) #messages are length 1 to align the RNG-seed
+    bm_model = BrownianMotion(0.0, 1.0)
+    maximum_active_partitions = lazyprep!(tree, [initial_partition], direction='D')
+
+    seed = 420
+    Random.seed!(seed)
+    sample_down!(tree, bm_model)
+    lazy_sampled_observations = [node.message[1].obs for node in getleaflist(tree)]
+    @test length(lazy_initial_partition.memoryblocks) == maximum_active_partitions
+    lazy_ll = log_likelihood!(tree, bm_model)
+    @test length(lazy_initial_partition.memoryblocks) == maximum_active_partitions
+
+    #Not lazy
+    internal_message_init!(tree, initial_partition)
+    Random.seed!(seed)
+    sample_down!(tree, bm_model)
+    sampled_observations = map(partition2obs, [node.message[1] for node in getleaflist(tree)])
+    @test isapprox(lazy_sampled_observations, sampled_observations)
+    ll = log_likelihood!(tree, bm_model)
+    @test isapprox(lazy_ll, ll)
 end

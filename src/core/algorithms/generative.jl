@@ -25,7 +25,7 @@ function sample_down!(node::FelNode, models, partition_list)
         if isroot(node)
             forward!(node.message[part], node.parent_message[part], model_list[part], node)
         else
-            forward!(node.message[part], node.parent.message[part], model_list[part], node)
+            forward!(node.message[part], node.parent.message[part], model_list[part], node) #node.parent['.' vs. '_']message[part]
         end
         sample_partition!(node.message[part])
     end

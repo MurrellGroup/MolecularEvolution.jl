@@ -2,7 +2,7 @@
 
 julia_version = "1.10.1"
 manifest_format = "2.0"
-project_hash = "0260fd36dae0250fd999dcf93e1ef36a52105a70"
+project_hash = "bf4c03139015ea9fdc54c5a0d51e76110defa4fe"
 
 [[deps.Automa]]
 deps = ["PrecompileTools", "TranscodingStreams"]
