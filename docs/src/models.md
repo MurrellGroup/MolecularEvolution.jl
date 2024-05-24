@@ -45,7 +45,7 @@ lazyprep!(tree, [eq_partition])
 By this slight modification, we go from initializing and using 212 partitions to 7 during the subsequent `log_likelihood!` calls. There is no significant decrease in performance recorded from this switch.
 
 ##### Example 2: Initializing for a downward pass
-Now, we show how to wrap the `GaussianPartition`s from [Quick example](../../README.md#quick-example-likelihood-calculations-under-phylogenetic-brownian-motion) with `LazyPartition`:
+Now, we show how to wrap the `GaussianPartition`s from [Quick example](https://github.com/nossleinad/MolecularEvolution.jl/blob/LazyPartition/README.md#quick-example-likelihood-calculations-under-phylogenetic-brownian-motion) with `LazyPartition`:
 You simply swap out this line of code
 ```julia
 internal_message_init!(tree, GaussianPartition())
