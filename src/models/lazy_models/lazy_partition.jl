@@ -1,6 +1,10 @@
 export LazyPartition
 """
-With this data structure, you can wrap a partition of choice. With a worst case memory complexity of O(log(n)), where n is the number of nodes, functionality is provided for:
+With this data structure, you can wrap a partition of choice. 
+The idea is that in some message passing algorithms, there is only a wave of partitions which need to actualize. 
+For instance, a wave following a root-leaf path, or a depth-first traversal.
+In which case, we can be more economical with our memory consumption.
+With a worst case memory complexity of O(log(n)), where n is the number of nodes, functionality is provided for:
 - `log_likelihood!`
 - `felsenstein!`
 - `sample_down`
@@ -20,6 +24,19 @@ mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
         new(partition, memoryblocks, false)
     end
 end
+
+export LazyUp
+struct LazyUp <: LazyDirection end
+export LazyDown
+struct LazyDown <: LazyDirection
+    stores_obs #Function: FelNode -> Bool. Does the node store its observation after a down pass?
+    
+    function LazyDown(stores_obs)
+        new(stores_obs)
+    end
+end
+
+LazyDown() = LazyDown(x::FelNode -> true) #Every node stores obs
 
 """
 I store:
@@ -134,14 +151,14 @@ end
 
 export lazyprep!
 """
-    function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction = 'U')
+    lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction::LazyDirection = LazyUp())
 
 1. Perform a lazysort! on tree to obtain the optimal tree for a lazy felsenstein! prop, or a sample_down!
 2. Fix tree.parent_message to an initial message
 3. Add sufficiently many partitions to memoryblocks needed for a felsenstein! prop, or a sample_down!
-4. Specialized preparations based on the direction of the operations (forward!, backward!). 'U' - Up, 'D' - Down
+4. Specialized preparations based on the direction of the operations (forward!, backward!). LazyDown and LazyUp.
 """
-function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction = 'U')
+function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction::LazyDirection = LazyUp())
     @assert length(initial_message) == length(partition_list)
     maximum_active_partitions = lazysort!(tree) + 1 # the +1 comes from using an extra temporary memoryblock during backward!
     for (p, part) in enumerate(partition_list)
@@ -152,18 +169,7 @@ function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partitio
             push!(parent_part.memoryblocks, partition_from_template(initial_message[p]))
         end
     end
-    if direction == 'D'
-        for node in getnodelist(tree)
-            if isleafnode(node)
-                property = :obs
-                value = nothing #Signal that something should end up here
-            else
-                property = :static
-                value = true #Static until finished with all forwarding as source
-            end
-            setproperty!.(node.message[partition_list], property, value)
-        end
-    end
+    lazyprep!(tree, direction, partition_list = partition_list) #Specialized prep that dispatches on direction
     return maximum_active_partitions
 end
 
@@ -171,7 +177,7 @@ lazyprep!(
     tree::FelNode, 
     initial_partition::Partition; 
     partition_list = 1:length(tree.message), 
-    direction = 'U'
+    direction::LazyDirection = LazyUp()
 ) = lazyprep!(tree, [initial_partition], partition_list = partition_list, direction = direction)
 
 
@@ -185,4 +191,21 @@ function sample_partition!(part::LazyPartition)
     safe_release_partition!(part)
 end
 
-#TODO use multiple dispatch in direction, default to save all samples during sample_down
+function lazyprep!(tree::FelNode, direction::LazyUp; partition_list = 1:length(tree.message))
+    return
+end
+
+function lazyprep!(tree::FelNode, direction::LazyDown; partition_list = 1:length(tree.message))
+    for node in getnodelist(tree)
+        if direction.stores_obs(node)
+            property = :obs
+            value = nothing #Signal that something should end up here
+            setproperty!.(node.message[partition_list], property, value)
+        end
+        if !isleafnode(node)
+            property = :static
+            value = true #Static until finished with all forwarding as source
+            setproperty!.(node.message[partition_list], property, value)
+        end
+    end
+end

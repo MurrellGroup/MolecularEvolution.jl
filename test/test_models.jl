@@ -129,29 +129,47 @@ begin #LazyPartition
     @test length(initial_partition.memoryblocks) == maximum_active_partitions
 
     #Sample Down
-
-    #Lazy
+    seed = 420
     tree = sim_tree(n=200)
     initial_partition = GaussianPartition()
+    bm_model = BrownianMotion(0.0, 1.0)
+    nodelist = getnodelist(tree)
+    leaf_inds = [isleafnode(node) for node in nodelist]
+
+    ##Lazy
+    ###Store obs on leaves
     lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
     internal_message_init!(tree, lazy_initial_partition) #messages are length 1 to align the RNG-seed
-    bm_model = BrownianMotion(0.0, 1.0)
-    maximum_active_partitions = lazyprep!(tree, [initial_partition], direction='D')
-
-    seed = 420
+    maximum_active_partitions = lazyprep!(tree, [initial_partition], direction=LazyDown(isleafnode))
+    
     Random.seed!(seed)
     sample_down!(tree, bm_model)
-    lazy_sampled_observations = [node.message[1].obs for node in getleaflist(tree)]
+    lazy_sampled_leaf_observations = [node.message[1].obs for node in nodelist[leaf_inds]]
+
     @test length(lazy_initial_partition.memoryblocks) == maximum_active_partitions
     lazy_ll = log_likelihood!(tree, bm_model)
     @test length(lazy_initial_partition.memoryblocks) == maximum_active_partitions
 
-    #Not lazy
+    ###Store obs on every node
+    lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
+    internal_message_init!(tree, lazy_initial_partition)
+    lazyprep!(tree, initial_partition, direction=LazyDown())
+    
+    Random.seed!(seed)
+    sample_down!(tree, bm_model)
+    lazy_sampled_observations = [node.message[1].obs for node in nodelist]
+    lazy_ll2 = log_likelihood!(tree, bm_model)
+
+    ##Not lazy
     internal_message_init!(tree, initial_partition)
     Random.seed!(seed)
     sample_down!(tree, bm_model)
-    sampled_observations = map(partition2obs, [node.message[1] for node in getleaflist(tree)])
+    sampled_observations = map(partition2obs, [node.message[1] for node in nodelist])
+
+    @test isapprox(lazy_sampled_leaf_observations, sampled_observations[leaf_inds])
     @test isapprox(lazy_sampled_observations, sampled_observations)
     ll = log_likelihood!(tree, bm_model)
     @test isapprox(lazy_ll, ll)
+    @test isapprox(lazy_ll2, ll)
+
 end

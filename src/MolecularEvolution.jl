@@ -31,6 +31,8 @@ abstract type StatePath end
 
 abstract type UnivariateOpt end
 
+abstract type LazyDirection end
+
 #include("core/core.jl")
 include("core/nodes/nodes.jl")
 include("core/algorithms/algorithms.jl")
