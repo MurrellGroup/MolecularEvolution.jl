@@ -124,17 +124,33 @@ end
 - Returns the minimum length of memoryblocks (-1) required for a felsenstein! prop. We need a temporary memoryblock during backward!, hence the '-1'.
 - Note: since felsenstein! uses a stack, we want to avoid having long node.children[1].children[1]... chains
 """
-function lazysort!(node)
-    if isleafnode(node)
-        return 1
+function lazysort!(tree::FelNode)
+    node_stack = [(tree, true)]
+    result_stack = Vector{Int64}() #Result is the maximum active partitions a node requires
+    while !isempty(node_stack)
+        node, first = pop!(node_stack)
+        if !isleafnode(node)
+            if first
+                push!(node_stack, (node, false))
+                for child in node.children
+                    push!(node_stack, (child, true))
+                end
+            end
+            if !first
+                #maximum_active_partitions maps directly onto node.children since we have two pop! operations (reverses order) that cancel out
+                maximum_active_partitions = [pop!(result_stack) for _ in node.children]
+                perm = sortperm(maximum_active_partitions)
+                node.children = node.children[perm] #Sort to avoid long node.children[1].children[1]... chains
+                for (i, idx) in enumerate(perm)
+                    maximum_active_partitions[idx] += length(node.children) - i #Add n.o. nodes that is to the right
+                end
+                push!(result_stack, maximum(maximum_active_partitions))
+            end
+        else
+            push!(result_stack, 1)
+        end
     end
-    maximum_active_partitions = [lazysort!(child) for child in node.children]
-    perm = sortperm(maximum_active_partitions)
-    node.children = node.children[perm]
-    for (i, idx) in enumerate(perm)
-        maximum_active_partitions[idx] += length(node.children) - i
-    end
-    return maximum(maximum_active_partitions)
+    return pop!(result_stack)
 end
 
 function safe_release_partition!(src::LazyPartition)
