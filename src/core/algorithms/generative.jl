@@ -33,7 +33,7 @@ function sample_down!(node::FelNode, models, partition_list)
             sample_partition!(node.message[part])
         end
         if !isleafnode(node)
-            for child in node.children
+            for child in reverse(node.children)
                 push!(stack, child)
             end
         end
