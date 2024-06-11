@@ -20,18 +20,22 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over.
 """
 function sample_down!(node::FelNode, models, partition_list)
-    model_list = models(node)
-    for part in partition_list
-        if isroot(node)
-            forward!(node.message[part], node.parent_message[part], model_list[part], node)
-        else
-            forward!(node.message[part], node.parent.message[part], model_list[part], node)
+    stack = [node]
+    while !isempty(stack)
+        node = pop!(stack)
+        model_list = models(node)
+        for part in partition_list
+            if isroot(node)
+                forward!(node.message[part], node.parent_message[part], model_list[part], node)
+            else
+                forward!(node.message[part], node.parent.message[part], model_list[part], node)
+            end
+            sample_partition!(node.message[part])
         end
-        sample_partition!(node.message[part])
-    end
-    if !isleafnode(node)
-        for child in node.children
-            sample_down!(child, models, partition_list)
+        if !isleafnode(node)
+            for child in node.children
+                push!(stack, child)
+            end
         end
     end
 end

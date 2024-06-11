@@ -347,10 +347,15 @@ function prettyprintstring(node::T, spaces::Int = 0) where {T<:AbstractTreeNode}
 end
 
 export getnodelist
-function getnodelist(node::T, nodelist::Array{T,1} = T[]) where {T<:AbstractTreeNode}
-    push!(nodelist, node)
-    for childnode in node.children #Fixing this to avoid implementing iterate(::FelNode)
-        getnodelist(childnode, nodelist)
+function getnodelist(node::T) where {T<:AbstractTreeNode}
+    nodelist = []
+    nodes = [node]
+    while nodes != []
+        node = pop!(nodes)
+        push!(nodelist, node)
+        for child in node.children
+            push!(nodes, child)
+        end
     end
     return nodelist
 end
@@ -385,23 +390,34 @@ function treedepth(node::T) where {T<:AbstractTreeNode}
 end
 
 export getnonleaflist
-function getnonleaflist(node::T, nonleaflist::Array{T,1} = T[]) where {T<:AbstractTreeNode}
-    if !isleafnode(node)
-        push!(nonleaflist, node)
-    end
-    for childnode in node.children
-        getnonleaflist(childnode, nonleaflist)
+function getnonleaflist(node::T) where {T<:AbstractTreeNode}
+    nonleaflist = []
+    nodes = [node]
+    while nodes != []
+        node = pop!(nodes)
+        if node.children != []
+            push!(nonleaflist, node)
+            for child in node.children
+                push!(nodes, child)
+            end
+        end
     end
     return nonleaflist
 end
 
 export getleaflist
-function getleaflist(node::T, leaflist::Array{T,1} = T[]) where {T<:AbstractTreeNode}
-    if isleafnode(node)
-        push!(leaflist, node)
-    end
-    for childnode in node.children
-        getleaflist(childnode, leaflist)
+function getleaflist(node::T) where {T<:AbstractTreeNode}
+    leaflist = []
+    nodes = [node]
+    while nodes != []
+        node = pop!(nodes)
+        if node.children == []
+            push!(leaflist, node)
+        else 
+            for child in node.children
+                push!(nodes, child)
+            end
+        end
     end
     return leaflist
 end
@@ -432,14 +448,59 @@ function ladderize(tree::T) where {T<:AbstractTreeNode}
 end
 
 function ladderize!(tree::T) where {T<:AbstractTreeNode}
+    child_counts = countchildren(tree)
     for node in getnodelist(tree)
-        if length(node.children) != 0
-            sort!(
-                node.children,
-                lt = (x, y) -> length(getnodelist(x)) < length(getnodelist(y)),
-            )
+        if !isempty(node.children)
+            sort!(node.children, lt = (x, y) -> child_counts[x] < child_counts[y])
         end
     end
+end
+
+# Creates a dictionary of all the child counts (including the node itself) which can then be used by ladderize to sort the nodes
+function countchildren(tree::AbstractTreeNode)
+    nodes = getleaflist(tree)
+    child_count = Dict{FelNode, Int}()
+    skipped_nodes = []
+    checked_nodes = Set{FelNode}()
+
+    while !isempty(nodes)
+        node = pop!(nodes)
+
+        # If the node does not have children, check if the parent has been checked, if not, push the parent to the stack
+        if isempty(node.children)
+            child_count[node] = 1
+            push!(checked_nodes, node)
+            if !isnothing(node.parent) && !in(node.parent, checked_nodes)
+                push!(nodes, node.parent)
+            end
+        # If the node has children, check if all children have been checked, if not, push the current node to the skipped stack for later
+        else
+            all_children_checked = true
+            for child in node.children
+                # If a child has not been checked, we push the current node to the skipped stack for later and continue popping from nodes
+                if !in(child, checked_nodes)
+                    all_children_checked = false
+                    push!(skipped_nodes, node)
+                    break
+                end
+            end
+            # If all children have been checked, we count all the children and mark the current node as checked
+            if all_children_checked
+                child_count[node] = 1 + sum([child_count[child] for child in node.children])
+                push!(checked_nodes, node)
+                if !isnothing(node.parent) && !in(node.parent, checked_nodes)
+                    push!(nodes, node.parent)
+                end
+            end
+            
+        end
+        # When the current node stack is empty, we check if there are any skipped nodes and if so, check those as well and repeat until all nodes have been checked
+        if isempty(nodes) && !isempty(skipped_nodes)
+            nodes = skipped_nodes
+            skipped_nodes = []
+        end
+    end
+    return child_count
 end
 
 
