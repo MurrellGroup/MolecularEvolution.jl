@@ -457,9 +457,9 @@ function ladderize!(tree::T) where {T<:AbstractTreeNode}
 end
 
 # Creates a dictionary of all the child counts (including the node itself) which can then be used by ladderize to sort the nodes
-function countchildren(tree::AbstractTreeNode)
+function countchildren(tree::T) where {T<:AbstractTreeNode}
     # Initialize the dictionary to store the number of children for each node
-    children_count = Dict{FelNode, Int}()
+    children_count = Dict{T, Int}()
 
     # Initialize the stack for DFS
     stack = [tree]
