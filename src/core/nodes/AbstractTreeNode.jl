@@ -458,51 +458,35 @@ end
 
 # Creates a dictionary of all the child counts (including the node itself) which can then be used by ladderize to sort the nodes
 function countchildren(tree::AbstractTreeNode)
-    nodes = getleaflist(tree)
-    child_count = Dict{FelNode, Int}()
-    skipped_nodes = []
-    checked_nodes = Set{FelNode}()
+    # Initialize the dictionary to store the number of children for each node
+    children_count = Dict{FelNode, Int}()
 
-    while !isempty(nodes)
-        node = pop!(nodes)
+    # Initialize the stack for DFS
+    stack = [tree]
+    
+    # Initialize a list to keep track of the post-order traversal
+    post_order = []
 
-        # If the node does not have children, check if the parent has been checked, if not, push the parent to the stack
-        if isempty(node.children)
-            child_count[node] = 1
-            push!(checked_nodes, node)
-            if !isnothing(node.parent) && !in(node.parent, checked_nodes)
-                push!(nodes, node.parent)
-            end
-        # If the node has children, check if all children have been checked, if not, push the current node to the skipped stack for later
-        else
-            all_children_checked = true
-            for child in node.children
-                # If a child has not been checked, we push the current node to the skipped stack for later and continue popping from nodes
-                if !in(child, checked_nodes)
-                    all_children_checked = false
-                    push!(skipped_nodes, node)
-                    break
-                end
-            end
-            # If all children have been checked, we count all the children and mark the current node as checked
-            if all_children_checked
-                child_count[node] = 1 + sum([child_count[child] for child in node.children])
-                push!(checked_nodes, node)
-                if !isnothing(node.parent) && !in(node.parent, checked_nodes)
-                    push!(nodes, node.parent)
-                end
-            end
-            
-        end
-        # When the current node stack is empty, we check if there are any skipped nodes and if so, check those as well and repeat until all nodes have been checked
-        if isempty(nodes) && !isempty(skipped_nodes)
-            nodes = skipped_nodes
-            skipped_nodes = []
-        end
+    # First pass: Perform DFS and store the nodes in post-order
+    while !isempty(stack)
+       node = pop!(stack)
+       push!(post_order, node)
+       for child in node.children
+           push!(stack, child)
+       end
     end
-    return child_count
-end
 
+    # Second pass: Calculate the number of children for each node in post-order
+    for node in reverse(post_order)
+       count = 0
+       for child in node.children
+           count += 1 + children_count[child]
+       end
+       children_count[node] = count
+    end
+
+   return children_count
+end
 
 function getorder(tree::T) where {T<:AbstractTreeNode}
     return [node.seqindex for node in getleaflist(tree)]
