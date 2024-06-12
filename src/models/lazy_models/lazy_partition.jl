@@ -7,8 +7,7 @@ In which case, we can be more economical with our memory consumption.
 With a worst case memory complexity of O(log(n)), where n is the number of nodes, functionality is provided for:
 - `log_likelihood!`
 - `felsenstein!`
-- `sample_down`
-(Further functionality is under development)
+- `sample_down!`
 """
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     partition::Union{PType, Nothing}
@@ -26,8 +25,24 @@ mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
 end
 
 export LazyUp
+"""
+# Constructor
+    LazyUp()
+
+# Description
+Indicate that we want to do an upward pass, e.g. `felsenstein!`.
+"""
 struct LazyUp <: LazyDirection end
 export LazyDown
+"""
+# Constructor
+    LazyDown(func)
+    LazyDown() = LazyDown(x::FelNode -> true)
+
+# Description
+Indicate that we want to do a downward pass, e.g. `sample_down!`.
+The function passed to the constructor takes a `node::FelNode` as input and returns a `Bool` that decides if `node` stores its observations.
+"""
 struct LazyDown <: LazyDirection
     stores_obs #Function: FelNode -> Bool. Does the node store its observation after a down pass?
     
@@ -73,6 +88,7 @@ The idea with backward!{LazyPartition} is to avoid having to call the GC too oft
 therefore, we need access to shared memoryblocks during the message passing wave. This is only really necessary if PType <: MultisitePartition,
 but for consistency, we might as well do it for all types?
 """
+
 function backward!(
     dest::LazyPartition{PType},
     source::LazyPartition{PType},
