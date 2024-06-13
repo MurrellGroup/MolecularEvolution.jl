@@ -1,4 +1,4 @@
-using MolecularEvolution
+using MolecularEvolution, FASTX, Random
 using Test
 
 @testset "MolecularEvolution.jl" begin
