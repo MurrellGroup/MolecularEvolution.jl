@@ -14,17 +14,9 @@ Coming soon.
 
 ### LazyPartition
 
-```@docs
+```@docs; canonical=false
 LazyPartition
 ```
-
-#### Further requirements
-
-Suppose you want to wrap a partition of `PType` with `LazyPartition`:
-- If you're calling `log_likelihood!` and `felsenstein!`:
-    - `obs2partition!(partition::PType, obs)` that transforms an observation to a partition.
-- If you're calling `sample_down!`:
-    - `partition2obs(partition::PType)` that returns the most likely state from a partition, inverts `obs2partition!`.
 
 #### Examples
 
@@ -66,7 +58,7 @@ lazyprep!(tree, initial_partition, direction=LazyDown(isleafnode))
     Now, we provided a direction for `lazyprep!`. The direction is an instance of `LazyDown`, which was initialized with the `isleafnode` function. The function `isleafnode` dictates if a node saves its sampled observation after a down pass. If you use `direction=LazyDown()`, every node saves its observation.
 
 #### Surrounding LazyPartition
-```@docs
+```@docs; canonical=false
 lazyprep!
 LazyUp
 LazyDown

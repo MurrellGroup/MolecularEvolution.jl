@@ -1,5 +1,6 @@
 export LazyPartition
 """
+# Description
 With this data structure, you can wrap a partition of choice. 
 The idea is that in some message passing algorithms, there is only a wave of partitions which need to actualize. 
 For instance, a wave following a root-leaf path, or a depth-first traversal.
@@ -8,6 +9,13 @@ With a worst case memory complexity of O(log(n)), where n is the number of nodes
 - `log_likelihood!`
 - `felsenstein!`
 - `sample_down!`
+
+# Further requirements
+Suppose you want to wrap a partition of `PType` with `LazyPartition`:
+- If you're calling `log_likelihood!` and `felsenstein!`:
+    - `obs2partition!(partition::PType, obs)` that transforms an observation to a partition.
+- If you're calling `sample_down!`:
+    - `partition2obs(partition::PType)` that returns the most likely state from a partition, inverts `obs2partition!`.
 """
 mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     partition::Union{PType, Nothing}
@@ -35,8 +43,8 @@ Indicate that we want to do an upward pass, e.g. `felsenstein!`.
 struct LazyUp <: LazyDirection end
 export LazyDown
 """
-# Constructor
-    LazyDown(func)
+# Constructors
+    LazyDown(stores_obs)
     LazyDown() = LazyDown(x::FelNode -> true)
 
 # Description
@@ -137,8 +145,9 @@ end
 
 """
 - Should be run on a tree containing LazyPartitions before running `felsenstein!`. Sorts for a minimal count of active partitions during a felsenstein!
-- Returns the minimum length of memoryblocks (-1) required for a felsenstein! prop. We need a temporary memoryblock during backward!, hence the '-1'.
-- Note: since felsenstein! uses a stack, we want to avoid having long node.children[1].children[1]... chains
+- Returns the minimum length of memoryblocks (-1) required for a `felsenstein!` prop. We need a temporary memoryblock during `backward!`, hence the '-1'.
+!!! note
+    Since felsenstein! uses a stack, we want to avoid having long node.children[1].children[1]... chains
 """
 function lazysort!(tree::FelNode)
     node_stack = [(tree, true)]
@@ -185,10 +194,13 @@ export lazyprep!
 """
     lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction::LazyDirection = LazyUp())
 
-1. Perform a lazysort! on tree to obtain the optimal tree for a lazy felsenstein! prop, or a sample_down!
-2. Fix tree.parent_message to an initial message
-3. Add sufficiently many partitions to memoryblocks needed for a felsenstein! prop, or a sample_down!
-4. Specialized preparations based on the direction of the operations (forward!, backward!). LazyDown and LazyUp.
+Extra, intermediate step of tree preparations between initializing the tree and calling message passing algorithms with `LazyPartition`.
+1. Perform a `lazysort!` on tree to obtain the optimal tree for a lazy `felsenstein!` prop, or a `sample_down!`.
+2. Fix `tree.parent_message` to an initial message.
+3. Preallocate sufficiently many inner partitions needed for a `felsenstein!` prop, or a `sample_down!`.
+4. Specialized preparations based on the direction of the operations (`forward!`, `backward!`). `LazyDown` or `LazyUp`.
+
+See also `LazyDown`, `LazyUp`.
 """
 function lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction::LazyDirection = LazyUp())
     @assert length(initial_message) == length(partition_list)
