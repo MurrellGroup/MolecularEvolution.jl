@@ -13,6 +13,8 @@ With a worst case memory complexity of O(log(n)), where n is the number of nodes
 - `log_likelihood!`
 - `felsenstein!`
 - `sample_down!`
+!!! note
+    For successive `felsenstein!` calls, we need to extract the information at the root somehow after each call. This can be done with e.g. `total_LL` or `site_LLs`.
 
 # Further requirements
 Suppose you want to wrap a partition of `PType` with `LazyPartition`:
@@ -89,7 +91,7 @@ function copy_partition(src::LazyPartition{PType}) where {PType <: Partition}
 end
 
 function combine!(dest::LazyPartition{PType}, src::LazyPartition{PType}) where {PType <: Partition}
-    (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them.\nNote that LazyPartition can only be used for an upward Felsenstein pass."))
+    (isnothing(src.partition) || isnothing(dest.partition)) && throw(ArgumentError("The partition field in both the source and destination LazyPartitions must be defined to combine them.\nNote that LazyPartition can only be used for an upward Felsenstein pass or sample_down!."))
     combine!(dest.partition, src.partition)
     safe_release_partition!(src)
 end
@@ -198,7 +200,7 @@ export lazyprep!
 """
     lazyprep!(tree::FelNode, initial_message::Vector{<:Partition}; partition_list = 1:length(tree.message), direction::LazyDirection = LazyUp())
 
-Extra, intermediate step of tree preparations between initializing the tree and calling message passing algorithms with `LazyPartition`.
+Extra, intermediate step of tree preparations between initializing messages across the tree and calling message passing algorithms with `LazyPartition`.
 1. Perform a `lazysort!` on tree to obtain the optimal tree for a lazy `felsenstein!` prop, or a `sample_down!`.
 2. Fix `tree.parent_message` to an initial message.
 3. Preallocate sufficiently many inner partitions needed for a `felsenstein!` prop, or a `sample_down!`.

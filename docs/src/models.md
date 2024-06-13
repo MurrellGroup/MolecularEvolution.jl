@@ -21,33 +21,35 @@ LazyPartition
 #### Examples
 
 ##### Example 1: Initializing for an upward pass
-Now, we show how to wrap the `GappyAminoAcidPartition`s from [Example 1: Amino acid ancestral reconstruction and visualization](@ref) with `LazyPartition`:
+Now, we show how to wrap the `CodonPartition`s from [Example 3: FUBAR](@ref) with `LazyPartition`:
 
-You simply swap out these two lines
+You simply go from initializing messages like this:
 ```julia
-initial_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
+initial_partition = CodonPartition(Int64(length(seqs[1])/3))
+initial_partition.state .= eq_freqs
 populate_tree!(tree,initial_partition,seqnames,seqs)
 ```
 
-With this
+To this
 ```julia
-eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
-initial_partition = LazyPartition{GappyAminoAcidPartition}()
-populate_tree!(tree,initial_partition,seqnames,seqs)
-lazyprep!(tree, [eq_partition])
+initial_partition = CodonPartition(Int64(length(seqs[1])/3))
+initial_partition.state .= eq_freqs
+lazy_initial_partition = LazyPartition{CodonPartition}()
+populate_tree!(tree,lazy_initial_partition,seqnames,seqs)
+lazyprep!(tree, initial_partition)
 ```
 
-By this slight modification, we go from initializing and using 212 partitions to 7 during the subsequent `log_likelihood!` calls. There is no significant decrease in performance recorded from this switch.
+By this slight modification, we go from initializing and using 554 partitions to 6 during the subsequent `log_likelihood!` and `felsenstein!` calls. There is no significant decrease in performance recorded from this switch.
 
 ##### Example 2: Initializing for a downward pass
 Now, we show how to wrap the `GaussianPartition`s from [Quick example: Likelihood calculations under phylogenetic Brownian motion:](@ref) with `LazyPartition`:
 
-You simply swap out this line of code
+You simply go from initializing messages like this:
 ```julia
 internal_message_init!(tree, GaussianPartition())
 ```
 
-With this (technically we only add 1 LOC)
+To this (technically we only add 1 LOC)
 ```julia
 initial_partition = GaussianPartition()
 lazy_initial_partition = LazyPartition{GaussianPartition}()
