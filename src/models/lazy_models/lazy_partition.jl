@@ -1,5 +1,9 @@
 export LazyPartition
 """
+# Constructor
+    LazyPartition{PType}()
+Initialize an empty `LazyPartition` that is meant for wrapping a partition of type `PType`.
+
 # Description
 With this data structure, you can wrap a partition of choice. 
 The idea is that in some message passing algorithms, there is only a wave of partitions which need to actualize. 
@@ -23,13 +27,13 @@ mutable struct LazyPartition{PType} <: Partition where {PType <: Partition}
     static::Bool #Does the LazyPartition keep its partition during a message passing wave? Defaults to false
     obs #Leaf nodes can store their observations here in a preferably compact data structure. Note: allowing Any type is probably bad for performance
 
-    function LazyPartition{PType}(partition) where {PType <: Partition}
-        new(partition, Vector{PType}(), false)
-    end
-
     function LazyPartition{PType}(partition, memoryblocks) where {PType <: Partition}
         new(partition, memoryblocks, false)
     end
+end
+
+function LazyPartition{PType}() where {PType <: Partition}
+    LazyPartition{PType}(nothing, Vector{PType}())
 end
 
 export LazyUp

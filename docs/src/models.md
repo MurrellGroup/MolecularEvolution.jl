@@ -32,7 +32,7 @@ populate_tree!(tree,initial_partition,seqnames,seqs)
 With this
 ```julia
 eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
-initial_partition = LazyPartition{GappyAminoAcidPartition}(nothing)
+initial_partition = LazyPartition{GappyAminoAcidPartition}()
 populate_tree!(tree,initial_partition,seqnames,seqs)
 lazyprep!(tree, [eq_partition])
 ```
@@ -50,7 +50,7 @@ internal_message_init!(tree, GaussianPartition())
 With this (technically we only add 1 LOC)
 ```julia
 initial_partition = GaussianPartition()
-lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
+lazy_initial_partition = LazyPartition{GaussianPartition}()
 internal_message_init!(tree, lazy_initial_partition)
 lazyprep!(tree, initial_partition, direction=LazyDown(isleafnode))
 ```

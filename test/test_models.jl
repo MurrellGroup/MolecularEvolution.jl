@@ -118,7 +118,7 @@ begin #LazyPartition
     m = DiagonalizedCTMC(Q)
     
     eq_partition = GappyAminoAcidPartition(AA_freqs,length(seqs[1]))
-    initial_partition = LazyPartition{GappyAminoAcidPartition}(nothing)
+    initial_partition = LazyPartition{GappyAminoAcidPartition}()
     populate_tree!(tree,[initial_partition,eq_partition],seqnames,collect(zip(seqs, seqs)))
     maximum_active_partitions = lazyprep!(tree, eq_partition, partition_list=1:1)
 
@@ -138,7 +138,7 @@ begin #LazyPartition
 
     ##Lazy
     ###Store obs on leaves
-    lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
+    lazy_initial_partition = LazyPartition{GaussianPartition}()
     internal_message_init!(tree, lazy_initial_partition) #messages are length 1 to align the RNG-seed
     maximum_active_partitions = lazyprep!(tree, [initial_partition], direction=LazyDown(isleafnode))
     
@@ -151,7 +151,7 @@ begin #LazyPartition
     @test length(lazy_initial_partition.memoryblocks) == maximum_active_partitions
 
     ###Store obs on every node
-    lazy_initial_partition = LazyPartition{GaussianPartition}(nothing)
+    lazy_initial_partition = LazyPartition{GaussianPartition}()
     internal_message_init!(tree, lazy_initial_partition)
     lazyprep!(tree, initial_partition, direction=LazyDown())
     
