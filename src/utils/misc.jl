@@ -261,10 +261,7 @@ function read_newick_tree(
     strip_single_quotes = true,
 )
     treestring = read(treefile, String)
-    tree = gettreefromnewick(treestring, FelNode)
-    if binarize
-        binarize!(tree)
-    end
+    tree = gettreefromnewick(treestring, FelNode, disable_binarize=!binarize)
     if ladderize
         ladderize!(tree)
     end
