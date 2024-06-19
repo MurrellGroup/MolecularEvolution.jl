@@ -477,7 +477,7 @@ function countchildren(tree::T) where {T<:AbstractTreeNode}
     end
 
     # Second pass: Calculate the number of children for each node in post-order
-    for node in reverse(post_order)
+    for node in Iterators.reverse(post_order)
        count = 0
        for child in node.children
            count += 1 + children_count[child]
