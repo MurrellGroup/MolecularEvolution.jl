@@ -1,8 +1,8 @@
 
 
 function nni_optim!(
-    temp_message::Vector{Partition},
-    message_to_set::Vector{Partition},
+    temp_message::Vector{<:Partition},
+    message_to_set::Vector{<:Partition},
     node::FelNode,
     models,
     partition_list;
@@ -72,8 +72,8 @@ end
 
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
 function nni_optim!(
-    temp_message::Vector{Partition},
-    message_to_set::Vector{Partition},
+    temp_message::Vector{<:Partition},
+    message_to_set::Vector{<:Partition},
     node::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
@@ -89,8 +89,8 @@ function nni_optim!(
     )
 end
 function nni_optim!(
-    temp_message::Vector{Partition},
-    message_to_set::Vector{Partition},
+    temp_message::Vector{<:Partition},
+    message_to_set::Vector{<:Partition},
     node::FelNode,
     model::BranchModel,
     partition_list;

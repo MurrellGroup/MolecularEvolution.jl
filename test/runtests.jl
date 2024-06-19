@@ -26,4 +26,8 @@ using Test
         include("partition_selection.jl")
     end
 
+    @testset "message_type_stability" begin
+        include("message_type_stability.jl")
+    end
+
 end

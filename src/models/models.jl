@@ -48,6 +48,7 @@ function partition_from_template(partition_template::T) where {T <: DiscretePart
 end
 =#
 
+#Note: not enforcing a return type causes some unnecesarry conversions
 copy_message(msg::Vector{<:Partition}) = [copy_partition(x) for x in msg]
 
 #This is a function shared for all models - perhaps move this elsewhere

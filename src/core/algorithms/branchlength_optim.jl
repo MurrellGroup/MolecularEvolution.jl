@@ -1,7 +1,7 @@
 #Model list should be a list of P matrices.
 function branch_LL_up(
     bl::Real,
-    temp_message::Vector{Partition},
+    temp_message::Vector{<:Partition},
     node::FelNode,
     model_list::Vector{<:BranchModel},
     partition_list,
@@ -22,8 +22,8 @@ end
 #I need to add a version of this that takes a generic optimizer function and uses that instead of golden_section_maximize on just the branchlength.
 #This is for cases where the user stores node-level parameters and wants to optimize them.
 function branchlength_optim!(
-    temp_message::Vector{Partition},
-    message_to_set::Vector{Partition},
+    temp_message::Vector{<:Partition},
+    message_to_set::Vector{<:Partition},
     node::FelNode,
     models,
     partition_list,
