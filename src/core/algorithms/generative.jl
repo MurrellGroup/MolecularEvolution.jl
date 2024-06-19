@@ -28,12 +28,12 @@ function sample_down!(node::FelNode, models, partition_list)
             if isroot(node)
                 forward!(node.message[part], node.parent_message[part], model_list[part], node)
             else
-                forward!(node.message[part], node.parent.message[part], model_list[part], node)
+                forward!(node.message[part], node.parent.message[part], model_list[part], node) #node.parent['.' vs. '_']message[part]
             end
             sample_partition!(node.message[part])
         end
         if !isleafnode(node)
-            for child in reverse(node.children)
+            for child in reverse(node.children) #We push! in reverse order because of LazyPartition, so that lazysort! is optimal for both felsenstein! and sample_down!
                 push!(stack, child)
             end
         end

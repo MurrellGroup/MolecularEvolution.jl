@@ -31,6 +31,8 @@ abstract type StatePath end
 
 abstract type UnivariateOpt end
 
+abstract type LazyDirection end
+
 #include("core/core.jl")
 include("core/nodes/nodes.jl")
 include("core/algorithms/algorithms.jl")
@@ -131,6 +133,7 @@ export
     copy_partition_to!,
     copy_partition,
     copy_message,
+    partition_from_template,
     equilibrium_message,
     sample_partition!,
     obs2partition!,

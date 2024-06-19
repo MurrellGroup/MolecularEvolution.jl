@@ -1,4 +1,4 @@
-using MolecularEvolution
+using MolecularEvolution, FASTX, Random
 using Test
 
 @testset "MolecularEvolution.jl" begin
@@ -24,6 +24,10 @@ using Test
 
     @testset "partition_selection" begin
         include("partition_selection.jl")
+    end
+
+    @testset "message_type_stability" begin
+        include("message_type_stability.jl")
     end
 
 end

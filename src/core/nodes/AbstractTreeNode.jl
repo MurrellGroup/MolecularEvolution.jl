@@ -309,7 +309,7 @@ function gettreefromnewick(str, T::DataType; tagged = false, disable_binarize = 
             i += 1
         elseif c == ';'
             try_apply_char_arr(currnode, char_arr)
-            return (tagged ? (currnode, tag_dict) : currnode)
+            break
         else
             push!(char_arr, c)
             #println(char_arr)
@@ -317,7 +317,7 @@ function gettreefromnewick(str, T::DataType; tagged = false, disable_binarize = 
         end
     end
 
-    binarize!(currnode)
+    !disable_binarize && binarize!(currnode)
 
     return (tagged ? (currnode, tag_dict) : currnode)
 end
