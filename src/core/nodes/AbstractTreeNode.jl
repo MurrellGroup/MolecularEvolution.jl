@@ -348,13 +348,13 @@ end
 
 export getnodelist
 function getnodelist(node::T) where {T<:AbstractTreeNode}
-    nodelist = []
-    nodes = [node]
-    while nodes != []
-        node = pop!(nodes)
+    nodelist = T[]
+    stack = [node]
+    while !isempty(stack)
+        node = pop!(stack)
         push!(nodelist, node)
         for child in node.children
-            push!(nodes, child)
+            push!(stack, child)
         end
     end
     return nodelist
@@ -391,14 +391,14 @@ end
 
 export getnonleaflist
 function getnonleaflist(node::T) where {T<:AbstractTreeNode}
-    nonleaflist = []
-    nodes = [node]
-    while nodes != []
-        node = pop!(nodes)
-        if node.children != []
+    nonleaflist = T[]
+    stack = [node]
+    while !isempty(stack)
+        node = pop!(stack)
+        if !isleafnode(node)
             push!(nonleaflist, node)
             for child in node.children
-                push!(nodes, child)
+                push!(stack, child)
             end
         end
     end
@@ -407,15 +407,15 @@ end
 
 export getleaflist
 function getleaflist(node::T) where {T<:AbstractTreeNode}
-    leaflist = []
-    nodes = [node]
-    while nodes != []
-        node = pop!(nodes)
-        if node.children == []
+    leaflist = T[]
+    stack = [node]
+    while !isempty(stack)
+        node = pop!(stack)
+        if isleafnode(node)
             push!(leaflist, node)
         else 
             for child in node.children
-                push!(nodes, child)
+                push!(stack, child)
             end
         end
     end
