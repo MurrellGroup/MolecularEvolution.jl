@@ -19,18 +19,17 @@ function branch_LL_up(
     return tot_LL
 end
 
-#TODO: make use of a lazysort! and a message_stack (memoryblocks)
 #TODO: use the exact same principle in nni_optim!
 function branchlength_optim_iter!(
-    temp_message::Vector{<:Partition},
+    temp_messages::Vector{<:Vector{T}},
     tree::FelNode,
     models,
     partition_list,
     tol;
     bl_optimizer::UnivariateOpt = GoldenSectionOpt()
-)
+) where {T <: Partition}
 
-    stack = [(temp_message, tree, 1, true, true)]
+    stack = [(pop!(temp_messages), tree, 1, true, true)]
     while !isempty(stack)
         temp_message, node, ind, first, down = pop!(stack)
         #We start out with a regular downward pass...
@@ -48,7 +47,8 @@ function branchlength_optim_iter!(
                             node,
                         )
                     end
-                    push!(stack, (temp_message, node, ind, false, false))
+                    #Temp must be constant between iterations for a node during down...
+                    push!(stack, (Vector{T}(), node, ind, false, false)) #... but not up
                     for i = Iterators.reverse(1:length(node.children)) #Iterative reverse <=> Recursive non-reverse, also optimal for lazysort!??
                         push!(stack, (temp_message, node, i, false, true))
                     end
@@ -68,7 +68,8 @@ function branchlength_optim_iter!(
                         )
                     end
                     #But calling branchlength_optim! recursively... (the iterative equivalent)
-                    push!(stack, (copy_message(temp_message), node.children[ind], ind, true, true))
+                    push!(stack, (pop!(temp_messages), node.children[ind], ind, true, true))
+                    ind == length(node.children) && push!(temp_messages, temp_message)
                 end
             end
             if !down
@@ -79,6 +80,7 @@ function branchlength_optim_iter!(
                 #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
                 #-------------------
                 if !isroot(node)
+                    temp_message = pop!(temp_messages)
                     model_list = models(node)
                     fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
                     opt = univariate_maximize(fun, 0 + tol, 1 - tol, unit_transform, bl_optimizer, tol)
@@ -95,6 +97,7 @@ function branchlength_optim_iter!(
                             node,
                         )
                     end
+                    push!(temp_messages, temp_message)
                 end
             end
         else
@@ -116,6 +119,7 @@ function branchlength_optim_iter!(
                     node,
                 )
             end
+            push!(temp_messages, temp_message)
         end
     end
 end
@@ -190,13 +194,15 @@ function branchlength_optim!(
 end
 
 function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt())
-    temp_message = copy_message(tree.message)
+    #Lazy
+    maximum_active_temp_messages = lazysort!(tree)
+    temp_messages = [copy_message(tree.message) for _ = 1:maximum_active_temp_messages]
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)
     end
 
-    branchlength_optim_iter!(temp_message, tree, models, partition_list, tol, bl_optimizer=bl_optimizer)
+    branchlength_optim_iter!(temp_messages, tree, models, partition_list, tol, bl_optimizer=bl_optimizer)
 end
 
 #BM: Check if running felsenstein_down! makes a difference.
