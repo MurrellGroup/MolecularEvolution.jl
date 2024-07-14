@@ -29,7 +29,9 @@ abstract type SimulationModel <: BranchModel end #Simulation models typically ca
 
 abstract type StatePath end
 
-abstract type UnivariateOpt end
+abstract type UnivariateModifier end
+abstract type UnivariateOpt <: UnivariateModifier end
+abstract type UnivariateSampler <: UnivariateModifier end
 
 abstract type LazyDirection end
 

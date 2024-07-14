@@ -314,3 +314,26 @@ function write_nexus(fname::String,tree::FelNode)
         n.name = old_names[i]
     end
 end
+
+struct SimpleBranchlengthPeturbation <: UnivariateSampler
+    sigma
+end
+
+function univariate_modifier(fun, modifier::UnivariateOpt; a=0, b=0, transform=unit_transform, tol=10e-5, kwargs...)
+    return univariate_maximize(fun, a + tol, b - tol, unit_transform, modifier, tol)
+end
+
+function univariate_modifier(fun, modifier::UnivariateSampler; curr_branchlength=0, kwargs...)
+    return univariate_sampler(fun, modifier, curr_branchlength)
+end
+
+function univariate_sampler(fun, modifier::SimpleBranchlengthPeturbation, curr_branchlength)
+    noise = modifier.sigma*rand(Normal(0,1))
+    log_prior(x) = pdf(Normal(-1,1), x)
+    proposal = exp(log(curr_branchlength)+noise)
+    if rand() <= exp(fun(proposal)+log_prior(proposal)-fun(curr_branchlength)-log_prior(curr_branchlength))
+        return proposal
+    else
+        return curr_branchlength
+    end
+end
