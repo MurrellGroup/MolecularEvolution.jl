@@ -21,7 +21,7 @@ end
 
 #TODO: use the exact same principle in nni_optim!
 function branchlength_optim_iter!(
-    temp_messages::Vector{<:Vector{T}},
+    temp_messages::Vector{Vector{T}},
     tree::FelNode,
     models,
     partition_list,
@@ -68,8 +68,8 @@ function branchlength_optim_iter!(
                         )
                     end
                     #But calling branchlength_optim! recursively... (the iterative equivalent)
-                    push!(stack, (pop!(temp_messages), node.children[ind], ind, true, true))
-                    ind == length(node.children) && push!(temp_messages, temp_message)
+                    push!(stack, (safepop!(temp_messages, temp_message), node.children[ind], ind, true, true)) #first + down combination => safepop!
+                    ind == length(node.children) && push!(temp_messages, temp_message) #We no longer need constant temp
                 end
             end
             if !down
@@ -193,10 +193,9 @@ function branchlength_optim!(
     #println("$(node.nodeindex):$(node.branchlength)")
 end
 
-function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt())
-    #Lazy
-    maximum_active_temp_messages = lazysort!(tree)
-    temp_messages = [copy_message(tree.message) for _ = 1:maximum_active_temp_messages]
+function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt(), sort_tree = false)
+    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
+    temp_messages = [copy_message(tree.message)]
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)
