@@ -19,7 +19,6 @@ function branch_LL_up(
     return tot_LL
 end
 
-#TODO: use the exact same principle in nni_optim!
 function branchlength_optim_iter!(
     temp_messages::Vector{Vector{T}},
     tree::FelNode,

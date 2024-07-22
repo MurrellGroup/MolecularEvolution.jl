@@ -1,4 +1,90 @@
+#Iterative implementation: think about clades getting skipped
 
+function nni_optim_iter!(
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
+    models,
+    partition_list;
+    acc_rule = (x, y) -> x > y,
+) where {T <: Partition}
+
+    stack = [(pop!(temp_messages), tree, 1, true, true)]
+    while !isempty(stack)
+        temp_message, node, ind, first, down = pop!(stack)
+        #We start out with a regular downward pass...
+        #(except for some extra bookkeeping to track if node is visited for the first time)
+        #-------------------
+        if isleafnode(node)
+            continue
+        end
+        if down
+            if first
+                model_list = models(node)
+                for part in partition_list
+                    forward!(
+                        temp_message[part],
+                        node.parent_message[part],
+                        model_list[part],
+                        node,
+                    )
+                end
+                @assert length(node.children) <= 2
+                #Temp must be constant between iterations for a node during down...
+                push!(stack, (Vector{T}(), node, ind, false, false)) #... but not up
+                for i = Iterators.reverse(1:length(node.children)) #Iterative reverse <=> Recursive non-reverse, also optimal for lazysort!??
+                    push!(stack, (temp_message, node, i, false, true))
+                end
+            end
+            if !first
+                sib_inds = sibling_inds(node.children[ind])
+                for part in partition_list
+                    combine!(
+                        (node.children[ind]).parent_message[part],
+                        [mess[part] for mess in node.child_messages[sib_inds]],
+                        true,
+                    )
+                    combine!(
+                        (node.children[ind]).parent_message[part],
+                        [temp_message[part]],
+                        false,
+                    )
+                end
+                #But calling nni_optim! recursively... (the iterative equivalent)
+                push!(stack, (safepop!(temp_messages, temp_message), node.children[ind], ind, true, true)) #first + down combination => safepop!
+                ind == length(node.children) && push!(temp_messages, temp_message) #We no longer need constant temp
+            end
+        end
+        if !down
+            #Then combine node.child_messages into node.message...
+            for part in partition_list
+                combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
+            end
+            #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
+            #-------------------
+            if !isroot(node)
+                temp_message = pop!(temp_messages)
+                model_list = models(node)
+                nnid, exceed_sib, exceed_child = do_nni(
+                    node,
+                    temp_message,
+                    models;
+                    partition_list = partition_list,
+                    acc_rule = acc_rule,
+                )
+                for part in partition_list
+                    combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
+                    backward!(node.parent.child_messages[ind][part], node.message[part], model_list[part], node)
+                    combine!(
+                        node.parent.message[part],
+                        [mess[part] for mess in node.parent.child_messages],
+                        true,
+                    )
+                end
+                push!(temp_messages, temp_message)
+            end
+        end
+    end
+end
 
 function nni_optim!(
     temp_message::Vector{<:Partition},
@@ -213,6 +299,17 @@ function do_nni(
             return true, exceed_sib, exceed_child
         end
     end
+end
+
+function nni_optim_iter!(tree::FelNode, models; partition_list = nothing, acc_rule = (x, y) -> x > y, sort_tree = false)
+    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
+    temp_messages = [copy_message(tree.message)]
+
+    if partition_list === nothing
+        partition_list = 1:length(tree.message)
+    end
+
+    nni_optim_iter!(temp_messages, tree, models, partition_list, acc_rule = acc_rule)
 end
 
 """
