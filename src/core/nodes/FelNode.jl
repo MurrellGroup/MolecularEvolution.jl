@@ -98,3 +98,28 @@ function mixed_type_equilibrium_message(
     end
     return out_mess
 end
+
+""" 
+    shallow_copy_tree(root::FelNode)::FelNode
+
+    Returns a copy of the a tree with only the names and branchlengths.
+"""
+function shallow_copy_tree(root::FelNode)::FelNode
+    
+    new_root = FelNode(root.branchlength, root.name)
+    stack = [(root, new_root)]
+    
+    while !isempty(stack)
+
+        original_node, copied_node = pop!(stack)
+
+        for child in original_node.children
+            new_child = FelNode(child.branchlength, child.name)
+            push!(copied_node.children, new_child)
+            new_child.parent = copied_node
+            push!(stack, (child, new_child))
+        end
+    end
+    
+    return new_root
+end

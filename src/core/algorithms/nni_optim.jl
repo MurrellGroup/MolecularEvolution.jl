@@ -1,6 +1,6 @@
 
 
-function nni_optim!(
+function nni_optim_old!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -34,7 +34,7 @@ function nni_optim!(
             combine!((node.children[i]).parent_message[part], [temp_message[part]], false)
         end
         #But calling branchlength_optim recursively...
-        nni_optim!(
+        nni_optim_old!(
             new_temp,
             node.child_messages[i],
             node.children[i],
@@ -51,7 +51,7 @@ function nni_optim!(
     #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
     #-------------------
     if !isroot(node)
-        nnid, exceed_sib, exceed_child = do_nni(
+        nnid, exceed_sib, exceed_child = do_nni_old(
             node,
             temp_message,
             models;
@@ -71,7 +71,7 @@ function nni_optim!(
 end
 
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
-function nni_optim!(
+function nni_optim_old!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -79,7 +79,7 @@ function nni_optim!(
     partition_list;
     acc_rule = (x, y) -> x > y,
 )
-    nni_optim!(
+    nni_optim_old!(
         temp_message,
         message_to_set,
         node,
@@ -88,7 +88,7 @@ function nni_optim!(
         acc_rule = acc_rule,
     )
 end
-function nni_optim!(
+function nni_optim_old!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -96,7 +96,7 @@ function nni_optim!(
     partition_list;
     acc_rule = (x, y) -> x > y,
 )
-    nni_optim!(
+    nni_optim_old!(
         temp_message,
         message_to_set,
         node,
@@ -106,7 +106,7 @@ function nni_optim!(
     )
 end
 
-function do_nni(
+function do_nni_old(
     node,
     temp_message,
     models::F;
@@ -216,7 +216,7 @@ function do_nni(
 end
 
 """
-    nni_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
+    nni_optim_old!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
 
 Considers local branch swaps for all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
@@ -225,7 +225,7 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize tree topology with all models).
 acc_rule allows you to specify a function that takes the current and proposed log likelihoods, and if true is returned the move is accepted.
 """
-function nni_optim!(
+function nni_optim_old!(
     tree::FelNode,
     models;
     partition_list = nothing,
@@ -238,7 +238,7 @@ function nni_optim!(
         partition_list = 1:length(tree.message)
     end
 
-    nni_optim!(
+    nni_optim_old!(
         temp_message,
         message_to_set,
         tree,
@@ -248,7 +248,7 @@ function nni_optim!(
     )
 end
 
-function nni_optim_v2!(
+function nni_optim!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -283,7 +283,7 @@ function nni_optim_v2!(
             combine!((node.children[i]).parent_message[part], [temp_message[part]], false)
         end
         #But calling branchlength_optim recursively...
-        nni_optim_v2!(
+        nni_optim!(
             new_temp,
             node.child_messages[i],
             node.children[i],
@@ -301,7 +301,7 @@ function nni_optim_v2!(
     #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
     #-------------------
     if !isroot(node)
-        nnid, exceed_sib, exceed_child = do_nni_v2(
+        nnid, exceed_sib, exceed_child = do_nni(
             node,
             temp_message,
             models;
@@ -321,7 +321,7 @@ function nni_optim_v2!(
     end
 end
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
-function nni_optim_v2!(
+function nni_optim!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -330,7 +330,7 @@ function nni_optim_v2!(
     acc_rule = (x, y) -> x > y,
     sampler = (x) ->  (true, argmax(x[2:end]) + 1),
 )
-    nni_optim_v2!(
+    nni_optim!(
         temp_message,
         message_to_set,
         node,
@@ -340,7 +340,7 @@ function nni_optim_v2!(
         sampler = sampler,
     )
 end
-function nni_optim_v2!(
+function nni_optim!(
     temp_message::Vector{<:Partition},
     message_to_set::Vector{<:Partition},
     node::FelNode,
@@ -349,7 +349,7 @@ function nni_optim_v2!(
     acc_rule = (x, y) -> x > y,
     sampler = (x) ->  (true, argmax(x[2:end]) + 1),
 )
-    nni_optim_v2!(
+    nni_optim!(
         temp_message,
         message_to_set,
         node,
@@ -360,7 +360,7 @@ function nni_optim_v2!(
     )
 end
 
-function do_nni_v2(
+function do_nni(
     node,
     temp_message,
     models::F;
@@ -479,7 +479,7 @@ function do_nni_v2(
 end
 
 """
-    nni_optim_v2!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
+    nni_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
 
 Considers local branch swaps for all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
@@ -489,7 +489,7 @@ partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over
 acc_rule allows you to specify a function that takes the current and proposed log likelihoods, and if true is returned the move is accepted.
 sampler allows you to randomly select a NNI based on the vector of log likelihoods of the possible interchanges, note that the current log likelihood is at index 1. 
 """
-function nni_optim_v2!(
+function nni_optim!(
     tree::FelNode,
     models;
     partition_list = nothing,
@@ -503,7 +503,7 @@ function nni_optim_v2!(
         partition_list = 1:length(tree.message)
     end
 
-    nni_optim_v2!(
+    nni_optim!(
         temp_message,
         message_to_set,
         tree,
@@ -515,19 +515,19 @@ function nni_optim_v2!(
 end
 
 #Overloading to allow for direct model and model vec inputs
-nni_optim_v2!(
+nni_optim!(
     tree::FelNode,
     models::Vector{<:BranchModel};
     partition_list = nothing,
     acc_rule = (x, y) -> x > y,
     sampler = (x) ->  (true, argmax(x[2:end]) + 1),
-) = nni_optim_v2!(tree, x -> models, partition_list=partition_list, acc_rule=acc_rule, sampler = sampler)
-nni_optim_v2!(
+) = nni_optim!(tree, x -> models, partition_list=partition_list, acc_rule=acc_rule, sampler = sampler)
+nni_optim!(
     tree::FelNode,
     model::BranchModel;
     partition_list = nothing,
     acc_rule = (x, y) -> x > y,
     sampler = (x) ->  (true, argmax(x[2:end]) + 1),
-) = nni_optim_v2!(tree, x -> [model], partition_list=partition_list, acc_rule=acc_rule, sampler = sampler)
+) = nni_optim!(tree, x -> [model], partition_list=partition_list, acc_rule=acc_rule, sampler = sampler)
 
 

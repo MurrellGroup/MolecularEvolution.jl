@@ -41,6 +41,7 @@ include("core/algorithms/algorithms.jl")
 include("core/sim_tree.jl")
 include("models/models.jl")
 include("utils/utils.jl")
+include("bayes/bayes.jl")
 
 #Optional dependencies
 function __init__()
