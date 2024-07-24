@@ -180,7 +180,7 @@ function branchlength_optim!(
         
         model_list = models(node)
         fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list) 
-        bl = univariate_modifier(fun, modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_branchlength=node.branchlength)
+        bl = univariate_modifier(fun, modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
         
         if fun(bl) > fun(node.branchlength) || !(modifier isa UnivariateOpt)
             node.branchlength = bl
@@ -233,3 +233,4 @@ branchlength_optim!(
     tol = 1e-5,
     modifier::UnivariateModifier = GoldenSectionOpt(),
 ) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, modifier=modifier)
+

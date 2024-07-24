@@ -1,7 +1,7 @@
 
-export sample_posterior_phylo_topologies
+export metropolis_sample
 """
-    function sample_posterior_phylo_topologies(
+    function metropolis_sample(
         initial_tree::FelNode,
         models::Vector{<:BranchModel},
         num_of_samples;
@@ -26,7 +26,7 @@ Samples tree topologies from a posterior distribution.
 - `samples`: The trees drawn from the posterior.
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
-function sample_posterior_phylo_topologies(
+function metropolis_sample(
     initial_tree::FelNode,
     models::Vector{<:BranchModel},
     num_of_samples;
@@ -42,19 +42,19 @@ function sample_posterior_phylo_topologies(
     tree = deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
 
-    modifier = BranchlengthPerturbation(2.0,0,0)
+    bl_modifier = BranchlengthPerturbation(2.0)
 
-    softmax_sampler = x -> (sample = rand(Categorical(softmax(x))); changed = sample != 1; (changed, sample))
-
+    #old_softmax_sampler = x -> (sample = rand(Categorical(softmax(x))); changed = sample != 1; (changed, sample))
+    softmax_sampler = x -> rand(Categorical(softmax(x)))
     for i=1:iterations
 
             # Updates the tree topolgy and branchlengths using Gibbs sampling.
-            nni_optim!(tree, models, acc_rule = (x,y) -> true, sampler = softmax_sampler)
-            branchlength_optim!(tree, models, modifier=modifier)   
+            nni_optim!(tree, models, nni_config_sampler = softmax_sampler)
+            branchlength_optim!(tree, models, modifier=bl_modifier)   
 
             if (i-burn_in) % sample_interval == 0 && i > burn_in
 
-                push!(samples, shallow_copy_tree(tree))
+                push!(samples, copy_tree(tree, true))
 
                 if collect_LLs
                     push!(sample_LLs, log_likelihood!(tree, models))
@@ -88,34 +88,50 @@ function sample_posterior_phylo_topologies(
     return samples
 end
 
-function softmax(x)
-    exp_x = exp.(x .- maximum(x))  # For numerical stability
-    return exp_x ./ sum(exp_x)
-end
-
-mutable struct BranchlengthPerturbation <: UnivariateSampler
-    sigma
-    accepts
-    rejects
-end
-
-"""  
-    univariate_sampler(LL, modifier::BranchlengthPeturbation, curr_branchlength)
-
-A MCMC algorithm that draws the next sample of a Markov Chain that approximates the Posterior distrubution over the branchlengths.
-"""
-function univariate_sampler(LL, modifier::BranchlengthPerturbation, curr_branchlength)
+function branchlength_metropolis(LL, modifier, curr_value)
     # The prior distribution for the variable log(branchlength). A small perturbation of +1e-12 is added to enhance numerical stability near zero.
     log_prior(x) = logpdf(Normal(-1,1),log(x + 1e-12))
     # Adding additive normal symmetrical noise in the log(branchlength) domain to ensure the proposal function is symmetric.
     noise = modifier.sigma*rand(Normal(0,1))
-    proposal = exp(log(curr_branchlength)+noise)
+    proposal = exp(log(curr_value)+noise)
     # The standard Metropolis acceptance criterion.
-    if rand() <= exp(LL(proposal)+log_prior(proposal)-LL(curr_branchlength)-log_prior(curr_branchlength))
-        modifier.accepts = modifier.accepts + 1
+    if rand() <= exp(LL(proposal)+log_prior(proposal)-LL(curr_value)-log_prior(curr_value))
+        modifier.acc_ratio[1] = modifier.acc_ratio[1] + 1
         return proposal
     else
-        modifier.rejects = modifier.rejects + 1 
-        return curr_branchlength
+        modifier.acc_ratio[2] = modifier.acc_ratio[2] + 1 
+        return curr_value
     end
 end
+
+export collect_leaf_dists
+"""
+    collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
+"""
+function collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
+    distmats = []
+    for tree in trees
+        push!(distmats, leaf_distmat(tree))
+    end
+    return distmats
+end
+
+"""
+    leaf_distmat(tree)
+
+Returns a matrix of the distances between the leaf nodes where the index on the columns and rows are sorted by the leaf names.
+"""
+function leaf_distmat(tree)
+    
+    distmat, node_dic = MolecularEvolution.tree2distances(tree)
+    
+    leaflist = getleaflist(tree)
+    
+    sort!(leaflist, by = x-> x.name)
+    
+    order = [node_dic[leaf] for leaf in leaflist]
+    
+    return distmat[order, order]
+end
+
+

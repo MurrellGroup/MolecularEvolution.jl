@@ -99,27 +99,55 @@ function mixed_type_equilibrium_message(
     return out_mess
 end
 
+export copy_tree
 """ 
-    shallow_copy_tree(root::FelNode)::FelNode
-
-    Returns a copy of the a tree with only the names and branchlengths.
+    function copy_tree(root::FelNode, shallow_copy=false)
+    
+Returns a untangled copy of the a tree. Optionally, the flag `shallow_copy` can be used to obtained a copy of the tree with only the names and branchlengths.
 """
-function shallow_copy_tree(root::FelNode)::FelNode
-    
-    new_root = FelNode(root.branchlength, root.name)
-    stack = [(root, new_root)]
-    
+function copy_tree(root::FelNode, shallow_copy=false)
+
+    root_copy = FelNode(root.branchlength, root.name)
+    stack = [(root, root_copy)]
+
     while !isempty(stack)
+        node, node_copy = pop!(stack)
 
-        original_node, copied_node = pop!(stack)
+        if !shallow_copy
 
-        for child in original_node.children
-            new_child = FelNode(child.branchlength, child.name)
-            push!(copied_node.children, new_child)
-            new_child.parent = copied_node
-            push!(stack, (child, new_child))
+            if isdefined(node, :nodeindex)
+                node_copy.nodeindex = node.nodeindex
+            end
+            if isdefined(node, :seqindex)
+                node_copy.seqindex = node.seqindex
+            end
+            if isdefined(node, :state_path)
+                node_copy.state_path = deepcopy(node.state_path)
+            end
+            if isdefined(node, :branch_params)
+                node_copy.branch_params = copy(node.branch_params)
+            end
+            if isdefined(node, :node_data)
+                node_copy.node_data = deepcopy(node.node_data)
+            end
+            if isdefined(node, :message)
+                node_copy.message = copy_message(node.message)
+            end
+            if isdefined(node, :parent_message)
+                node_copy.parent_message = copy_message(node.parent_message)
+            end
+            if isdefined(node, :child_messages)
+                node_copy.child_messages = [copy_message(msg) for msg in node.child_messages]
+            end
+        end
+
+        for child in node.children
+            child_copy = FelNode(child.branchlength, child.name)
+            push!(stack, (child, child_copy))
+            child_copy.parent = node_copy
+            push!(node_copy.children, child_copy)
         end
     end
-    
-    return new_root
+
+    return root_copy
 end

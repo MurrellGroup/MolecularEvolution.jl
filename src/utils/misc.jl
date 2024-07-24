@@ -315,10 +315,7 @@ function write_nexus(fname::String,tree::FelNode)
     end
 end
 
-function univariate_modifier(fun, modifier::UnivariateOpt; a=0, b=0, transform=unit_transform, tol=10e-5, kwargs...)
-    return univariate_maximize(fun, a + tol, b - tol, unit_transform, modifier, tol)
-end
-
-function univariate_modifier(fun, modifier::UnivariateSampler; curr_branchlength=0, kwargs...)
-    return univariate_sampler(fun, modifier, curr_branchlength)
+function softmax(x)
+    exp_x = exp.(x .- maximum(x))  # For numerical stability
+    return exp_x ./ sum(exp_x)
 end
