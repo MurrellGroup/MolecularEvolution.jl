@@ -25,12 +25,13 @@ function branchlength_optim_iter!(
     models,
     partition_list,
     tol;
-    bl_optimizer::UnivariateOpt = GoldenSectionOpt()
+    bl_optimizer::UnivariateOpt = GoldenSectionOpt(),
+    traversal = Iterators.reverse
 ) where {T <: Partition}
 
-    stack = [(pop!(temp_messages), tree, 1, true, true)]
+    stack = [(pop!(temp_messages), tree, 1, 1, true, true)]
     while !isempty(stack)
-        temp_message, node, ind, first, down = pop!(stack)
+        temp_message, node, ind, lastind, first, down = pop!(stack)
         #We start out with a regular downward pass...
         #(except for some extra bookkeeping to track if node is visited for the first time)
         #-------------------
@@ -47,9 +48,11 @@ function branchlength_optim_iter!(
                         )
                     end
                     #Temp must be constant between iterations for a node during down...
-                    push!(stack, (Vector{T}(), node, ind, false, false)) #... but not up
-                    for i = Iterators.reverse(1:length(node.children)) #Iterative reverse <=> Recursive non-reverse, also optimal for lazysort!??
-                        push!(stack, (temp_message, node, i, false, true))
+                    child_iter = traversal(1:length(node.children))
+                    lastind = Base.first(child_iter) #(which is why we track the last child to be visited during down)
+                    push!(stack, (Vector{T}(), node, ind, lastind, false, false)) #... but not up
+                    for i = child_iter #Iterative reverse <=> Recursive non-reverse, also optimal for lazysort!??
+                        push!(stack, (temp_message, node, i, lastind, false, true))
                     end
                 end
                 if !first
@@ -67,8 +70,8 @@ function branchlength_optim_iter!(
                         )
                     end
                     #But calling branchlength_optim! recursively... (the iterative equivalent)
-                    push!(stack, (safepop!(temp_messages, temp_message), node.children[ind], ind, true, true)) #first + down combination => safepop!
-                    ind == length(node.children) && push!(temp_messages, temp_message) #We no longer need constant temp
+                    push!(stack, (safepop!(temp_messages, temp_message), node.children[ind], ind, lastind, true, true)) #first + down combination => safepop!
+                    ind == lastind && push!(temp_messages, temp_message) #We no longer need constant temp
                 end
             end
             if !down
@@ -192,7 +195,11 @@ function branchlength_optim!(
     #println("$(node.nodeindex):$(node.branchlength)")
 end
 
-function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt(), sort_tree = false)
+#=
+and maybe there can be an alternative call that uses keyword arguments like shuffle = true, for the common cases
+(that just calls the traversal with the right passed in function) 
+=# 
+function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse)
     sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
     temp_messages = [copy_message(tree.message)]
 
@@ -200,7 +207,7 @@ function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothin
         partition_list = 1:length(tree.message)
     end
 
-    branchlength_optim_iter!(temp_messages, tree, models, partition_list, tol, bl_optimizer=bl_optimizer)
+    branchlength_optim_iter!(temp_messages, tree, models, partition_list, tol, bl_optimizer=bl_optimizer, traversal = traversal)
 end
 
 #BM: Check if running felsenstein_down! makes a difference.
