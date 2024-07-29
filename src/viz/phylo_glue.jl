@@ -24,7 +24,8 @@ function add_node_to_phylo_tree(
     phylo_node_name = Phylo.getnodename(phylo_tree, phylo_node)
     for c in molev_node.children
         if c.name != ""
-            new_child = Phylo.createnode!(phylo_tree, c.name)
+            c_phylo_name = Phylo.hasnode(phylo_tree, c.name) ? Phylo._newnodelabel(phylo_tree) * c.name : c.name #Enforce uniq names
+            new_child = Phylo.createnode!(phylo_tree, c_phylo_name)
         else
             new_child = Phylo.createnode!(phylo_tree)
         end
