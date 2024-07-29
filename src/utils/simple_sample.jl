@@ -3,11 +3,12 @@ function univariate_modifier(f, modifier::UnivariateSampler; curr_value=nothing,
     return univariate_sampler(f, modifier, curr_value)
 end
 
-struct BranchlengthPerturbation <: UnivariateSampler
-    sigma
+struct BranchlengthSampler <: UnivariateSampler
     #The first entry in acc_ratio holds the number of accepted proposals and the second entry holds the number of rejected proposals.
     acc_ratio
-    BranchlengthPerturbation(sigma) = new(sigma, [0,0])
+    log_bl_proposal
+    log_bl_prior
+    BranchlengthSampler(log_bl_proposal,log_bl_prior) = new([0,0],log_bl_proposal,log_bl_prior)
 end 
 
 """  
@@ -15,7 +16,7 @@ end
 
 A MCMC algorithm that draws the next sample of a Markov Chain that approximates the Posterior distrubution over the branchlengths.
 """
-function univariate_sampler(LL, modifier::BranchlengthPerturbation, curr_branchlength)
+function univariate_sampler(LL, modifier::BranchlengthSampler, curr_branchlength)
     return branchlength_metropolis(LL, modifier, curr_branchlength)
 end
 

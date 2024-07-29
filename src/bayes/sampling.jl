@@ -42,7 +42,7 @@ function metropolis_sample(
     tree = deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
 
-    bl_modifier = BranchlengthPerturbation(2.0)
+    bl_modifier = BranchlengthSampler(Normal(0,2), Normal(-1,1))
 
     #old_softmax_sampler = x -> (sample = rand(Categorical(softmax(x))); changed = sample != 1; (changed, sample))
     softmax_sampler = x -> rand(Categorical(softmax(x)))
@@ -81,6 +81,8 @@ function metropolis_sample(
         end
     end
 
+    println("acc_ratio = ", bl_modifier.acc_ratio[1]/sum(bl_modifier.acc_ratio))
+
     if collect_LLs
         return samples, sample_LLs
     end
@@ -90,9 +92,9 @@ end
 
 function branchlength_metropolis(LL, modifier, curr_value)
     # The prior distribution for the variable log(branchlength). A small perturbation of +1e-12 is added to enhance numerical stability near zero.
-    log_prior(x) = logpdf(Normal(-1,1),log(x + 1e-12))
+    log_prior(x) = logpdf(modifier.log_bl_prior,log(x + 1e-12))
     # Adding additive normal symmetrical noise in the log(branchlength) domain to ensure the proposal function is symmetric.
-    noise = modifier.sigma*rand(Normal(0,1))
+    noise = rand(modifier.log_bl_proposal)
     proposal = exp(log(curr_value)+noise)
     # The standard Metropolis acceptance criterion.
     if rand() <= exp(LL(proposal)+log_prior(proposal)-LL(curr_value)-log_prior(curr_value))
