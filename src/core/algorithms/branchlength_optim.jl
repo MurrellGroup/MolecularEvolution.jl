@@ -130,14 +130,20 @@ end
 
 #BM: Check if running felsenstein_down! makes a difference.
 """
-    branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt())
+    branchlength_optim!(tree::FelNode, models;  <keyword arguments>)
 
 Uses golden section search, or optionally Brent's method, to optimize all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
 models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
-partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models).
-tol is the absolute tolerance for the bl_optimizer which defaults to golden section search, and has Brent's method as an option by setting bl_optimizer=BrentsMethodOpt().
+
+# Keyword Arguments
+- `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models, the default option).
+- `tol=1e-5`: absolute tolerance for the `bl_optimizer`.
+- `bl_optimizer=GoldenSectionOpt()`: univariate branchlength optimizer, has Brent's method as an option by setting bl_optimizer=BrentsMethodOpt().
+- `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
+- `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
+- `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
 function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse, shuffle = false)
     sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
