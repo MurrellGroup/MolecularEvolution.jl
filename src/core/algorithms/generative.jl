@@ -33,7 +33,7 @@ function sample_down!(node::FelNode, models, partition_list)
             sample_partition!(node.message[part])
         end
         if !isleafnode(node)
-            for child in reverse(node.children) #We push! in reverse order because of LazyPartition, so that lazysort! is optimal for both felsenstein! and sample_down!
+            for child in Iterators.reverse(node.children) #We push! in reverse order because of LazyPartition, so that lazysort! is optimal for both felsenstein! and sample_down!
                 push!(stack, child)
             end
         end
