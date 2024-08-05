@@ -348,7 +348,7 @@ end
 
 export getnodelist
 function getnodelist(node::T) where {T<:AbstractTreeNode}
-    nodelist = []
+    nodelist = T[]
     nodes = [node]
     while nodes != []
         node = pop!(nodes)
@@ -391,7 +391,7 @@ end
 
 export getnonleaflist
 function getnonleaflist(node::T) where {T<:AbstractTreeNode}
-    nonleaflist = []
+    nonleaflist = T[]
     nodes = [node]
     while nodes != []
         node = pop!(nodes)
@@ -407,7 +407,7 @@ end
 
 export getleaflist
 function getleaflist(node::T) where {T<:AbstractTreeNode}
-    leaflist = []
+    leaflist = T[]
     nodes = [node]
     while nodes != []
         node = pop!(nodes)
