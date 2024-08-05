@@ -147,7 +147,7 @@ function nni_optim_full_traversal!(
     end
 end
 
-function nni_optim_iter!(
+function nni_optim!(
     temp_messages::Vector{Vector{T}},
     tree::FelNode,
     models,
@@ -238,109 +238,40 @@ function nni_optim_iter!(
     end
 end
 
-function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
-    models,
-    partition_list;
-    acc_rule = (x, y) -> x > y,
-)
-
-    model_list = models(node)
-
-    if isleafnode(node)
-        return
-    end
-
-    #This bit of code should be identical to the regular downward pass...
-    #-------------------
-
-    for part in partition_list
-        forward!(temp_message[part], node.parent_message[part], model_list[part], node)
-    end
-    @assert length(node.children) <= 2
-    for i = 1:length(node.children)
-        new_temp = copy_message(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
-        sib_inds = sibling_inds(node.children[i])
-        for part in partition_list
-            combine!(
-                (node.children[i]).parent_message[part],
-                [mess[part] for mess in node.child_messages[sib_inds]],
-                true,
-            )
-            combine!((node.children[i]).parent_message[part], [temp_message[part]], false)
-        end
-        #But calling branchlength_optim recursively...
-        nni_optim!(
-            new_temp,
-            node.child_messages[i],
-            node.children[i],
-            models,
-            partition_list;
-            acc_rule = acc_rule,
-        )
-    end
-    #Then combine node.child_messages into node.message...
-    for part in partition_list
-        combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
-    end
-
-    #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
-    #-------------------
-    if !isroot(node)
-        nnid, exceed_sib, exceed_child = do_nni(
-            node,
-            temp_message,
-            models;
-            partition_list = partition_list,
-            acc_rule = acc_rule,
-        )
-        for part in partition_list
-            combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
-            backward!(message_to_set[part], node.message[part], model_list[part], node)
-            combine!(
-                node.parent.message[part],
-                [mess[part] for mess in node.parent.child_messages],
-                true,
-            )
-        end
-    end
-end
-
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
 function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
     acc_rule = (x, y) -> x > y,
-)
+    traversal = Iterators.reverse,
+) where {T <: Partition}
     nni_optim!(
-        temp_message,
-        message_to_set,
-        node,
+        temp_messages,
+        tree,
         x -> models,
         partition_list,
         acc_rule = acc_rule,
+        traversal = traversal,
     )
 end
 function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
     model::BranchModel,
     partition_list;
     acc_rule = (x, y) -> x > y,
-)
+    traversal = Iterators.reverse,
+
+) where {T <: Partition}
     nni_optim!(
-        temp_message,
-        message_to_set,
-        node,
+        temp_messages,
+        tree,
         x -> [model],
         partition_list,
         acc_rule = acc_rule,
+        traversal = traversal,
     )
 end
 
@@ -453,28 +384,6 @@ function do_nni(
     end
 end
 
-function nni_optim_full_traversal!(tree::FelNode, models; partition_list = nothing, acc_rule = (x, y) -> x > y, sort_tree = false, traversal = Iterators.reverse)
-    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
-    temp_messages = [copy_message(tree.message)]
-
-    if partition_list === nothing
-        partition_list = 1:length(tree.message)
-    end
-
-    nni_optim_full_traversal!(temp_messages, tree, models, partition_list, acc_rule = acc_rule, traversal = traversal)
-end
-
-function nni_optim_iter!(tree::FelNode, models; partition_list = nothing, acc_rule = (x, y) -> x > y, sort_tree = false, traversal = Iterators.reverse)
-    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
-    temp_messages = [copy_message(tree.message)]
-
-    if partition_list === nothing
-        partition_list = 1:length(tree.message)
-    end
-
-    nni_optim_iter!(temp_messages, tree, models, partition_list, acc_rule = acc_rule, traversal = traversal)
-end
-
 """
     nni_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
 
@@ -490,20 +399,24 @@ function nni_optim!(
     models;
     partition_list = nothing,
     acc_rule = (x, y) -> x > y,
+    sort_tree = false,
+    traversal = Iterators.reverse,
+    shuffle = false
 )
-    temp_message = copy_message(tree.message)
-    message_to_set = copy_message(tree.message)
+    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
+    temp_messages = [copy_message(tree.message)]
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)
     end
 
+    #Need to decide here between nni_optim and nni_optim_full_traversal
     nni_optim!(
-        temp_message,
-        message_to_set,
+        temp_messages,
         tree,
         models,
         partition_list,
         acc_rule = acc_rule,
+        traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal
     )
 end
