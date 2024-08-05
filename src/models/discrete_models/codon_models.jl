@@ -178,10 +178,10 @@ function count_F3x4(seqs::Array{String})
     for k = 1:3
         pos1inds = [3 * (i - 1) + k for i = 1:Int(length(seqs[1]) / 3)]
         d = proportionmap(collect(join([s[pos1inds] for s in seqs])))
-        F3x4[k, 1] = d['A']
-        F3x4[k, 2] = d['C']
-        F3x4[k, 3] = d['G']
-        F3x4[k, 4] = d['T']
+        F3x4[k, 1] = get(d, 'A', 0.0)
+        F3x4[k, 2] = get(d, 'C', 0.0)
+        F3x4[k, 3] = get(d, 'G', 0.0)
+        F3x4[k, 4] = get(d, 'T', 0.0)
     end
     return F3x4
 end
