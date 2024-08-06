@@ -54,7 +54,6 @@ function backward!(
     node::FelNode
 )
     backward!(dest, source, model.model, node)
-    dest.scaling .= source.scaling
 end
 
 #"down" refers to propagating up the tree: ie time running forwards.
@@ -65,7 +64,6 @@ function forward!(
     node::FelNode
 )
     forward!(dest, source, model.model, node)
-    dest.scaling .= source.scaling
 end
 #One should either implement this funtion, or one that returns an entire "root partition".
 function eq_freq(model::CovarionModel)

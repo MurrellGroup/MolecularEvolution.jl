@@ -1,6 +1,6 @@
 mutable struct BWMModel <: DiscreteStateModel
-    weights::Vector{Float64}
     models::Vector{<:DiscreteStateModel}
+    weights::Vector{Float64}
 end
 
 function backward!(
