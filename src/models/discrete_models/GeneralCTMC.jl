@@ -6,6 +6,8 @@ mutable struct GeneralCTMC <: DiscreteStateModel
     end
 end
 
+getPmatrix(model::GeneralCTMC, node::FelNode) = exp(model.Q .* model.r .* node.branchlength)
+
 """
     backward!(dest::Partition, source::Partition, model::BranchModel, node::FelNode)
 
@@ -18,7 +20,7 @@ function backward!(
     model::GeneralCTMC,
     node::FelNode,
 )
-    P = exp(model.Q .* model.r .* node.branchlength)
+    P = getPmatrix(model, node)
     mul!(dest.state, P, source.state)
     dest.scaling .= source.scaling
 end
@@ -35,7 +37,7 @@ function forward!(
     model::GeneralCTMC,
     node::FelNode,
 )
-    P = exp(model.Q .* model.r .* node.branchlength)
+    P = getPmatrix(model, node)
     dest.state .= (source.state' * P)'
     dest.scaling .= source.scaling
 end

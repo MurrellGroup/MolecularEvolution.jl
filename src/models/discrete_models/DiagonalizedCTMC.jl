@@ -40,6 +40,15 @@ function P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode)
     )
 end
 
+@deprecate P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode) getPmatrix(model::DiagonalizedCTMC, node::FelNode)
+function getPmatrix(model::DiagonalizedCTMC, node::FelNode)
+    return clamp.(
+        model.V * Diagonal(exp.(model.D .* model.r .* node.branchlength)) * model.Vi,
+        0.0,
+        Inf,
+    )
+end
+
 
 #"backward" refers to propagating up the tree: ie time running backwards.
 function backward!(
@@ -50,7 +59,7 @@ function backward!(
 )
 
     #P = model.V*Diagonal(exp.(model.D.*model.r.*node.branchlength))*model.Vi
-    P = P_from_diagonalized_Q(model, node)
+    P = getPmatrix(model, node)
     mul!(dest.state, P, source.state)
     dest.scaling .= source.scaling
 end
@@ -65,7 +74,7 @@ function forward!(
     node::FelNode,
 )
 
-    P = P_from_diagonalized_Q(model, node)
+    P = getPmatrix(model, node)
     dest.state .= (source.state' * P)' #Perf check here?
     dest.scaling .= source.scaling
 end

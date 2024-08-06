@@ -1,6 +1,6 @@
 mutable struct BWMModel <: DiscreteStateModel
     weights::Vector{Float64}
-    models::Vector{DiagonalizedCTMC}
+    models::Vector{<:DiscreteStateModel}
 end
 
 function backward!(
@@ -9,7 +9,7 @@ function backward!(
     model::BWMModel, 
     node::FelNode
 )
-    P = sum([P_from_diagonalized_Q(m,node) for m in model.models] .* (model.weights))
+    P = sum([getPmatrix(m,node) for m in model.models] .* (model.weights))
     mul!(dest.state, P, source.state)
     dest.scaling .= source.scaling
 end
@@ -20,7 +20,7 @@ function forward!(
     model::BWMModel, 
     node::FelNode
 )
-    P = sum([P_from_diagonalized_Q(m,node) for m in model.models] .* model.weights)
+    P = sum([getPmatrix(m,node) for m in model.models] .* model.weights)
     dest.state .= (source.state'*P)'
     dest.scaling .= source.scaling
 end
