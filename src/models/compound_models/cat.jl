@@ -1,3 +1,4 @@
+export CATModel
 mutable struct CATModel <: BranchModel
     models::Vector{<:BranchModel}
     function CATModel(models::Vector{<:BranchModel})
@@ -5,6 +6,7 @@ mutable struct CATModel <: BranchModel
     end
 end
  
+export CATPartition
 mutable struct CATPartition{PType} <: Partition where {PType <: DiscretePartition}
     part_inds::Vector{Vector{Int}}
     parts::Vector{PType}

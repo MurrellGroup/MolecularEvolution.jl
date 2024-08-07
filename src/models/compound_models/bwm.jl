@@ -1,3 +1,4 @@
+export BWMModel
 mutable struct BWMModel <: DiscreteStateModel
     models::Vector{<:DiscreteStateModel}
     weights::Vector{Float64}

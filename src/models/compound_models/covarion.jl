@@ -1,3 +1,4 @@
+export CovarionModel
 mutable struct CovarionModel <: DiscreteStateModel
     model::DiscreteStateModel
     function CovarionModel(models::Vector{<:DiscreteStateModel}, inter_transition_rates::Matrix{Float64})
@@ -31,6 +32,7 @@ mutable struct CovarionModel <: DiscreteStateModel
     end
 end
  
+export CovarionPartition
 #Parts is a vector containing the various components
 #Weights is a num_components by num_sites matrix
 mutable struct CovarionPartition <: DiscretePartition
