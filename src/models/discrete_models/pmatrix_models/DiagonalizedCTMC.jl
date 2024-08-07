@@ -48,33 +48,3 @@ function getPmatrix(model::DiagonalizedCTMC, node::FelNode)
         Inf,
     )
 end
-
-
-#"backward" refers to propagating up the tree: ie time running backwards.
-function backward!(
-    dest::DiscretePartition,
-    source::DiscretePartition,
-    model::DiagonalizedCTMC,
-    node::FelNode,
-)
-
-    #P = model.V*Diagonal(exp.(model.D.*model.r.*node.branchlength))*model.Vi
-    P = getPmatrix(model, node)
-    mul!(dest.state, P, source.state)
-    dest.scaling .= source.scaling
-end
-
-
-
-#Model list should be a list of P matrices.
-function forward!(
-    dest::DiscretePartition,
-    source::DiscretePartition,
-    model::DiagonalizedCTMC,
-    node::FelNode,
-)
-
-    P = getPmatrix(model, node)
-    dest.state .= (source.state' * P)' #Perf check here?
-    dest.scaling .= source.scaling
-end

@@ -1,12 +1,5 @@
-mutable struct GeneralCTMC <: PMatrixModel
-    Q::Array{Float64,2}
-    r::Float64
-    function GeneralCTMC(Q::Array{Float64,2})
-        new(Q, 1.0)
-    end
-end
-
-getPmatrix(model::GeneralCTMC, node::FelNode) = exp(model.Q .* model.r .* node.branchlength)
+include("DiagonalizedCTMC.jl")
+include("GeneralCTMC.jl")
 
 """
     backward!(dest::Partition, source::Partition, model::BranchModel, node::FelNode)
@@ -17,7 +10,7 @@ Note: You should overload this for your own BranchModel types.
 function backward!(
     dest::DiscretePartition,
     source::DiscretePartition,
-    model::GeneralCTMC,
+    model::PMatrixModel,
     node::FelNode,
 )
     P = getPmatrix(model, node)
@@ -34,7 +27,7 @@ Note: You should overload this for your own BranchModel types.
 function forward!(
     dest::DiscretePartition,
     source::DiscretePartition,
-    model::GeneralCTMC,
+    model::PMatrixModel,
     node::FelNode,
 )
     P = getPmatrix(model, node)
