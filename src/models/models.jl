@@ -1,6 +1,6 @@
 include("continuous_models/continuous_models.jl")
 include("discrete_models/discrete_models.jl")
-include("compound_models/swm.jl")
+include("compound_models/compound_models.jl")
 include("lazy_models/lazy_partition.jl")
 
 

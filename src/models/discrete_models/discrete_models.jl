@@ -1,7 +1,6 @@
 include("discrete_partitions.jl")
 include("codon_models.jl")
-include("GeneralCTMC.jl")
-include("DiagonalizedCTMC.jl")
+include("pmatrix_models/pmatrix_models.jl")
 include("PiQ.jl")
 include("interpolated_discrete_model.jl")
 include("utils/utils.jl")
