@@ -1,4 +1,4 @@
-mutable struct GeneralCTMC <: DiscreteStateModel
+mutable struct GeneralCTMC <: PMatrixModel
     Q::Array{Float64,2}
     r::Float64
     function GeneralCTMC(Q::Array{Float64,2})

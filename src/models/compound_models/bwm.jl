@@ -1,13 +1,13 @@
 export BWMModel
-mutable struct BWMModel <: DiscreteStateModel
-    models::Vector{<:DiscreteStateModel}
+mutable struct BWMModel{M} <: DiscreteStateModel where M <: DiscreteStateModel
+    models::Vector{<:M}
     weights::Vector{Float64}
 end
 
 function backward!(
     dest::DiscretePartition, 
     source::DiscretePartition, 
-    model::BWMModel, 
+    model::BWMModel{<:PMatrixModel}, 
     node::FelNode
 )
     P = sum([getPmatrix(m,node) for m in model.models] .* (model.weights))
@@ -18,7 +18,7 @@ end
 function forward!(
     dest::DiscretePartition, 
     source::DiscretePartition, 
-    model::BWMModel, 
+    model::BWMModel{<:PMatrixModel}, 
     node::FelNode
 )
     P = sum([getPmatrix(m,node) for m in model.models] .* model.weights)

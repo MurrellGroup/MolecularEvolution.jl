@@ -2,7 +2,7 @@
 #Need to specify a Q matrix
 #Init triggers diagonalization
 #Propagation requires matrix product
-mutable struct DiagonalizedCTMC <: DiscreteStateModel
+mutable struct DiagonalizedCTMC <: PMatrixModel
     Q::Array{Float64,2}
     D::Vector{Float64}
     V::Array{Float64,2}
