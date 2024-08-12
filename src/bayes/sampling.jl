@@ -47,9 +47,9 @@ function metropolis_sample(
     #old_softmax_sampler = x -> (sample = rand(Categorical(softmax(x))); changed = sample != 1; (changed, sample))
     softmax_sampler = x -> rand(Categorical(softmax(x)))
     for i=1:iterations
-
+        
             # Updates the tree topolgy and branchlengths using Gibbs sampling.
-            nni_optim!(tree, models, nni_config_sampler = softmax_sampler)
+            nni_optim_iter!(tree, x -> models, nni_selection_rule = softmax_sampler)
             branchlength_optim!(tree, models, modifier=bl_modifier)   
 
             if (i-burn_in) % sample_interval == 0 && i > burn_in
@@ -81,7 +81,7 @@ function metropolis_sample(
         end
     end
 
-    println("acc_ratio = ", bl_modifier.acc_ratio[1]/sum(bl_modifier.acc_ratio))
+    #println("acc_ratio = ", bl_modifier.acc_ratio[1]/sum(bl_modifier.acc_ratio))
 
     if collect_LLs
         return samples, sample_LLs
@@ -106,7 +106,6 @@ function branchlength_metropolis(LL, modifier, curr_value)
     end
 end
 
-export collect_leaf_dists
 """
     collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
 """
