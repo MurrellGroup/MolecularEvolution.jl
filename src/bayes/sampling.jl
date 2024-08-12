@@ -5,6 +5,7 @@ export metropolis_sample
         initial_tree::FelNode,
         models::Vector{<:BranchModel},
         num_of_samples;
+        bl_modifier::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1))
         burn_in=1000, 
         sample_interval=10,
         collect_LLs = false,
@@ -17,6 +18,7 @@ Samples tree topologies from a posterior distribution.
 - `initial_tree`: An initial topology with (important!) the leaves populated with data, for the likelihood calculation.
 - `models`: A list of branch models.
 - `num_of_samples`: The number of tree samples drawn from the posterior.
+- `bl_sampler`: Sampler used to drawn branchlengths from the posterior. 
 - `burn_in`: The number of samples discarded at the start of the Markov Chain.
 - `sample_interval`: The distance between samples in the underlying Markov Chain (to reduce sample correlation).
 - `collect_LLs`: Specifies if the function should return the log-likelihoods of the trees.
@@ -30,6 +32,7 @@ function metropolis_sample(
     initial_tree::FelNode,
     models::Vector{<:BranchModel},
     num_of_samples;
+    bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1)),
     burn_in=1000, 
     sample_interval=10,
     collect_LLs = false,
@@ -37,20 +40,20 @@ function metropolis_sample(
     ladderize = false,
     )
 
+    # The prior over the (log) of the branchlengths should be specified in bl_sampler. 
+    # Furthermore, a non-informative/uniform prior is assumed over the tree topolgies (excluding the branchlengths).
+
     sample_LLs = []
     samples = FelNode[]
     tree = deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
-
-    bl_modifier = BranchlengthSampler(Normal(0,2), Normal(-1,1))
-
-    #old_softmax_sampler = x -> (sample = rand(Categorical(softmax(x))); changed = sample != 1; (changed, sample))
+    
     softmax_sampler = x -> rand(Categorical(softmax(x)))
     for i=1:iterations
         
-            # Updates the tree topolgy and branchlengths using Gibbs sampling.
+            # Updates the tree topolgy and branchlengths.
             nni_optim_iter!(tree, x -> models, nni_selection_rule = softmax_sampler)
-            branchlength_optim!(tree, models, modifier=bl_modifier)   
+            branchlength_optim_iter!(tree, x -> models, modifier=bl_sampler)   
 
             if (i-burn_in) % sample_interval == 0 && i > burn_in
 
@@ -90,24 +93,12 @@ function metropolis_sample(
     return samples
 end
 
-function branchlength_metropolis(LL, modifier, curr_value)
-    # The prior distribution for the variable log(branchlength). A small perturbation of +1e-12 is added to enhance numerical stability near zero.
-    log_prior(x) = logpdf(modifier.log_bl_prior,log(x + 1e-12))
-    # Adding additive normal symmetrical noise in the log(branchlength) domain to ensure the proposal function is symmetric.
-    noise = rand(modifier.log_bl_proposal)
-    proposal = exp(log(curr_value)+noise)
-    # The standard Metropolis acceptance criterion.
-    if rand() <= exp(LL(proposal)+log_prior(proposal)-LL(curr_value)-log_prior(curr_value))
-        modifier.acc_ratio[1] = modifier.acc_ratio[1] + 1
-        return proposal
-    else
-        modifier.acc_ratio[2] = modifier.acc_ratio[2] + 1 
-        return curr_value
-    end
-end
+# Below are some functions that help to assess the mixing by looking at the distance between leaf nodes.
 
 """
     collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
+
+    Returns a list of distance matrices (containing the distance between the leaf nodes) which can be used to assess mixing.
 """
 function collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
     distmats = []
