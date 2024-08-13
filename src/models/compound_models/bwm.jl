@@ -4,6 +4,10 @@ mutable struct BWMModel{M} <: DiscreteStateModel where M <: DiscreteStateModel
     weights::Vector{Float64}
 end
 
+function BWMModel{M}(models::Vector{<:M}) where M <: DiscreteStateModel
+    BWMModel{M}(models, sum2one(ones(length(models))))
+end
+
 function backward!(
     dest::DiscretePartition, 
     source::DiscretePartition, 

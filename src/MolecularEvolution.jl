@@ -88,6 +88,7 @@ export
     BrownianMotion,
     DiagonalizedCTMC,
     GeneralCTMC,
+    PModel,
 
 
     #core functions

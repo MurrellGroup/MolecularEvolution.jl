@@ -1,5 +1,6 @@
 include("DiagonalizedCTMC.jl")
 include("GeneralCTMC.jl")
+include("PModel.jl")
 
 """
     backward!(dest::Partition, source::Partition, model::BranchModel, node::FelNode)
