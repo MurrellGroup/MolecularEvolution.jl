@@ -122,21 +122,3 @@ end
 function rescale!(m::InterpolatedDiscreteModel, factor::Float64)
     m.tvec .= m.tvec ./ factor
 end
-
-
-#This is literally just a single P matrix. Maybe some uses, but likely for testing speed bounds
-mutable struct PModel <: DiscreteStateModel
-    P::Array{Float64,2}
-end
-function backward!(
-        dest::DiscretePartition, source::DiscretePartition,
-        model::PModel, node::FelNode)
-    mul!(dest.state, model.P, source.state)
-    dest.scaling .= source.scaling
-end
-function forward!(
-        dest::DiscretePartition, source::DiscretePartition, 
-        model::PModel, node::FelNode)
-    dest.state .= (source.state'*model.P)'
-    dest.scaling .= source.scaling
-end
