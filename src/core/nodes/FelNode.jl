@@ -44,7 +44,7 @@ function print_traversal(node::FelNode)
 end
 
 function set_node_indices!(root::FelNode; starting_index = 1)
-    count = 1
+    count = starting_index
     for node in getnodelist(root)
         node.nodeindex = count
         count += 1

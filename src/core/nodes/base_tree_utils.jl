@@ -137,7 +137,7 @@ function midpoint(root::FelNode)::Tuple{<:FelNode,Float64}
     remaining_length =
         (total_length / 2) - (side_length1 > side_length2 ? side_length2 : side_length1)
 
-    for node in reverse(farther_side[1:end-1])
+    for node in Iterators.reverse(farther_side[1:end-1])
         remaining_length -= node.branchlength
         if remaining_length < 0
             return (node, -remaining_length)

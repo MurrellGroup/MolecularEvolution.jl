@@ -1,7 +1,7 @@
 name = "MolecularEvolution"
 uuid = "9f975960-e239-4209-8aa0-3d3ad5a82892"
 authors = ["Ben Murrell <murrellb@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.2.1"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -10,7 +10,8 @@ Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-julia = "1.6"
 Distributions = "0.25"
+LinearAlgebra = "1"
 Requires = "1.3"
 StatsBase = "0.34"
+julia = "1.6"

@@ -82,6 +82,7 @@ function populate_tree!(
     data;
     init_all_messages = true,
     tolerate_missing = 1, #0 = error if missing; 1 = warn and set to missing data; 2 = set to missing data
+    leaf_name_transform = x -> x
 )
     if init_all_messages
         internal_message_init!(tree, starting_message)
@@ -90,8 +91,8 @@ function populate_tree!(
     end
     name_dic = Dict(zip(names, 1:length(names)))
     for n in getleaflist(tree)
-        if haskey(name_dic, n.name)
-            populate_message!(n.message, data[name_dic[n.name]])
+        if haskey(name_dic, leaf_name_transform(n.name))
+            populate_message!(n.message, data[name_dic[leaf_name_transform(n.name)]])
         else
             warn_str = n.name * " on tree but not found in names."
             if tolerate_missing == 0
@@ -107,7 +108,7 @@ end
 
 
 """
-    populate_tree!(tree::FelNode, starting_message, names, data; init_all_messages = true, tolerate_missing = 1)
+    populate_tree!(tree::FelNode, starting_message, names, data; init_all_messages = true, tolerate_missing = 1, leaf_name_transform = x -> x)
 
 Takes a tree, and a `starting_message` (which will serve as the memory template for populating messages all over the tree).
 `starting_message` can be a message (ie. a vector of Partitions), but will also work with a single Partition (although the tree)
@@ -117,6 +118,7 @@ When a leaf on the tree has a name that doesn't match anything in `names`, then 
 - `tolerate_missing = 0`, an error will be thrown
 - `tolerate_missing = 1`, a warning will be thrown, and the message will be set to the uninformative message (requires identity!(::Partition) to be defined)
 - `tolerate_missing = 2`, the message will be set to the uninformative message, without warnings (requires identity!(::Partition) to be defined)
+A renaming function that can eg. strip tags from the tree when matching leaf names with `names` can be passed to `leaf_name_transform`
 """
 function populate_tree!(
     tree::FelNode,
@@ -125,6 +127,7 @@ function populate_tree!(
     data;
     init_all_messages = true,
     tolerate_missing = 1,
+    leaf_name_transform = x -> x
 )
     populate_tree!(
         tree,
@@ -133,6 +136,7 @@ function populate_tree!(
         data,
         init_all_messages = init_all_messages,
         tolerate_missing = tolerate_missing,
+        leaf_name_transform = leaf_name_transform
     )
 end
 
