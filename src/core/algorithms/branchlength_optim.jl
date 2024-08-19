@@ -19,13 +19,15 @@ function branch_LL_up(
     return tot_LL
 end
 
-function branchlength_optim_iter!(
+#I need to add a version of this that takes a generic optimizer function and uses that instead of golden_section_maximize on just the branchlength.
+#This is for cases where the user stores node-level parameters and wants to optimize them.
+function branchlength_optim!(
     temp_messages::Vector{Vector{T}},
     tree::FelNode,
     models,
     partition_list,
     tol;
-    modifier::UnivariateModifier = GoldenSectionOpt(),
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
     traversal = Iterators.reverse
 ) where {T <: Partition}
 
@@ -85,11 +87,11 @@ function branchlength_optim_iter!(
                     temp_message = pop!(temp_messages)
                     model_list = models(node)
                     fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-                    bl = univariate_modifier(fun, modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
-                    if fun(bl) > fun(node.branchlength) || !(modifier isa UnivariateOpt)
+                    bl = univariate_modifier(fun, bl_modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+                    if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
                         node.branchlength = bl
                     end
-
+                    
                     #Consider checking for improvement, and bailing if none.
                     #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
                     for part in partition_list
@@ -108,8 +110,8 @@ function branchlength_optim_iter!(
             #-------------------
             model_list = models(node)
             fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-            bl = univariate_modifier(fun, modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
-            if fun(bl) > fun(node.branchlength) || !(modifier isa UnivariateOpt)
+            bl = univariate_modifier(fun, bl_modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+            if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
                 node.branchlength = bl
             end
             #Consider checking for improvement, and bailing if none.
@@ -127,80 +129,24 @@ function branchlength_optim_iter!(
     end
 end
 
-#I need to add a version of this that takes a generic optimizer function and uses that instead of golden_section_maximize on just the branchlength.
-#This is for cases where the user stores node-level parameters and wants to optimize them.
-function branchlength_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
-    models,
-    partition_list,
-    tol;
-    modifier::UnivariateModifier = GoldenSectionOpt()
-)
+#BM: Check if running felsenstein_down! makes a difference.
+"""
+    branchlength_optim!(tree::FelNode, models;  <keyword arguments>)
 
-    #This bit of code should be identical to the regular downward pass...
-    #-------------------
-    if !isleafnode(node)
-        model_list = models(node)
-        for part in partition_list
-            forward!(temp_message[part], node.parent_message[part], model_list[part], node)
-        end
-        for i = 1:length(node.children)
-            new_temp = copy_message(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
-            sib_inds = sibling_inds(node.children[i])
-            for part in partition_list
-                combine!(
-                    (node.children[i]).parent_message[part],
-                    [mess[part] for mess in node.child_messages[sib_inds]],
-                    true,
-                )
-                combine!(
-                    (node.children[i]).parent_message[part],
-                    [temp_message[part]],
-                    false,
-                )
-            end
-            #But calling branchlength_optim recursively...
-            branchlength_optim!(
-                new_temp,
-                node.child_messages[i],
-                node.children[i],
-                models,
-                partition_list,
-                tol,
-                modifier=modifier
-            )
-        end
-        #Then combine node.child_messages into node.message...
-        for part in partition_list
-            combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
-        end
-    end
-    #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
-    #-------------------
-    if !isroot(node)
-        model_list = models(node)
-        fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-        bl = univariate_modifier(fun, modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
-        if fun(bl) > fun(node.branchlength) || !(modifier isa UnivariateOpt)
-            node.branchlength = bl
-        end
-        #Consider checking for improvement, and bailing if none.
-        #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
-        for part in partition_list
-            backward!(message_to_set[part], node.message[part], model_list[part], node)
-        end
-    end
-    #For debugging:
-    #println("$(node.nodeindex):$(node.branchlength)")
-end
+Uses golden section search, or optionally Brent's method, to optimize all branches recursively, maintaining the integrity of the messages.
+Requires felsenstein!() to have been run first.
+models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
+a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
 
-#=
-and maybe there can be an alternative call that uses keyword arguments like shuffle = true, for the common cases
-(that just calls the traversal with the right passed in function) 
-=# 
-function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, modifier::UnivariateModifier = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse)
+# Keyword Arguments
+- `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models, the default option).
+- `tol=1e-5`: absolute tolerance for the `bl_modifier`.
+- `bl_modifier=GoldenSectionOpt()`: can either be a optimizer or a sampler (subtype of UnivariateModifier). For optimization, in addition to golden section search, Brent's method can be used by setting bl_modifier=BrentsMethodOpt().
+- `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
+- `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
+- `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
+"""
+function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_modifier::UnivariateModifier = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse, shuffle = false)
     sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
     temp_messages = [copy_message(tree.message)]
 
@@ -208,30 +154,7 @@ function branchlength_optim_iter!(tree::FelNode, models; partition_list = nothin
         partition_list = 1:length(tree.message)
     end
 
-    branchlength_optim_iter!(temp_messages, tree, models, partition_list, tol, modifier=modifier, traversal = traversal)
-end
-
-#BM: Check if running felsenstein_down! makes a difference.
-"""
-    branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, modifier::UnivariateModifier = GoldenSectionOpt())
-
-Uses golden section search, or optionally Brent's method, to optimize all branches recursively, maintaining the integrity of the messages. 
-Alternativly, the branches may be sampled (instead of optimized) by letting the modifier be some subtype of UnivariateSampler.
-Requires felsenstein!() to have been run first.
-models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
-a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
-partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models).
-tol is the absolute tolerance for the modifier which defaults to golden section search, and has Brent's method as an option by setting modifier=BrentsMethodOpt().
-"""
-function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, modifier::UnivariateModifier = GoldenSectionOpt())
-    temp_message = copy_message(tree.message)
-    message_to_set = copy_message(tree.message)
-
-    if partition_list === nothing
-        partition_list = 1:length(tree.message)
-    end
-
-    branchlength_optim!(temp_message, message_to_set, tree, models, partition_list, tol, modifier=modifier)
+    branchlength_optim!(temp_messages, tree, models, partition_list, tol, bl_modifier=bl_modifier, traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal)
 end
 
 #Overloading to allow for direct model and model vec inputs
@@ -240,12 +163,18 @@ branchlength_optim!(
     models::Vector{<:BranchModel};
     partition_list = nothing,
     tol = 1e-5,
-    modifier::UnivariateModifier = GoldenSectionOpt()
-) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol, modifier=modifier)
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
+    sort_tree = false,
+    traversal = Iterators.reverse,
+    shuffle = false
+) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol, bl_modifier = bl_modifier, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)
 branchlength_optim!(
     tree::FelNode,
     model::BranchModel;
     partition_list = nothing,
     tol = 1e-5,
-    modifier::UnivariateModifier = GoldenSectionOpt()
-) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, modifier=modifier)
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
+    sort_tree = false,
+    traversal = Iterators.reverse,
+    shuffle = false
+) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, bl_modifier = bl_modifier, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)

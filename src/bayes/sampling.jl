@@ -52,8 +52,8 @@ function metropolis_sample(
     for i=1:iterations
         
             # Updates the tree topolgy and branchlengths.
-            nni_optim_iter!(tree, x -> models, nni_selection_rule = softmax_sampler)
-            branchlength_optim_iter!(tree, x -> models, modifier=bl_sampler)   
+            nni_optim!(tree, x -> models, nni_selection_rule = softmax_sampler)
+            branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)   
 
             if (i-burn_in) % sample_interval == 0 && i > burn_in
 
