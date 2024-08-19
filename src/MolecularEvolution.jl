@@ -118,6 +118,8 @@ export
     reroot!,
     nni_optim!,
     branchlength_optim!,
+    metropolis_sample,
+    copy_tree,
 
     #util functions
     one_hot_sample,
@@ -131,6 +133,7 @@ export
     HKY85,
     P_from_diagonalized_Q,
     scale_cols_by_vec!,
+    BranchlengthSampler,
 
     #things the user might overload
     copy_partition_to!,

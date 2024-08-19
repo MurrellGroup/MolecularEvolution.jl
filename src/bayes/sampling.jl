@@ -1,5 +1,3 @@
-
-export metropolis_sample
 """
     function metropolis_sample(
         initial_tree::FelNode,
@@ -65,10 +63,6 @@ function metropolis_sample(
                 
             end
 
-            #REMOVE BEFORE PR
-            if i % 1000 == 0 || i == iterations 
-                println(floor(i/iterations * 100))
-            end
     end
 
     if midpoint_rooting
@@ -84,8 +78,6 @@ function metropolis_sample(
         end
     end
 
-    #println("acc_ratio = ", bl_modifier.acc_ratio[1]/sum(bl_modifier.acc_ratio))
-
     if collect_LLs
         return samples, sample_LLs
     end
@@ -98,7 +90,7 @@ end
 """
     collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
 
-    Returns a list of distance matrices (containing the distance between the leaf nodes) which can be used to assess mixing.
+    Returns a list of distance matrices containing the distance between the leaf nodes which can be used to assess mixing.
 """
 function collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
     distmats = []

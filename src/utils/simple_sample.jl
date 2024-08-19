@@ -2,15 +2,6 @@
 function univariate_modifier(f, modifier::UnivariateSampler; curr_value=nothing, kwargs...)
     return univariate_sampler(f, modifier, curr_value)
 end
-
-struct BranchlengthSampler <: UnivariateSampler
-    #The first entry in acc_ratio holds the number of accepted proposals and the second entry holds the number of rejected proposals.
-    acc_ratio
-    log_bl_proposal
-    log_bl_prior
-    BranchlengthSampler(log_bl_proposal,log_bl_prior) = new([0,0],log_bl_proposal,log_bl_prior)
-end 
-
 """  
     univariate_sampler(LL, modifier::BranchlengthPeturbation, curr_branchlength)
 
@@ -19,6 +10,14 @@ A MCMC algorithm that draws the next sample of a Markov Chain that approximates 
 function univariate_sampler(LL, modifier::BranchlengthSampler, curr_branchlength)
     return branchlength_metropolis(LL, modifier, curr_branchlength)
 end
+
+struct BranchlengthSampler <: UnivariateSampler
+    #The first entry in acc_ratio holds the number of accepted proposals and the second entry holds the number of rejected proposals.
+    acc_ratio
+    log_bl_proposal
+    log_bl_prior
+    BranchlengthSampler(log_bl_proposal,log_bl_prior) = new([0,0],log_bl_proposal,log_bl_prior)
+end 
 
 function branchlength_metropolis(LL, modifier, curr_value)
     # The prior distribution for the variable log(branchlength). A small perturbation of +1e-12 is added to enhance numerical stability near zero.
@@ -35,4 +34,7 @@ function branchlength_metropolis(LL, modifier, curr_value)
         return curr_value
     end
 end
+
+
+
 
