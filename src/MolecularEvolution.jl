@@ -25,6 +25,7 @@ abstract type ContinuousPartition <: Partition end
 
 abstract type BranchModel end
 abstract type DiscreteStateModel <: BranchModel end
+abstract type PMatrixModel <: DiscreteStateModel end
 abstract type SimulationModel <: BranchModel end #Simulation models typically can't propogate uncertainty, and aren't used for inference
 
 abstract type StatePath end
@@ -87,6 +88,7 @@ export
     BrownianMotion,
     DiagonalizedCTMC,
     GeneralCTMC,
+    PModel,
 
 
     #core functions

@@ -1,10 +1,6 @@
-mutable struct GeneralCTMC <: DiscreteStateModel
-    Q::Array{Float64,2}
-    r::Float64
-    function GeneralCTMC(Q::Array{Float64,2})
-        new(Q, 1.0)
-    end
-end
+include("DiagonalizedCTMC.jl")
+include("GeneralCTMC.jl")
+include("PModel.jl")
 
 """
     backward!(dest::Partition, source::Partition, model::BranchModel, node::FelNode)
@@ -15,10 +11,10 @@ Note: You should overload this for your own BranchModel types.
 function backward!(
     dest::DiscretePartition,
     source::DiscretePartition,
-    model::GeneralCTMC,
+    model::PMatrixModel,
     node::FelNode,
 )
-    P = exp(model.Q .* model.r .* node.branchlength)
+    P = getPmatrix(model, node)
     mul!(dest.state, P, source.state)
     dest.scaling .= source.scaling
 end
@@ -32,10 +28,10 @@ Note: You should overload this for your own BranchModel types.
 function forward!(
     dest::DiscretePartition,
     source::DiscretePartition,
-    model::GeneralCTMC,
+    model::PMatrixModel,
     node::FelNode,
 )
-    P = exp(model.Q .* model.r .* node.branchlength)
+    P = getPmatrix(model, node)
     dest.state .= (source.state' * P)'
     dest.scaling .= source.scaling
 end

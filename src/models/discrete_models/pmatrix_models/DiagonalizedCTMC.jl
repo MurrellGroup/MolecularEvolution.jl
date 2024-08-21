@@ -2,7 +2,7 @@
 #Need to specify a Q matrix
 #Init triggers diagonalization
 #Propagation requires matrix product
-mutable struct DiagonalizedCTMC <: DiscreteStateModel
+mutable struct DiagonalizedCTMC <: PMatrixModel
     Q::Array{Float64,2}
     D::Vector{Float64}
     V::Array{Float64,2}
@@ -40,32 +40,11 @@ function P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode)
     )
 end
 
-
-#"backward" refers to propagating up the tree: ie time running backwards.
-function backward!(
-    dest::DiscretePartition,
-    source::DiscretePartition,
-    model::DiagonalizedCTMC,
-    node::FelNode,
-)
-
-    #P = model.V*Diagonal(exp.(model.D.*model.r.*node.branchlength))*model.Vi
-    P = P_from_diagonalized_Q(model, node)
-    mul!(dest.state, P, source.state)
-    dest.scaling .= source.scaling
-end
-
-
-
-#Model list should be a list of P matrices.
-function forward!(
-    dest::DiscretePartition,
-    source::DiscretePartition,
-    model::DiagonalizedCTMC,
-    node::FelNode,
-)
-
-    P = P_from_diagonalized_Q(model, node)
-    dest.state .= (source.state' * P)' #Perf check here?
-    dest.scaling .= source.scaling
+@deprecate P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode) getPmatrix(model::DiagonalizedCTMC, node::FelNode)
+function getPmatrix(model::DiagonalizedCTMC, node::FelNode)
+    return clamp.(
+        model.V * Diagonal(exp.(model.D .* model.r .* node.branchlength)) * model.Vi,
+        0.0,
+        Inf,
+    )
 end
