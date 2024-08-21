@@ -1,108 +1,176 @@
-
+#After a do_nni, we have to update parent_message if we want to continue down (assume that temp_message is the forwarded parent.parent_message)
+function update_parent_message!(
+    node::FelNode,
+    temp_message::Vector{<:Partition};
+    partition_list = 1:length(node.message),
+)
+    sib_inds = sibling_inds(node)
+    for part in partition_list
+        combine!(
+            node.parent_message[part],
+            [mess[part] for mess in node.parent.child_messages[sib_inds]],
+            true,
+        )
+        combine!(
+            node.parent_message[part],
+            [temp_message[part]],
+            false,
+        )
+    end
+end
 
 function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
     models,
     partition_list;
     acc_rule = (x, y) -> x > y,
-)
+    traversal = Iterators.reverse
+) where {T <: Partition}
 
-    model_list = models(node)
-
-    if isleafnode(node)
-        return
-    end
-
-    #This bit of code should be identical to the regular downward pass...
-    #-------------------
-
-    for part in partition_list
-        forward!(temp_message[part], node.parent_message[part], model_list[part], node)
-    end
-    @assert length(node.children) <= 2
-    for i = 1:length(node.children)
-        new_temp = copy_message(temp_message) #Need to think of how to avoid this allocation. Same as in felsenstein_down
-        sib_inds = sibling_inds(node.children[i])
-        for part in partition_list
-            combine!(
-                (node.children[i]).parent_message[part],
-                [mess[part] for mess in node.child_messages[sib_inds]],
-                true,
-            )
-            combine!((node.children[i]).parent_message[part], [temp_message[part]], false)
+    #Consider a NamedTuple/struct
+    stack = [(pop!(temp_messages), tree, 1, 1, true, true)]
+    while !isempty(stack)
+        temp_message, node, ind, lastind, first, down = pop!(stack)
+        #We start out with a regular downward pass...
+        #(except for some extra bookkeeping to track if node is visited for the first time)
+        #-------------------
+        if isleafnode(node)
+            push!(temp_messages, temp_message)
+            continue
         end
-        #But calling branchlength_optim recursively...
-        nni_optim!(
-            new_temp,
-            node.child_messages[i],
-            node.children[i],
-            models,
-            partition_list;
-            acc_rule = acc_rule,
-        )
-    end
-    #Then combine node.child_messages into node.message...
-    for part in partition_list
-        combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
-    end
-
-    #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
-    #-------------------
-    if !isroot(node)
-        nnid, exceed_sib, exceed_child = do_nni(
-            node,
-            temp_message,
-            models;
-            partition_list = partition_list,
-            acc_rule = acc_rule,
-        )
-        for part in partition_list
-            combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
-            backward!(message_to_set[part], node.message[part], model_list[part], node)
-            combine!(
-                node.parent.message[part],
-                [mess[part] for mess in node.parent.child_messages],
-                true,
-            )
+        if down
+            if first
+                model_list = models(node)
+                for part in partition_list
+                    forward!(
+                        temp_message[part],
+                        node.parent_message[part],
+                        model_list[part],
+                        node,
+                    )
+                end
+                @assert length(node.children) <= 2
+                #Temp must be constant between iterations for a node during down...
+                child_iter = traversal(1:length(node.children))
+                lastind = Base.first(child_iter) #(which is why we track the last child to be visited during down)
+                push!(stack, (Vector{T}(), node, ind, lastind, true, false)) #... but not up
+                for i = child_iter #Iterative reverse <=> Recursive non-reverse, also optimal for lazysort!??
+                    push!(stack, (temp_message, node, i, lastind, false, true))
+                end
+            end
+            if !first
+                sib_inds = sibling_inds(node.children[ind])
+                for part in partition_list
+                    combine!(
+                        (node.children[ind]).parent_message[part],
+                        [mess[part] for mess in node.child_messages[sib_inds]],
+                        true,
+                    )
+                    combine!(
+                        (node.children[ind]).parent_message[part],
+                        [temp_message[part]],
+                        false,
+                    )
+                end
+                #But calling nni_optim! recursively... (the iterative equivalent)
+                push!(stack, (safepop!(temp_messages, temp_message), node.children[ind], ind, lastind, true, true)) #first + down combination => safepop!
+                ind == lastind && push!(temp_messages, temp_message) #We no longer need constant temp
+            end
+        end
+        if !down
+            #Then combine node.child_messages into node.message...
+            for part in partition_list
+                combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
+            end
+            #But now we need to optimize the current node, and then prop back up to set your parents children message correctly.
+            #-------------------
+            if !isroot(node)
+                temp_message = pop!(temp_messages)
+                model_list = models(node)
+                if first #We only do_nni first up
+                    nnid, exceed_sib, exceed_child = do_nni(
+                        node,
+                        temp_message,
+                        models;
+                        partition_list = partition_list,
+                        acc_rule = acc_rule,
+                    )
+                    if nnid && last(last(stack)) #We nnid a sibling that hasn't been visited (then, down would be true in the next iter)...
+                        #... and now we want to continue down the nnid sibling (now a child to node)
+                        push!(temp_messages, temp_message)
+                        temp_message = Base.first(last(stack)) #The forwarded parent.parent_message
+                        #First we update the parent_message...
+                        update_parent_message!(
+                            node,
+                            temp_message;
+                            partition_list = partition_list,
+                        )
+                        #... then we forward the updated parent_message (this resembles a first down)
+                        model_list = models(node)
+                        for part in partition_list
+                            forward!(
+                                temp_message[part],
+                                node.parent_message[part],
+                                model_list[part],
+                                node,
+                            )
+                        end
+                        pop!(stack)
+                        push!(stack, (Vector{T}(), node, ind, lastind, false, false)) #When we're going up a second time, we no longer need a temp
+                        push!(stack, (temp_message, node, exceed_child, exceed_child, false, true)) #Go to the "new" child - the "new" lastind
+                        continue #Don't fel-up yet
+                    end
+                end
+                for part in partition_list
+                    combine!(node.message[part], [mess[part] for mess in node.child_messages], true)
+                    backward!(node.parent.child_messages[ind][part], node.message[part], model_list[part], node)
+                    combine!(
+                        node.parent.message[part],
+                        [mess[part] for mess in node.parent.child_messages],
+                        true,
+                    )
+                end
+                push!(temp_messages, temp_message)
+            end
         end
     end
 end
 
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
 function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
     acc_rule = (x, y) -> x > y,
-)
+    traversal = Iterators.reverse,
+) where {T <: Partition}
     nni_optim!(
-        temp_message,
-        message_to_set,
-        node,
+        temp_messages,
+        tree,
         x -> models,
         partition_list,
         acc_rule = acc_rule,
+        traversal = traversal,
     )
 end
 function nni_optim!(
-    temp_message::Vector{<:Partition},
-    message_to_set::Vector{<:Partition},
-    node::FelNode,
+    temp_messages::Vector{Vector{T}},
+    tree::FelNode,
     model::BranchModel,
     partition_list;
     acc_rule = (x, y) -> x > y,
-)
+    traversal = Iterators.reverse,
+
+) where {T <: Partition}
     nni_optim!(
-        temp_message,
-        message_to_set,
-        node,
+        temp_messages,
+        tree,
         x -> [model],
         partition_list,
         acc_rule = acc_rule,
+        traversal = traversal,
     )
 end
 
@@ -116,7 +184,7 @@ function do_nni(
     if length(node.children) == 0 || node.parent === nothing
         return false
     else
-        temp_message2 = copy_message(temp_message)
+        temp_message2 = copy_message(temp_message) #Make use of temp_messages here
         model_list = models(node)
         #current score
         for part in partition_list
@@ -216,34 +284,42 @@ function do_nni(
 end
 
 """
-    nni_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5)
+    nni_optim!(tree::FelNode, models; <keyword arguments>)
 
 Considers local branch swaps for all branches recursively, maintaining the integrity of the messages.
 Requires felsenstein!() to have been run first.
 models can either be a single model (if the messages on the tree contain just one Partition) or an array of models, if the messages have >1 Partition, or 
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
-partition_list (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize tree topology with all models).
-acc_rule allows you to specify a function that takes the current and proposed log likelihoods, and if true is returned the move is accepted.
+
+# Keyword Arguments
+- `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize tree topology with all models, the default option).
+- `acc_rule=(x, y) -> x > y`: a function that takes the current and proposed log likelihoods, and if true is returned the move is accepted.
+- `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
+- `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
+- `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
 function nni_optim!(
     tree::FelNode,
     models;
     partition_list = nothing,
     acc_rule = (x, y) -> x > y,
+    sort_tree = false,
+    traversal = Iterators.reverse,
+    shuffle = false
 )
-    temp_message = copy_message(tree.message)
-    message_to_set = copy_message(tree.message)
+    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
+    temp_messages = [copy_message(tree.message)]
 
     if partition_list === nothing
         partition_list = 1:length(tree.message)
     end
 
     nni_optim!(
-        temp_message,
-        message_to_set,
+        temp_messages,
         tree,
         models,
         partition_list,
         acc_rule = acc_rule,
+        traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal
     )
 end
