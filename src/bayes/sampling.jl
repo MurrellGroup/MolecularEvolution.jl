@@ -10,7 +10,7 @@
         midpoint_rooting=false,
     )
 
-Samples tree topologies from a posterior distribution.
+Samples tree topologies from a posterior distribution. felsenstein! should be called on the initial tree before calling this function.
 
 # Arguments
 - `initial_tree`: An initial topology with (important!) the leaves populated with data, for the likelihood calculation.
@@ -90,7 +90,7 @@ end
 """
     collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
 
-    Returns a list of distance matrices containing the distance between the leaf nodes which can be used to assess mixing.
+    Returns a list of distance matrices containing the distance between the leaf nodes, which can be used to assess mixing.
 """
 function collect_leaf_dists(trees::Vector{<:AbstractTreeNode})
     distmats = []
@@ -103,7 +103,7 @@ end
 """
     leaf_distmat(tree)
 
-Returns a matrix of the distances between the leaf nodes where the index on the columns and rows are sorted by the leaf names.
+ Returns a matrix of the distances between the leaf nodes where the index on the columns and rows are sorted by the leaf names.
 """
 function leaf_distmat(tree)
     

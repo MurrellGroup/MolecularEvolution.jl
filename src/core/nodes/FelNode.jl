@@ -99,7 +99,6 @@ function mixed_type_equilibrium_message(
     return out_mess
 end
 
-export copy_tree
 """ 
     function copy_tree(root::FelNode, shallow_copy=false)
     
