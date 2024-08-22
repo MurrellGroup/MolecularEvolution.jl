@@ -18,7 +18,7 @@ end
 """  
     univariate_sampler(LL, modifier::BranchlengthPeturbation, curr_branchlength)
 
-A MCMC algorithm that draws the next sample of a Markov Chain that approximates the Posterior distrubution over the branchlengths.
+    A MCMC algorithm that draws the next sample of a Markov Chain that approximates the Posterior distrubution over the branchlengths.
 """
 function univariate_sampler(LL, modifier::BranchlengthSampler, curr_branchlength)
     return branchlength_metropolis(LL, modifier, curr_branchlength)
