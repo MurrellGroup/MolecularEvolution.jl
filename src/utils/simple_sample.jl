@@ -9,10 +9,9 @@ end
     A type that allows you to specify a additive proposal function in the log domain and a prior distrubution over the log of the branchlengths. It also holds the acceptance ratio acc_ratio (acc_ratio[1] stores the number of accepts, and acc_ratio[1] stores the number of rejects).
 """
 struct BranchlengthSampler <: UnivariateSampler
-    #The first entry in acc_ratio holds the number of accepted proposals and the second entry holds the number of rejected proposals.
-    acc_ratio
-    log_bl_proposal
-    log_bl_prior
+    acc_ratio::Vector{Int}
+    log_bl_proposal::Distribution
+    log_bl_prior::Distribution
     BranchlengthSampler(log_bl_proposal,log_bl_prior) = new([0,0],log_bl_proposal,log_bl_prior)
 end 
 
