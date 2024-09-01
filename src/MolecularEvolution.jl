@@ -30,7 +30,9 @@ abstract type SimulationModel <: BranchModel end #Simulation models typically ca
 
 abstract type StatePath end
 
-abstract type UnivariateOpt end
+abstract type UnivariateModifier end
+abstract type UnivariateOpt <: UnivariateModifier end
+abstract type UnivariateSampler <: UnivariateModifier end
 
 abstract type LazyDirection end
 
@@ -40,6 +42,7 @@ include("core/algorithms/algorithms.jl")
 include("core/sim_tree.jl")
 include("models/models.jl")
 include("utils/utils.jl")
+include("bayes/bayes.jl")
 
 #Optional dependencies
 function __init__()
@@ -117,6 +120,8 @@ export
     reroot!,
     nni_optim!,
     branchlength_optim!,
+    metropolis_sample,
+    copy_tree,
 
     #util functions
     one_hot_sample,
@@ -130,6 +135,7 @@ export
     HKY85,
     P_from_diagonalized_Q,
     scale_cols_by_vec!,
+    BranchlengthSampler,
 
     #things the user might overload
     copy_partition_to!,

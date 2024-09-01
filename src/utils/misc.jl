@@ -318,3 +318,8 @@ function write_nexus(fname::String,tree::FelNode)
         n.name = old_names[i]
     end
 end
+
+function softmax(x)
+    exp_x = exp.(x .- maximum(x))  # For numerical stability
+    return exp_x ./ sum(exp_x)
+end

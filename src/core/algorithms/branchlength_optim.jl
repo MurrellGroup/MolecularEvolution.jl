@@ -27,7 +27,7 @@ function branchlength_optim!(
     models,
     partition_list,
     tol;
-    bl_optimizer::UnivariateOpt = GoldenSectionOpt(),
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
     traversal = Iterators.reverse
 ) where {T <: Partition}
 
@@ -87,10 +87,11 @@ function branchlength_optim!(
                     temp_message = pop!(temp_messages)
                     model_list = models(node)
                     fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-                    opt = univariate_maximize(fun, 0 + tol, 1 - tol, unit_transform, bl_optimizer, tol)
-                    if fun(opt) > fun(node.branchlength)
-                        node.branchlength = opt
+                    bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+                    if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
+                        node.branchlength = bl
                     end
+                    
                     #Consider checking for improvement, and bailing if none.
                     #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
                     for part in partition_list
@@ -109,9 +110,9 @@ function branchlength_optim!(
             #-------------------
             model_list = models(node)
             fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-            opt = univariate_maximize(fun, 0 + tol, 1 - tol, unit_transform, bl_optimizer, tol)
-            if fun(opt) > fun(node.branchlength)
-                node.branchlength = opt
+            bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+            if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
+                node.branchlength = bl
             end
             #Consider checking for improvement, and bailing if none.
             #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
@@ -139,13 +140,13 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 
 # Keyword Arguments
 - `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models, the default option).
-- `tol=1e-5`: absolute tolerance for the `bl_optimizer`.
-- `bl_optimizer=GoldenSectionOpt()`: univariate branchlength optimizer, has Brent's method as an option by setting bl_optimizer=BrentsMethodOpt().
+- `tol=1e-5`: absolute tolerance for the `bl_modifier`.
+- `bl_modifier=GoldenSectionOpt()`: can either be a optimizer or a sampler (subtype of UnivariateModifier). For optimization, in addition to golden section search, Brent's method can be used by setting bl_modifier=BrentsMethodOpt().
 - `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
 - `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
-function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_optimizer::UnivariateOpt = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse, shuffle = false)
+function branchlength_optim!(tree::FelNode, models; partition_list = nothing, tol = 1e-5, bl_modifier::UnivariateModifier = GoldenSectionOpt(), sort_tree = false, traversal = Iterators.reverse, shuffle = false)
     sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
     temp_messages = [copy_message(tree.message)]
 
@@ -153,7 +154,7 @@ function branchlength_optim!(tree::FelNode, models; partition_list = nothing, to
         partition_list = 1:length(tree.message)
     end
 
-    branchlength_optim!(temp_messages, tree, models, partition_list, tol, bl_optimizer=bl_optimizer, traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal)
+    branchlength_optim!(temp_messages, tree, models, partition_list, tol, bl_modifier=bl_modifier, traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal)
 end
 
 #Overloading to allow for direct model and model vec inputs
@@ -162,18 +163,18 @@ branchlength_optim!(
     models::Vector{<:BranchModel};
     partition_list = nothing,
     tol = 1e-5,
-    bl_optimizer::UnivariateOpt = GoldenSectionOpt(),
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
     sort_tree = false,
     traversal = Iterators.reverse,
     shuffle = false
-) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol, bl_optimizer = bl_optimizer, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)
+) = branchlength_optim!(tree, x -> models, partition_list = partition_list, tol = tol, bl_modifier = bl_modifier, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)
 branchlength_optim!(
     tree::FelNode,
     model::BranchModel;
     partition_list = nothing,
     tol = 1e-5,
-    bl_optimizer::UnivariateOpt = GoldenSectionOpt(),
+    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
     sort_tree = false,
     traversal = Iterators.reverse,
     shuffle = false
-) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, bl_optimizer = bl_optimizer, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)
+) = branchlength_optim!(tree, x -> [model], partition_list = partition_list, tol = tol, bl_modifier = bl_modifier, sort_tree = sort_tree, traversal = traversal, shuffle = shuffle)
