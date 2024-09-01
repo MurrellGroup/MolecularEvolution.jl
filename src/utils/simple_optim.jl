@@ -16,7 +16,7 @@ struct GoldenSectionOpt <: UnivariateOpt end
 struct BrentsMethodOpt <: UnivariateOpt end
 
 function univariate_modifier(fun, modifier::UnivariateOpt; a=0, b=1, transform=unit_transform, tol=10e-5, kwargs...)
-    return univariate_maximize(fun, a + tol, b - tol, unit_transform, modifier, tol)
+    return univariate_maximize(fun, a, b, unit_transform, modifier, tol)
 end
 
 """

@@ -10,10 +10,10 @@
         midpoint_rooting=false,
     )
 
-Samples tree topologies from a posterior distribution. felsenstein! should be called on the initial tree before calling this function.
+Samples tree topologies from a posterior distribution. 
 
 # Arguments
-- `initial_tree`: An initial topology with (important!) the leaves populated with data, for the likelihood calculation.
+- `initial_tree`: An initial tree topology with the leaves populated with data, for the likelihood calculation.
 - `models`: A list of branch models.
 - `num_of_samples`: The number of tree samples drawn from the posterior.
 - `bl_sampler`: Sampler used to drawn branchlengths from the posterior. 
@@ -22,8 +22,11 @@ Samples tree topologies from a posterior distribution. felsenstein! should be ca
 - `collect_LLs`: Specifies if the function should return the log-likelihoods of the trees.
 - `midpoint_rooting`: Specifies whether the drawn samples should be midpoint rerooted (Important! Should only be used for time-reversible branch models starting in equilibrium).
 
+!!! note
+    The leaves of the initial tree should be populated with data and felsenstein! should be called on the initial tree before calling this function.
+
 # Returns
-- `samples`: The trees drawn from the posterior.
+- `samples`: The trees drawn from the posterior. Returns shallow tree copies, which needs to be repopulated before running felsenstein! etc. 
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
 function metropolis_sample(
@@ -50,7 +53,7 @@ function metropolis_sample(
     for i=1:iterations
         
             # Updates the tree topolgy and branchlengths.
-            nni_optim!(tree, x -> models, nni_selection_rule = softmax_sampler)
+            nni_optim!(tree, x -> models, selection_rule = softmax_sampler)
             branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)   
 
             if (i-burn_in) % sample_interval == 0 && i > burn_in

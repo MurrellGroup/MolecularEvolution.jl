@@ -24,7 +24,7 @@ function nni_optim!(
     tree::FelNode,
     models,
     partition_list;
-    nni_selection_rule = (x) -> argmax(x),
+    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse
 ) where {T <: Partition}
 
@@ -94,7 +94,7 @@ function nni_optim!(
                         temp_message,
                         models;
                         partition_list = partition_list,
-                        nni_selection_rule = nni_selection_rule,
+                        selection_rule = selection_rule,
                     )
                     if nnid && last(last(stack)) #We nnid a sibling that hasn't been visited (then, down would be true in the next iter)...
                         #... and now we want to continue down the nnid sibling (now a child to node)
@@ -143,7 +143,7 @@ function nni_optim!(
     tree::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
-    nni_selection_rule = (x) -> argmax(x),
+    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse,
 ) where {T <: Partition}
     nni_optim!(
@@ -151,7 +151,7 @@ function nni_optim!(
         tree,
         x -> models,
         partition_list,
-        nni_selection_rule = nni_selection_rule,
+        selection_rule = selection_rule,
         traversal = traversal,
     )
 end
@@ -160,7 +160,7 @@ function nni_optim!(
     tree::FelNode,
     model::BranchModel,
     partition_list;
-    nni_selection_rule = (x) -> argmax(x),
+    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse,
 
 ) where {T <: Partition}
@@ -169,7 +169,7 @@ function nni_optim!(
         tree,
         x -> [model],
         partition_list,
-        nni_selection_rule = nni_selection_rule,
+        selection_rule = selection_rule,
         traversal = traversal,
     )
 end
@@ -179,7 +179,7 @@ function do_nni(
     temp_message,
     models::F;
     partition_list = 1:length(node.message),
-    nni_selection_rule = (x) -> argmax(x),
+    selection_rule = x -> argmax(x),
 ) where {F<:Function}
     if length(node.children) == 0 || node.parent === nothing
         return false
@@ -260,7 +260,7 @@ function do_nni(
             end
         end
 
-        sampled_config_ind = nni_selection_rule(nni_LLs)
+        sampled_config_ind = selection_rule(nni_LLs)
         change = sampled_config_ind != 1
         (sampled_sib_ind, sampled_child_ind) = nni_configs[sampled_config_ind]
 
@@ -295,7 +295,7 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 
 # Keyword Arguments
 - `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize tree topology with all models, the default option).
-- `nni_selection_rule = (x) -> argmax(x)`: a function that takes the current and proposed log likelihoods and selects a nni configuration. Note that the current log likelihood is stored at x[1].
+- `selection_rule = x -> argmax(x)`: a function that takes the current and proposed log likelihoods and selects a nni configuration. Note that the current log likelihood is stored at x[1].
 - `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
 - `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
@@ -304,7 +304,7 @@ function nni_optim!(
     tree::FelNode,
     models;
     partition_list = nothing,
-    nni_selection_rule = (x) -> argmax(x),
+    selection_rule = x -> argmax(x),
     sort_tree = false,
     traversal = Iterators.reverse,
     shuffle = false
@@ -321,7 +321,7 @@ function nni_optim!(
         tree,
         models,
         partition_list,
-        nni_selection_rule = nni_selection_rule,
+        selection_rule = selection_rule,
         traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal
     )
 end

@@ -87,7 +87,7 @@ function branchlength_optim!(
                     temp_message = pop!(temp_messages)
                     model_list = models(node)
                     fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-                    bl = univariate_modifier(fun, bl_modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+                    bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
                     if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
                         node.branchlength = bl
                     end
@@ -110,7 +110,7 @@ function branchlength_optim!(
             #-------------------
             model_list = models(node)
             fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
-            bl = univariate_modifier(fun, bl_modifier; a=0, b=1, tol=tol, transform=unit_transform, curr_value=node.branchlength)
+            bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
             if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
                 node.branchlength = bl
             end

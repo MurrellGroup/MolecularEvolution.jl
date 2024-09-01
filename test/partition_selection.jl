@@ -57,7 +57,7 @@ begin
     branchlength_optim!(tree, bm_models, partition_list = [1])
     branchlength_optim!(tree, bm_models, partition_list = [2])
     branchlength_optim!(tree, bm_models)
-    branchlength_optim!(tree, bm_models, bl_optimizer=BrentsMethodOpt())
+    branchlength_optim!(tree, bm_models, bl_modifier=BrentsMethodOpt())
     branchlength_optim!(tree, x -> bm_models, partition_list = [2])
     branchlength_optim!(tree, x -> bm_models)
 
