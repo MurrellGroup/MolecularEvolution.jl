@@ -7,13 +7,16 @@
 
 tuple_sort(t::Tuple{UInt64,UInt64}) = ifelse(t[1] < t[2], t, (t[2], t[1]))
 
-function node_hash_split(node, hash_container, node_container, name2hash)
+function node_hash_split(node, hash_container, node_container, name2hash; push_leaves = false)
     if isleafnode(node)
-        #consider if we want the children pairs too, and push in here too
+        if push_leaves
+            push!(hash_container, name2hash[node.name])
+            push!(node_container, node)
+        end
         return name2hash[node.name]
     else
         child_hashes = [
-            node_hash_split(nc, hash_container, node_container, name2hash) for
+            node_hash_split(nc, hash_container, node_container, name2hash, push_leaves = push_leaves) for
             nc in node.children
         ]
         #merge child hashes with xor as we go up the tree
@@ -27,7 +30,7 @@ function node_hash_split(node, hash_container, node_container, name2hash)
     end
 end
 
-function get_node_hashes(newt)
+function get_node_hashes(newt; push_leaves = false)
     leafnames = [n.name for n in getleaflist(newt)]
     leafhashes = hash.(leafnames)
     all_names_hash = xor(leafhashes...)
@@ -35,7 +38,7 @@ function get_node_hashes(newt)
     hash_container = UInt64[]
     node_container = FelNode[]
     #This puts things in the containers
-    node_hash_split(newt, hash_container, node_container, name2hash)
+    node_hash_split(newt, hash_container, node_container, name2hash, push_leaves = push_leaves)
     #This makes a hash that matches everything except the given node
     other_hash = xor.(hash_container, all_names_hash)
     #Sort these, to make comparisons order invariant, which makes the comparison rooting invariant
@@ -53,3 +56,31 @@ function tree_diff(query, reference)
     changed_nodes = newt_nc[[!(n in hashset) for n in newt_hc]]
     return changed_nodes
 end
+
+export tree_match_pairs
+function tree_match_pairs(query, reference; push_leaves = false)
+    newt_hc, newt_nc = get_node_hashes(query, push_leaves = push_leaves)
+    n_hc, n_nc = get_node_hashes(reference, push_leaves = push_leaves)
+    newt_hash2node = Dict(zip(newt_hc, newt_nc))
+    n_hash2node = Dict(zip(n_hc, n_nc))
+    return map(h -> (newt_hash2node[h], n_hash2node[h]), filter(x -> haskey(n_hash2node, x), newt_hc))
+end
+#=
+function tree_comp(query, reference, condition)
+    newt_hc, newt_nc = get_node_hashes(query)
+    n_hc, n_nc = get_node_hashes(reference)
+    changed_nodes = filter(condition(n_hc), newt_hc)
+    return changed_nodes
+end
+
+export tree_diff
+tree_diff(query, reference) = tree_comp(query, reference, !in ∘ Set)
+
+export tree_match
+function tree_match(query, reference)
+    filter(newt_hc, n_hc) = map(in(Set(n_hc)), newt_hc)
+    return tree_comp(query, reference, filter)
+end
+
+tree_match(query, reference) = tree_comp(query, reference, in ∘ Set)
+=#

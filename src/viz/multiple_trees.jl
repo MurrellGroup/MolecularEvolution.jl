@@ -7,16 +7,32 @@ struct InternalPlotAttributes
     margin::Real
 end
 
-#I assume equal topology
-function getb(inf_node, node, x_inf_parent, x_parent)
-    x_inf = x_inf_parent + inf_node.branchlength
-    x = x_parent + node.branchlength
-    return mapreduce(nodes -> getb(nodes..., x_inf, x), +, zip(inf_node.children, node.children); init=0.0) + 2 * (x - x_inf)
+function getdistfromrootdict(node::FelNode, xdict::Dict{FelNode, Float64} = Dict{FelNode, Float64}())
+    x = node.branchlength
+    if isroot(node)
+        xdict[node] = x
+    else
+        xdict[node] = x + xdict[node.parent]
+    end
+    for child in node.children
+        getdistfromrootdict(child, xdict)
+    end
+    return xdict
 end
 
-function least_squares_δ(inf_tree, tree, x_inf, x)
-    a = length(getnodelist(inf_tree))
-    b = getb(inf_tree, tree, x_inf, x)
+function WLS_δ(tree, inf_tree, weight_fn)
+    a, b = 0.0, 0.0
+    xdict, inf_xdict = getdistfromrootdict(tree), getdistfromrootdict(inf_tree)
+    matched_pairs = tree_match_pairs(tree, inf_tree, push_leaves = true)
+    #Make sure root is added to the matched_pairs, but not twice...
+    all(x -> !isroot(x[1]), matched_pairs) && push!(matched_pairs, (tree, inf_tree))
+    #Weigh the square dists of matched pairs
+    for (node, inf_node) in matched_pairs
+        w = weight_fn(node)
+        a += w
+        b += 2*w*(xdict[node] - inf_xdict[inf_node])
+    end
+    #Return the minimum of the positive-definite parabolic function of δ
     return -b / (2*a)
 end
 
@@ -47,13 +63,27 @@ function plot_internal!(node, x_parent, line_width, line_alpha, flag, attr)
 end
 
 export plot_multiple_trees
+"""
+    plot_multiple_trees(trees, inf_tree; <keyword arguments>)
+
+Plots multiple phylogenetic trees against a reference tree, `inf_tree`.
+For each **tree** in `trees`, a Weighted Least Squares problem (parameterized by the `weight_fn` keyword) is solved for the x-positions of the matching nodes between `inf_tree` and **tree**.
+
+# Keyword Arguments
+- `node_size=4`: the size of the nodes in the plot.
+- `line_width=0.5`: the width of the branches from `trees`.
+- `font_size=10`: the font size for the leaf labels.
+- `margin=1.0`: the margin around the plot.
+- `line_alpha=0.05`: the transparency level of the branches from `trees`.
+- `weight_fn=n::FelNode -> ifelse(isroot(n), 1.0, 0.0))`: a function that assigns a weight to a node for the Weighted Least Squares problem.
+"""
 function plot_multiple_trees(trees, inf_tree;
     node_size=4,
     line_width=0.5,
     font_size=10,
     margin=1.0,
     line_alpha=0.05,
-    least_squares=false)
+    weight_fn=n::FelNode -> ifelse(isroot(n), 1.0, 0.0))
     # Assume all trees have the same leaf set
  
     leaves = getleaflist(inf_tree)
@@ -84,7 +114,7 @@ function plot_multiple_trees(trees, inf_tree;
             n.branchlength *= target_total_bl/tbl
         end
         ladderize!(tree)
-        δ = least_squares ? least_squares_δ(inf_tree, tree, 0.0, 0.0) : 0.0
+        δ = WLS_δ(tree, inf_tree, weight_fn)
         plot_internal!(tree, δ, line_width, line_alpha, false, attr)
     end
  
