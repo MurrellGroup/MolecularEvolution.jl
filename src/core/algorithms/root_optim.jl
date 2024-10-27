@@ -34,8 +34,8 @@ models can either be a single model (if the messages on the tree contain just on
 a function that takes a node, and returns a Vector{<:BranchModel} if you need the models to vary from one branch to another.
 
 # Keyword Arguments
-- `partition_list=1:length(tree.message)`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models, the default option).
-- `starting_message_modifier!=(objective, starting_message::Vector{<:Partition}) -> starting_message`: (can either be) an optimizer (or a sampler) of the root state.
+- `partition_list=1:length(tree.message)`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize root position and root state with all models, the default option).
+- `starting_message_modifier!=(objective, starting_message0::Vector{<:Partition}) -> starting_message0`: (can either be) an optimizer (or a sampler) of the root state. `objective` returns the log likelihood of a root state (and implicitly, a root position).
 - `starting_message0::Vector{<:Partition}=copy_message(tree.parent_message[partition_list])`: the initial starting message used by `starting_message_modifier!`.
 - `K=10`: the number of equidistant root-candidate points along a branch. (only to be used in the frequentist framework!?)
 """
