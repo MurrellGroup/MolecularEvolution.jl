@@ -102,6 +102,7 @@ export
     combine!,
     felsenstein!,
     felsenstein_down!,
+    felsenstein_roundtrip!,
     sample_down!,
     #endpoint_conditioned_sample_down!,
     log_likelihood!,
@@ -120,6 +121,7 @@ export
     reroot!,
     nni_optim!,
     branchlength_optim!,
+    root_optim!,
     metropolis_sample,
     copy_tree,
 
