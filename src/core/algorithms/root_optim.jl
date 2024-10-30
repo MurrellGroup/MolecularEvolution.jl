@@ -70,7 +70,7 @@ function root_optim!(
     nodelist = getnodelist(tree)
     for node in nodelist
         model_list = models(node)
-        for dist_above_node in unique(range(0.0, node.branchlength, K + 1)[1:end-1])
+        for dist_above_node in unique(range(0.0, node.branchlength, length=K+1)[1:end-1])
             #                  unique() to avoid recomputations
             #Compute the log likelihood of observations below this root-candidate...
             root_LL_below!(
