@@ -1,5 +1,6 @@
 struct InternalPlotAttributes
     y_coords::Dict{String, <:Real}
+    y_jitter::Real
     node_size::Real
     font_size::Real
     margin::Real
@@ -44,27 +45,28 @@ end
 
 # Function to recursively plot internal nodes and edges
 function plot_internal!(node, x_parent, scale, line_width, line_alpha, flag, attr)
+    y_jitter = attr.y_jitter * randn() #Add noise to the y-coordinate, we want to pass it along so that noise doesn't accumulate
     if isleafnode(node)
         y = attr.y_coords[node.name]
         x = x_parent + node.branchlength * scale
         if flag
-            Plots.scatter!([x], [y], markersize=attr.node_size, color=:blue)
-            Plots.annotate!(x + attr.margin, y, Plots.text(node.name, attr.font_size, :left))
+            Plots.scatter!([x], [y + y_jitter], markersize=attr.node_size, color=:blue)
+            Plots.annotate!(x + attr.margin, y + y_jitter, Plots.text(node.name, attr.font_size, :left))
         end
-        return x, y
+        return y_jitter, x, y
     else
         node_x = x_parent + node.branchlength * scale
         children = node.children
         child_coords = [plot_internal!(child, node_x, scale, line_width, line_alpha, flag, attr) for child in children]
         node_y = sum(last.(child_coords)) / length(child_coords)
 
-        for (child_x, child_y) in child_coords
-            Plots.plot!([node_x, child_x], [node_y, child_y],
+        for (child_y_jitter, child_x, child_y) in child_coords
+            Plots.plot!([node_x, child_x], [node_y + y_jitter, child_y + child_y_jitter],
             color=Plots.RGBA(0, 0, 0, line_alpha),
             linewidth=line_width)
         end
 
-        return node_x, node_y
+        return y_jitter, node_x, node_y
     end
 end
 
@@ -81,6 +83,7 @@ For each **tree** in `trees`, a linear Weighted Least Squares (WLS) problem (par
 - `font_size=10`: the font size for the leaf labels.
 - `margin=1.5`: the margin between a leaf node and its label.
 - `line_alpha=0.05`: the transparency level of the branches from `trees`.
+- `y_jitter=0.0`: the standard deviation of the noise in the y-coordinate.
 - `weight_fn=n::FelNode -> ifelse(isroot(n), 1.0, 0.0))`: a function that assigns a weight to a node for the WLS problem.
 - `opt_scale=true`: whether to include a scaling parameter for the WLS problem.
 """
@@ -90,6 +93,7 @@ function plot_multiple_trees(trees, inf_tree;
     font_size=10,
     margin=1.5,
     line_alpha=0.05,
+    y_jitter=0.0,
     weight_fn=n::FelNode -> ifelse(isroot(n), 1.0, 0.0),
     opt_scale=true)
     # Assume all trees have the same leaf set
@@ -109,7 +113,7 @@ function plot_multiple_trees(trees, inf_tree;
     target_scale = target_max_depth / maximum(values(getdistfromrootdict(inf_tree)))
 
     #Init global internal plot attributes
-    attr = InternalPlotAttributes(y_coords, node_size, font_size, margin / target_scale)
+    attr = InternalPlotAttributes(y_coords, y_jitter, node_size, font_size, margin / target_scale)
  
     # Plot all trees
     for tree in trees
