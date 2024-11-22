@@ -59,10 +59,11 @@ function __init__()
     end
 
     #Have Phylo and Plots installed if you want to draw trees with Phylo
-    @require Phylo = "aea672f4-3940-5932-aa44-993d1c3ff149" begin
-        @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" begin
+    @require Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80" begin
+        import .Plots
+        include("viz/multiple_trees.jl") #We're using "Plots." quite often so we might want to "using .Plots"
+        @require Phylo = "aea672f4-3940-5932-aa44-993d1c3ff149" begin
             import .Phylo
-            import .Plots
             include("viz/phylo_glue.jl")
         end
     end
