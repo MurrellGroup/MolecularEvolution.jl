@@ -30,16 +30,16 @@ Samples tree topologies from a posterior distribution.
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
 function metropolis_sample(
+    optim!::Function,
     initial_tree::FelNode,
     models::Vector{<:BranchModel},
     num_of_samples;
-    bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1)),
-    burn_in=1000, 
-    sample_interval=10,
+    burn_in = 1000,
+    sample_interval = 10,
     collect_LLs = false,
-    midpoint_rooting=false,
+    midpoint_rooting = false,
     ladderize = false,
-    )
+)
 
     # The prior over the (log) of the branchlengths should be specified in bl_sampler. 
     # Furthermore, a non-informative/uniform prior is assumed over the tree topolgies (excluding the branchlengths).
@@ -48,30 +48,27 @@ function metropolis_sample(
     samples = FelNode[]
     tree = deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
-    
-    softmax_sampler = x -> rand(Categorical(softmax(x)))
-    for i=1:iterations
-        
-            # Updates the tree topolgy and branchlengths.
-            nni_optim!(tree, x -> models, selection_rule = softmax_sampler)
-            branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)   
 
-            if (i-burn_in) % sample_interval == 0 && i > burn_in
+    for i = 1:iterations
+        # Updates the tree topolgy and branchlengths.
+        optim!(tree, models)
 
-                push!(samples, copy_tree(tree, true))
+        if (i - burn_in) % sample_interval == 0 && i > burn_in
 
-                if collect_LLs
-                    push!(sample_LLs, log_likelihood!(tree, models))
-                end
-                
+            push!(samples, copy_tree(tree, true))
+
+            if collect_LLs
+                push!(sample_LLs, log_likelihood!(tree, models))
             end
+
+        end
 
     end
 
     if midpoint_rooting
-        for (i,sample) in enumerate(samples)
+        for (i, sample) in enumerate(samples)
             node, len = midpoint(sample)
-            samples[i] = reroot!(node, dist_above_child=len)
+            samples[i] = reroot!(node, dist_above_child = len)
         end
     end
 
@@ -86,6 +83,18 @@ function metropolis_sample(
     end
 
     return samples
+end
+
+function metropolis_sample(
+    args...;
+    bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0, 2), Normal(-1, 1)),
+    kwargs...,
+)
+    softmax_sampler = rand ∘ Categorical ∘ softmax
+    metropolis_sample(args...; kwargs...) do tree, models
+        nni_optim!(tree, x -> models, selection_rule = softmax_sampler)
+        branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)
+    end
 end
 
 # Below are some functions that help to assess the mixing by looking at the distance between leaf nodes.
@@ -109,16 +118,14 @@ end
  Returns a matrix of the distances between the leaf nodes where the index on the columns and rows are sorted by the leaf names.
 """
 function leaf_distmat(tree)
-    
+
     distmat, node_dic = MolecularEvolution.tree2distances(tree)
-    
+
     leaflist = getleaflist(tree)
-    
-    sort!(leaflist, by = x-> x.name)
-    
+
+    sort!(leaflist, by = x -> x.name)
+
     order = [node_dic[leaf] for leaf in leaflist]
-    
+
     return distmat[order, order]
 end
-
-

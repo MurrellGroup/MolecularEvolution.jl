@@ -323,3 +323,5 @@ function softmax(x)
     exp_x = exp.(x .- maximum(x))  # For numerical stability
     return exp_x ./ sum(exp_x)
 end
+
+softmax_sampler(x) = rand(Categorical(softmax(x)))
