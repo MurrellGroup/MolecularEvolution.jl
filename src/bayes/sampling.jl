@@ -1,5 +1,6 @@
 """
     function metropolis_sample(
+        [optim!::Function],
         initial_tree::FelNode,
         models::Vector{<:BranchModel},
         num_of_samples;
@@ -13,6 +14,7 @@
 Samples tree topologies from a posterior distribution. 
 
 # Arguments
+- `optim!::Function`: An optional function that takes `(tree::FelNode, models)` and updates the tree with a metropolis step. If not provided, the tree is updated with [`nni_optim!`](@ref) and [`branchlength_optim!`](@ref).
 - `initial_tree`: An initial tree topology with the leaves populated with data, for the likelihood calculation.
 - `models`: A list of branch models.
 - `num_of_samples`: The number of tree samples drawn from the posterior.
