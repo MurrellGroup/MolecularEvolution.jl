@@ -104,11 +104,13 @@ A convenience method. One step of the Metropolis algorithm is performed by calli
 - `bl_sampler`: Sampler used to drawn branchlengths from the posterior.
 """
 function metropolis_sample(
-    args...;
+    initial_tree::FelNode,
+    models::Vector{<:BranchModel},
+    num_of_samples;
     bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0, 2), Normal(-1, 1)),
     kwargs...,
 )
-    metropolis_sample(args...; kwargs...) do tree, models
+    metropolis_sample(initial_tree, models, num_of_samples; kwargs...) do tree, models
         nni_update!(softmax_sampler, tree, x -> models)
         branchlength_update!(bl_sampler, tree, x -> models)
     end
