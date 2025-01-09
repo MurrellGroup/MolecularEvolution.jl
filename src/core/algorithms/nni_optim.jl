@@ -294,7 +294,6 @@ See [`nni_optim!`](@ref).
 !!! note
     `selection_rule` is a positional argument here, and not a keyword argument.
 """
-
 function nni_update!(
     selection_rule::Function,
     tree::FelNode,
@@ -337,8 +336,7 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
 nni_optim!(
-    tree::FelNode, 
-    models; 
+    args...; 
     selection_rule = x -> argmax(x), 
     kwargs...
-    ) = nni_update!(selection_rule, tree, models; kwargs...)
+    ) = nni_update!(selection_rule, args...; kwargs...)

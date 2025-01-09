@@ -1,24 +1,23 @@
 """
-    function metropolis_sample(
-        [optim!::Function],
+    metropolis_sample(
+        update!::Function,
         initial_tree::FelNode,
         models::Vector{<:BranchModel},
         num_of_samples;
-        bl_modifier::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1))
-        burn_in=1000, 
-        sample_interval=10,
+        burn_in = 1000,
+        sample_interval = 10,
         collect_LLs = false,
-        midpoint_rooting=false,
+        midpoint_rooting = false,
+        ladderize = false,
     )
 
-Samples tree topologies from a posterior distribution. 
+Samples tree topologies from a posterior distribution using a custom `update!` function.
 
 # Arguments
-- `optim!::Function`: An optional function that takes `(tree::FelNode, models)` and updates the tree with a metropolis step. If not provided, the tree is updated with [`nni_optim!`](@ref) and [`branchlength_optim!`](@ref).
+- `update!`: A function that takes (tree::FelNode, models::Vector{<:BranchModel}) and updates `tree`. `update!` takes (tree::FelNode, models::Vector{<:BranchModel}) and updates `tree`. One call to `update!` corresponds to one iteration of the Metropolis algorithm.
 - `initial_tree`: An initial tree topology with the leaves populated with data, for the likelihood calculation.
 - `models`: A list of branch models.
 - `num_of_samples`: The number of tree samples drawn from the posterior.
-- `bl_sampler`: Sampler used to drawn branchlengths from the posterior. 
 - `burn_in`: The number of samples discarded at the start of the Markov Chain.
 - `sample_interval`: The distance between samples in the underlying Markov Chain (to reduce sample correlation).
 - `collect_LLs`: Specifies if the function should return the log-likelihoods of the trees.
@@ -87,12 +86,28 @@ function metropolis_sample(
     return samples
 end
 
+"""
+    metropolis_sample(
+        initial_tree::FelNode,
+        models::Vector{<:BranchModel},
+        num_of_samples;
+        bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1))
+        burn_in=1000, 
+        sample_interval=10,
+        collect_LLs = false,
+        midpoint_rooting=false,
+    )
+
+A convenience method. One step of the Metropolis algorithm is performed by calling [`nni_update!`](@ref) with `softmax_sampler` and [`branchlength_update!`](@ref) with `bl_sampler`.
+
+# Additional Arguments
+- `bl_sampler`: Sampler used to drawn branchlengths from the posterior.
+"""
 function metropolis_sample(
     args...;
     bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0, 2), Normal(-1, 1)),
     kwargs...,
 )
-    softmax_sampler = rand ∘ Categorical ∘ softmax
     metropolis_sample(args...; kwargs...) do tree, models
         nni_update!(softmax_sampler, tree, x -> models)
         branchlength_update!(bl_sampler, tree, x -> models)

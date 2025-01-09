@@ -183,9 +183,10 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
 branchlength_optim!(
-    tree::FelNode, 
-    models; 
+    args...;
     bl_modifier::UnivariateModifier = GoldenSectionOpt(),
     kwargs...
-    ) = branchlength_update!(bl_modifier, tree, models; kwargs...)
+    ) = branchlength_update!(bl_modifier, args...; kwargs...)
 
+
+#TODO update docs branchlength_optim! regarding what bl_modifier is
