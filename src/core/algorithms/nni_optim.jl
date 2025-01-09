@@ -19,12 +19,12 @@ function update_parent_message!(
     end
 end
 
-function nni_optim!(
+function nni_update!(
+    selection_rule::Function,
     temp_messages::Vector{Vector{T}},
     tree::FelNode,
     models,
     partition_list;
-    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse
 ) where {T <: Partition}
 
@@ -90,11 +90,11 @@ function nni_optim!(
                 model_list = models(node)
                 if first #We only do_nni first up
                     nnid, sampled_sib_ind, sampled_child_ind = do_nni(
+                        selection_rule,
                         node,
                         temp_message,
                         models;
                         partition_list = partition_list,
-                        selection_rule = selection_rule,
                     )
                     if nnid && last(last(stack)) #We nnid a sibling that hasn't been visited (then, down would be true in the next iter)...
                         #... and now we want to continue down the nnid sibling (now a child to node)
@@ -138,48 +138,48 @@ function nni_optim!(
 end
 
 #Unsure if this is the best choice to handle the model,models, and model_func stuff.
-function nni_optim!(
+function nni_update!(
+    selection_rule::Function,
     temp_messages::Vector{Vector{T}},
     tree::FelNode,
     models::Vector{<:BranchModel},
     partition_list;
-    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse,
 ) where {T <: Partition}
-    nni_optim!(
+    nni_update!(
+        selection_rule,
         temp_messages,
         tree,
         x -> models,
         partition_list,
-        selection_rule = selection_rule,
         traversal = traversal,
     )
 end
-function nni_optim!(
+function nni_update!(
+    selection_rule::Function,
     temp_messages::Vector{Vector{T}},
     tree::FelNode,
     model::BranchModel,
     partition_list;
-    selection_rule = x -> argmax(x),
     traversal = Iterators.reverse,
 
 ) where {T <: Partition}
-    nni_optim!(
+    nni_update!(
+        selection_rule,
         temp_messages,
         tree,
         x -> [model],
         partition_list,
-        selection_rule = selection_rule,
         traversal = traversal,
     )
 end
 
 function do_nni(
+    selection_rule::Function,
     node,
     temp_message,
     models::F;
     partition_list = 1:length(node.message),
-    selection_rule = x -> argmax(x),
 ) where {F<:Function}
     if length(node.children) == 0 || node.parent === nothing
         return false
@@ -284,6 +284,42 @@ function do_nni(
         end
     end
 end
+"""
+    nni_update!(selection_rule::Function, tree::FelNode, models; <keyword arguments>)
+
+A more verbose version of [`nni_optim!`](@ref).
+
+# Keyword Arguments
+See [`nni_optim!`](@ref).
+!!! note
+    `selection_rule` is a positional argument here, and not a keyword argument.
+"""
+
+function nni_update!(
+    selection_rule::Function,
+    tree::FelNode,
+    models;
+    partition_list = nothing,
+    sort_tree = false,
+    traversal = Iterators.reverse,
+    shuffle = false
+)
+    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
+    temp_messages = [copy_message(tree.message)]
+
+    if partition_list === nothing
+        partition_list = 1:length(tree.message)
+    end
+
+    nni_update!(
+        selection_rule,
+        temp_messages,
+        tree,
+        models,
+        partition_list,
+        traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal
+    )
+end
 
 """
     nni_optim!(tree::FelNode, models; <keyword arguments>)
@@ -300,28 +336,9 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 - `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
-function nni_optim!(
-    tree::FelNode,
-    models;
-    partition_list = nothing,
-    selection_rule = x -> argmax(x),
-    sort_tree = false,
-    traversal = Iterators.reverse,
-    shuffle = false
-)
-    sort_tree && lazysort!(tree) #A lazysorted tree minimizes the amount of temp_messages needed
-    temp_messages = [copy_message(tree.message)]
-
-    if partition_list === nothing
-        partition_list = 1:length(tree.message)
-    end
-
-    nni_optim!(
-        temp_messages,
-        tree,
-        models,
-        partition_list,
-        selection_rule = selection_rule,
-        traversal = shuffle ? x -> sample(x, length(x), replace=false) : traversal
-    )
-end
+nni_optim!(
+    tree::FelNode, 
+    models; 
+    selection_rule = x -> argmax(x), 
+    kwargs...
+    ) = nni_update!(selection_rule, tree, models; kwargs...)

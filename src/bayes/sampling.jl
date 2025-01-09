@@ -32,7 +32,7 @@ Samples tree topologies from a posterior distribution.
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
 function metropolis_sample(
-    optim!::Function,
+    update!::Function,
     initial_tree::FelNode,
     models::Vector{<:BranchModel},
     num_of_samples;
@@ -53,7 +53,7 @@ function metropolis_sample(
 
     for i = 1:iterations
         # Updates the tree topolgy and branchlengths.
-        optim!(tree, models)
+        update!(tree, models)
 
         if (i - burn_in) % sample_interval == 0 && i > burn_in
 
@@ -94,8 +94,8 @@ function metropolis_sample(
 )
     softmax_sampler = rand ∘ Categorical ∘ softmax
     metropolis_sample(args...; kwargs...) do tree, models
-        nni_optim!(tree, x -> models, selection_rule = softmax_sampler)
-        branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)
+        nni_update!(softmax_sampler, tree, x -> models)
+        branchlength_update!(bl_sampler, tree, x -> models)
     end
 end
 
