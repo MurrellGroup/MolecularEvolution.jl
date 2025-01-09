@@ -19,6 +19,22 @@ function branch_LL_up(
     return tot_LL
 end
 
+get_next_branchlength(
+    bl_sampler::UnivariateModifier,
+    ll_curr::Real,
+    ll_prop::Real,
+    bl_curr::Real,
+    bl_prop::Real
+) = bl_prop
+
+get_next_branchlength(
+    bl_optimizer::UnivariateOpt,
+    ll_curr::Real,
+    ll_prop::Real,
+    bl_curr::Real,
+    bl_prop::Real
+) = ifelse(ll_prop > ll_curr, bl_prop, bl_curr)
+
 #I need to add a version of this that takes a generic optimizer function and uses that instead of golden_section_maximize on just the branchlength.
 #This is for cases where the user stores node-level parameters and wants to optimize them.
 function branchlength_update!(
@@ -111,10 +127,12 @@ function branchlength_update!(
             model_list = models(node)
             fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
             bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
-            #TODO outsource this if block to a function that dispatches on the bl_modifier type
-            if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
-                node.branchlength = bl
-            end
+            #Next, we dispatch on the bl_modifier type to get the next branchlength
+            #=
+            Note: for a user-defined bl_modifier, this can be overloaded,
+            the default behvaiour is just to return bl
+            =#
+            node.branchlength = get_next_branchlength(bl_modifier, fun(node.branchlength), fun(bl), node.branchlength, bl)
             #Consider checking for improvement, and bailing if none.
             #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
             for part in partition_list
@@ -134,7 +152,7 @@ end
 """
     branchlength_update!(bl_modifier::UnivariateModifier, tree::FelNode, models; <keyword arguments>)
 
-A more general version of [`branchlength_optim!`](@ref). Here `bl_modifier` can be either an optimizer or a sampler.
+A more general version of [`branchlength_optim!`](@ref). Here `bl_modifier` can be either an optimizer or a sampler (or more generally, a UnivariateModifier).
 
 # Keyword Arguments
 See [`branchlength_optim!`](@ref).
@@ -176,17 +194,15 @@ a function that takes a node, and returns a Vector{<:BranchModel} if you need th
 
 # Keyword Arguments
 - `partition_list=nothing`: (eg. 1:3 or [1,3,5]) lets you choose which partitions to run over (but you probably want to optimize branch lengths with all models, the default option).
-- `tol=1e-5`: absolute tolerance for the `bl_modifier`.
-- `bl_modifier=GoldenSectionOpt()`: can either be a optimizer or a sampler (subtype of UnivariateModifier). For optimization, in addition to golden section search, Brent's method can be used by setting bl_modifier=BrentsMethodOpt().
+- `tol=1e-5`: absolute tolerance for the `bl_optimizer`.
+- `bl_optimizer::UnivariateModifier=GoldenSectionOpt()`: the algorithm used to optimize the log likelihood of a branch length. In addition to golden section search, Brent's method can be used by setting `bl_optimizer=BrentsMethodOpt()`.
 - `sort_tree=false`: determines if a [`lazysort!`](@ref) will be performed, which can reduce the amount of temporary messages that has to be initialized.
 - `traversal=Iterators.reverse`: a function that determines the traversal, permutes an iterable.
 - `shuffle=false`: do a randomly shuffled traversal, overrides `traversal`.
 """
 branchlength_optim!(
     args...;
-    bl_modifier::UnivariateModifier = GoldenSectionOpt(),
+    bl_optimizer::UnivariateModifier = GoldenSectionOpt(),
     kwargs...
-    ) = branchlength_update!(bl_modifier, args...; kwargs...)
+    ) = branchlength_update!(bl_optimizer, args...; kwargs...)
 
-
-#TODO update docs branchlength_optim! regarding what bl_modifier is
