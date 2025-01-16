@@ -122,6 +122,7 @@ export
     nni_optim!,
     branchlength_optim!,
     root_optim!,
+    root_position_sample!,
     metropolis_sample,
     copy_tree,
 

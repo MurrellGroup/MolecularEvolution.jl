@@ -122,3 +122,53 @@ root_optim!(
         root_LL! = root_LL!,
         K = K
     )
+
+function root_position_sample!(
+    tree::FelNode,
+    models;
+    partition_list = 1:length(tree.message),
+    root_LL! = default_root_LL_wrapper(tree.parent_message[partition_list]),
+    root_sampler::UnivariateSampler = RootPositionSampler(),
+    K = 1 #Number of consecutive metropolis steps
+)
+    #Initialize some messages
+    node_message = copy_message(tree.parent_message[partition_list])
+    temp_message = copy_message(tree.parent_message[partition_list])
+
+    #Do most of the message passing
+    felsenstein_roundtrip!(tree, models, partition_list = partition_list, temp_message = temp_message)
+
+    #Initialize variables
+    sampled_root = tree
+    sampled_dist = 0.0
+    starting_message = copy_message(tree.parent_message[partition_list])
+
+    #Sample the root position + root state
+    LL!(curr_value::Tuple{FelNode,Real}) = root_LL_below!(node_message, temp_message, curr_value[2], curr_value[1], models(curr_value[1]), partition_list = partition_list)
+    for i = 1:K
+        sampled_root, sampled_dist = metropolis_step(LL!, root_sampler, (sampled_root, sampled_dist))
+    end
+    
+    new_root = sampled_root == tree ? tree : reroot!(sampled_root, dist_above_child = sampled_dist) #Maybe reroot! should take care of this?
+    steal_messages!(new_root, tree)
+    new_root.parent_message[partition_list] .= starting_message
+    return new_root
+end
+
+struct RootPositionSampler <: UnivariateSampler
+    acc_ratio::Vector{Int}
+    function RootPositionSampler()
+        new([0,0])
+    end
+end 
+
+# Propose a new root position with a global uniform distribution
+function proposal(sampler::RootPositionSampler, curr_value::Tuple{FelNode,Real})
+    nodelist = getnodelist(curr_value[1])
+    cum = cumsum(n.branchlength for n in nodelist)
+    sample = rand() * cum[end]
+    idx = searchsortedfirst(cum, sample)
+    return (nodelist[idx], cum[idx] - sample)
+end
+
+log_prior(sampler::RootPositionSampler, curr_value) = 0.0 #Uninformative/improper prior
