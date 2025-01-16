@@ -119,9 +119,12 @@ export
     isinternalnode,
     isbranchnode,
     reroot!,
+    nni_update!,
     nni_optim!,
+    branchlength_update!,
     branchlength_optim!,
     metropolis_sample,
+    metropolis_step,
     copy_tree,
 
     #util functions
@@ -137,6 +140,7 @@ export
     P_from_diagonalized_Q,
     scale_cols_by_vec!,
     BranchlengthSampler,
+    softmax_sampler,
 
     #things the user might overload
     copy_partition_to!,
