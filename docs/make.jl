@@ -1,9 +1,24 @@
 using MolecularEvolution
-using Documenter
+using Documenter, Literate
 using Phylo
 using Plots
-using Compose
+using Compose, Cairo, Fontconfig
 using FASTX
+
+LITERATE_INPUT = joinpath(@__DIR__, "..", "examples")
+LITERATE_OUTPUT = OUTPUT = joinpath(@__DIR__, "src/generated")
+
+for (root, _, files) ∈ walkdir(LITERATE_INPUT), file ∈ files
+    @show root, files
+    # ignore non julia files
+    splitext(file)[2] == ".jl" || continue
+    # full path to a literate script
+    ipath = joinpath(root, file)
+    # generated output path
+    opath = splitdir(replace(ipath, LITERATE_INPUT=>LITERATE_OUTPUT))[1]
+    # generate the markdown file calling Literate
+    Literate.markdown(ipath, opath)
+end
 
 DocMeta.setdocmeta!(
     MolecularEvolution,
@@ -32,7 +47,7 @@ makedocs(;
         "simulation.md",
         "optimization.md",
         "ancestors.md",
-        "viz.md",
+        "generated/viz.md",
     ],
 )
 

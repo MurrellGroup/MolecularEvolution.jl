@@ -1,22 +1,23 @@
 """
-    function metropolis_sample(
+    metropolis_sample(
+        update!::Function,
         initial_tree::FelNode,
         models::Vector{<:BranchModel},
         num_of_samples;
-        bl_modifier::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1))
-        burn_in=1000, 
-        sample_interval=10,
+        burn_in = 1000,
+        sample_interval = 10,
         collect_LLs = false,
-        midpoint_rooting=false,
+        midpoint_rooting = false,
+        ladderize = false,
     )
 
-Samples tree topologies from a posterior distribution. 
+Samples tree topologies from a posterior distribution using a custom `update!` function.
 
 # Arguments
+- `update!`: A function that takes (tree::FelNode, models::Vector{<:BranchModel}) and updates `tree`. `update!` takes (tree::FelNode, models::Vector{<:BranchModel}) and updates `tree`. One call to `update!` corresponds to one iteration of the Metropolis algorithm.
 - `initial_tree`: An initial tree topology with the leaves populated with data, for the likelihood calculation.
 - `models`: A list of branch models.
 - `num_of_samples`: The number of tree samples drawn from the posterior.
-- `bl_sampler`: Sampler used to drawn branchlengths from the posterior. 
 - `burn_in`: The number of samples discarded at the start of the Markov Chain.
 - `sample_interval`: The distance between samples in the underlying Markov Chain (to reduce sample correlation).
 - `collect_LLs`: Specifies if the function should return the log-likelihoods of the trees.
@@ -30,16 +31,16 @@ Samples tree topologies from a posterior distribution.
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
 function metropolis_sample(
+    update!::Function,
     initial_tree::FelNode,
     models::Vector{<:BranchModel},
     num_of_samples;
-    bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1)),
-    burn_in=1000, 
-    sample_interval=10,
+    burn_in = 1000,
+    sample_interval = 10,
     collect_LLs = false,
-    midpoint_rooting=false,
+    midpoint_rooting = false,
     ladderize = false,
-    )
+)
 
     # The prior over the (log) of the branchlengths should be specified in bl_sampler. 
     # Furthermore, a non-informative/uniform prior is assumed over the tree topolgies (excluding the branchlengths).
@@ -48,30 +49,27 @@ function metropolis_sample(
     samples = FelNode[]
     tree = deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
-    
-    softmax_sampler = x -> rand(Categorical(softmax(x)))
-    for i=1:iterations
-        
-            # Updates the tree topolgy and branchlengths.
-            nni_optim!(tree, x -> models, selection_rule = softmax_sampler)
-            branchlength_optim!(tree, x -> models, bl_modifier = bl_sampler)   
 
-            if (i-burn_in) % sample_interval == 0 && i > burn_in
+    for i = 1:iterations
+        # Updates the tree topolgy and branchlengths.
+        update!(tree, models)
 
-                push!(samples, copy_tree(tree, true))
+        if (i - burn_in) % sample_interval == 0 && i > burn_in
 
-                if collect_LLs
-                    push!(sample_LLs, log_likelihood!(tree, models))
-                end
-                
+            push!(samples, copy_tree(tree, true))
+
+            if collect_LLs
+                push!(sample_LLs, log_likelihood!(tree, models))
             end
+
+        end
 
     end
 
     if midpoint_rooting
-        for (i,sample) in enumerate(samples)
+        for (i, sample) in enumerate(samples)
             node, len = midpoint(sample)
-            samples[i] = reroot!(node, dist_above_child=len)
+            samples[i] = reroot!(node, dist_above_child = len)
         end
     end
 
@@ -86,6 +84,36 @@ function metropolis_sample(
     end
 
     return samples
+end
+
+"""
+    metropolis_sample(
+        initial_tree::FelNode,
+        models::Vector{<:BranchModel},
+        num_of_samples;
+        bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0,2), Normal(-1,1))
+        burn_in=1000, 
+        sample_interval=10,
+        collect_LLs = false,
+        midpoint_rooting=false,
+    )
+
+A convenience method. One step of the Metropolis algorithm is performed by calling [`nni_update!`](@ref) with `softmax_sampler` and [`branchlength_update!`](@ref) with `bl_sampler`.
+
+# Additional Arguments
+- `bl_sampler`: Sampler used to drawn branchlengths from the posterior.
+"""
+function metropolis_sample(
+    initial_tree::FelNode,
+    models::Vector{<:BranchModel},
+    num_of_samples;
+    bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0, 2), Normal(-1, 1)),
+    kwargs...,
+)
+    metropolis_sample(initial_tree, models, num_of_samples; kwargs...) do tree, models
+        nni_update!(softmax_sampler, tree, x -> models)
+        branchlength_update!(bl_sampler, tree, x -> models)
+    end
 end
 
 # Below are some functions that help to assess the mixing by looking at the distance between leaf nodes.
@@ -109,16 +137,14 @@ end
  Returns a matrix of the distances between the leaf nodes where the index on the columns and rows are sorted by the leaf names.
 """
 function leaf_distmat(tree)
-    
+
     distmat, node_dic = MolecularEvolution.tree2distances(tree)
-    
+
     leaflist = getleaflist(tree)
-    
-    sort!(leaflist, by = x-> x.name)
-    
+
+    sort!(leaflist, by = x -> x.name)
+
     order = [node_dic[leaf] for leaf in leaflist]
-    
+
     return distmat[order, order]
 end
-
-
