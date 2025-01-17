@@ -104,10 +104,12 @@ function branchlength_update!(
                     model_list = models(node)
                     fun = x -> branch_LL_up(x, temp_message, node, model_list, partition_list)
                     bl = univariate_modifier(fun, bl_modifier; a=0+tol, b=1-tol, tol=tol, transform=unit_transform, curr_value=node.branchlength)
-                    if fun(bl) > fun(node.branchlength) || !(bl_modifier isa UnivariateOpt)
-                        node.branchlength = bl
-                    end
-                    
+                    #Next, we dispatch on the bl_modifier type to get the next branchlength
+                    #=
+                    Note: for a user-defined bl_modifier, this can be overloaded,
+                    the default behvaiour is just to return bl
+                    =#
+                    node.branchlength = get_next_branchlength(bl_modifier, fun(node.branchlength), fun(bl), node.branchlength, bl)
                     #Consider checking for improvement, and bailing if none.
                     #Then we need to set the "message_to_set", which is node.parent.child_messages[but_the_right_one]
                     for part in partition_list

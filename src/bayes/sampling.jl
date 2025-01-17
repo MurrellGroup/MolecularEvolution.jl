@@ -52,7 +52,7 @@ function metropolis_sample(
 
     for i = 1:iterations
         # Updates the tree topolgy and branchlengths.
-        update!(tree, models)
+        tree = update!(tree, models)
 
         if (i - burn_in) % sample_interval == 0 && i > burn_in
 
@@ -113,6 +113,7 @@ function metropolis_sample(
     metropolis_sample(initial_tree, models, num_of_samples; kwargs...) do tree, models
         nni_update!(softmax_sampler, tree, x -> models)
         branchlength_update!(bl_sampler, tree, x -> models)
+        return tree
     end
 end
 
