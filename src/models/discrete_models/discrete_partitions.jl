@@ -75,7 +75,7 @@ mutable struct GappyNucleotidePartition <: DiscretePartition
         state_arr .= freq_vec
         new(state_arr, 5, sites, zeros(sites))
     end
-    function GappyNucleotidePartitionPartition(state, states, sites, scaling)
+    function GappyNucleotidePartition(state, states, sites, scaling)
         @assert size(state) == (states, sites) && states == 5
         new(state, states, sites, scaling)
     end
