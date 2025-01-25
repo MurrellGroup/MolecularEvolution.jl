@@ -293,7 +293,7 @@ function HB98_AAfit(alpha, nuc_matrix, AA_fitness; genetic_code = universal_code
         if abs(diff) < 0.001 #To catch the hole discontinuity a 2nd order approximation that is REALLY close.
             f_ab = 1 / 12 * (12 + diff * (6 + diff)) #1+0.5*diff
         else
-            f_ab = diff / (1 - e^-diff)
+            f_ab = diff / (1 - exp(-diff))
         end
         codon_matrix[p[1][1], p[1][2]] = alpha * nuc_matrix[p[2][2], p[2][3]] * f_ab
     end

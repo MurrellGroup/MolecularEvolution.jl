@@ -24,12 +24,12 @@ end
 function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
     #Handling some edge cases. These aren't mathematically sensible. A gaussian with "Inf" variance will behave like a 1,1,1,1 vector in discrete felsenstein.
     #To-do: update some of these so that the norm constant is properly handled, even if the variance is Inf (so it isn't exactly well-defined anyway)
-    if g1.var == 0 && g2.var == 0 && g1.var != g2.var
+    if g1.var == 0 && g2.var == 0 && g1.mean != g2.mean
         error("both gaussians have 0 variance but different means")
     elseif g1.var == 0
-        return copy_partition(g1)
+        return _merge_point_mass(g1, g2)
     elseif g2.var == 0
-        return copy_partition(g2)
+        return _merge_point_mass(g2, g1)
     end
     if g1.var == Inf && g2.var == Inf
         return GaussianPartition((g1.mean + g2.mean) / 2, Inf, 0.0)
@@ -50,6 +50,12 @@ function merge_two_gaussians(g1::GaussianPartition, g2::GaussianPartition)
         )
     res_gaussian.norm_const += (g1.norm_const + g2.norm_const)
     return res_gaussian
+end
+
+function _merge_point_mass(point::GaussianPartition, regular::GaussianPartition)
+    r = copy_partition(point)
+    r.norm_const += log(gaussian_pdf(regular, point.mean)) + regular.norm_const
+    return r
 end
 
 function identity!(dest::GaussianPartition)

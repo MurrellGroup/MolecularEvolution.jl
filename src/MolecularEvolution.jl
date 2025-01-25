@@ -43,6 +43,7 @@ include("core/sim_tree.jl")
 include("models/models.jl")
 include("utils/utils.jl")
 include("bayes/bayes.jl")
+include("core/simple_interface.jl")
 
 #Optional dependencies
 function __init__()
@@ -94,9 +95,7 @@ export
     GeneralCTMC,
     PModel,
 
-
     #core functions
-    sim_tree,
     internal_message_init!,
     forward!,
     backward!,
@@ -130,6 +129,11 @@ export
     metropolis_step,
     copy_tree,
 
+    #Tree simulation functions
+    sim_tree,
+    standard_tree_sim,
+    ladder_tree_sim,
+
     #util functions
     one_hot_sample,
     scaled_prob_domain,
@@ -144,6 +148,15 @@ export
     scale_cols_by_vec!,
     BranchlengthSampler,
     softmax_sampler,
+
+    #Simple interface functions
+    leaf_samples, 
+    leaf_names,
+    node_samples,
+    node_names,
+    leaves,
+    nodes,
+    internal_nodes,
 
     #things the user might overload
     copy_partition_to!,

@@ -138,3 +138,25 @@ Simulates tree with constant population size.
 function sim_tree(; n = 10, mutation_rate = 0.01)
     sim_tree(n, 500.0, 10.0, nstart = n, mutation_rate = mutation_rate)
 end
+
+
+"""
+    standard_tree_sim(ntaxa)
+
+Simulates a tree with logistic population growth, under a coalescent model.
+"""
+function standard_tree_sim(ntaxa)
+    n(t) = (10*ntaxa)/(1+exp(t-10))
+    return sim_tree(ntaxa,n,ntaxa/5, mutation_rate = 0.05)
+end
+
+
+"""
+    ladder_tree_sim(ntaxa)
+
+Simulates a ladder-like tree, using constant population size but heterochronous sampling, under a coalescent model.
+"""
+function ladder_tree_sim(ntaxa)
+    n(t) = ntaxa/10
+    return sim_tree(ntaxa,n,1.0, mutation_rate = 0.1/sqrt(ntaxa))
+end
