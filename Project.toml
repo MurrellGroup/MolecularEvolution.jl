@@ -1,7 +1,7 @@
 name = "MolecularEvolution"
 uuid = "9f975960-e239-4209-8aa0-3d3ad5a82892"
 authors = ["Ben Murrell <murrellb@gmail.com> and contributors"]
-version = "0.2.2"
+version = "0.2.3"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
