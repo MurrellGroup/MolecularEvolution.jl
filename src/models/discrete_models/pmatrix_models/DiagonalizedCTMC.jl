@@ -32,6 +32,7 @@ function eq_freq(model::DiagonalizedCTMC)
     return (model.V[:, pos]) .* model.Vi[pos, :]
 end
 
+#=
 function P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode)
     return clamp.(
         model.V * Diagonal(exp.(model.D .* model.r .* node.branchlength)) * model.Vi,
@@ -39,6 +40,7 @@ function P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode)
         Inf,
     )
 end
+=#
 
 @deprecate P_from_diagonalized_Q(model::DiagonalizedCTMC, node::FelNode) getPmatrix(model::DiagonalizedCTMC, node::FelNode)
 function getPmatrix(model::DiagonalizedCTMC, node::FelNode)
