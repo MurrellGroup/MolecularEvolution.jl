@@ -97,6 +97,7 @@ export
 
     #core functions
     internal_message_init!,
+    allocate!,
     forward!,
     backward!,
     combine!,
