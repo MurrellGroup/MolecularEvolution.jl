@@ -10,7 +10,7 @@ begin
     m = DiagonalizedCTMC(Q)
     @test sum(
         abs,
-        P_from_diagonalized_Q(m, n) .- [
+        getPmatrix(m, n) .- [
             0.767961 0.0981107 0.0724612 0.061467
             0.0981107 0.754992 0.080452 0.0664456
             0.0724612 0.080452 0.806096 0.0409902
