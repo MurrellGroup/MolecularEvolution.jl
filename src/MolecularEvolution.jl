@@ -143,6 +143,7 @@ export
     unit_transform,
     HKY85,
     P_from_diagonalized_Q,
+    getPmatrix,
     scale_cols_by_vec!,
     BranchlengthSampler,
     softmax_sampler,
