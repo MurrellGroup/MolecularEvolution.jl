@@ -54,7 +54,7 @@ end
 
 function _merge_point_mass(point::GaussianPartition, regular::GaussianPartition)
     r = copy_partition(point)
-    r.norm_const += log(gaussian_pdf(regular, point.mean)) + regular.norm_const
+    r.norm_const += logpdf(regular, point.mean) + regular.norm_const
     return r
 end
 
@@ -74,11 +74,11 @@ function site_LLs(part::GaussianPartition)
     return [part.norm_const]
 end
 
-function gaussian_pdf(g::GaussianPartition, x::Float64)
+function Distributions.logpdf(g::GaussianPartition, x::Float64)
     if g.var == 0
-        return Float64(x == g.mean) #Hokey...
+        error("logpdf not defined for point mass")
     end
-    return pdf(Normal(g.mean, sqrt(g.var)), x)
+    return logpdf(Normal(g.mean, sqrt(g.var)), x)
 end
 
 #And sampling
