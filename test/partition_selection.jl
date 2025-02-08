@@ -72,4 +72,16 @@ begin
     nni_optim!(tree, bm_models)
     nni_optim!(tree, x -> bm_models, partition_list = [2])
     nni_optim!(tree, x -> bm_models)
+
+    felsenstein_roundtrip!(tree, bm_models, partition_list = [1])
+    felsenstein_roundtrip!(tree, bm_models, partition_list = [2])
+    felsenstein_roundtrip!(tree, bm_models)
+    felsenstein_roundtrip!(tree, x -> bm_models, partition_list = [2])
+    felsenstein_roundtrip!(tree, x -> bm_models)
+
+    tree = root_optim!(tree, bm_models, partition_list = [1])
+    tree = root_optim!(tree, bm_models, partition_list = [2])
+    tree = root_optim!(tree, bm_models)
+    tree = root_optim!(tree, x -> bm_models, partition_list = [2])
+    tree = root_optim!(tree, x -> bm_models)
 end
