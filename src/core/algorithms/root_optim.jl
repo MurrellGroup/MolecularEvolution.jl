@@ -203,8 +203,7 @@ function (root_sample::RootSample)(tree::FelNode, models, partition_list, node_m
     #Initialize variables
     sampled_position = (root=tree, dist_above_node=0.0)
     sampled_state = tree.parent_message[partition_list]
-    for _ = 1:length(root_sample)
-        #@show sampled_position.root.nodeindex, sampled_position.dist_above_node, sampled_state[1][1]
+    for _ = 1:length(root_sample) #this solution is arguably hacky, but we want to squeeze out as much of `felsenstein_roundtrip!` as possible
         sampled_position = metropolis_step(Base.Fix2(LL!, sampled_state), root_sample, sampled_position)
         sampled_state = metropolis_step(Base.Fix1(LL!, sampled_position), root_sample, sampled_state)
     end

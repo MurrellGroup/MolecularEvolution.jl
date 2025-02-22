@@ -53,7 +53,8 @@ end
 
 #--- 2 ---
 struct MyRootSample <: RootSample end
-#either implement the metropolis_step interface
+#either implement the metropolis_step interface and...
+Base.length(root_sample::MyRootSample) = error() # the number of consecutive samples of root state and position for a single update call
 
 #or
 function (root_sample::MyRootSample)(tree::FelNode, models, partition_list, node_message::Vector{<:Partition}, temp_message::Vector{<:Partition})
@@ -67,5 +68,9 @@ function (my_root_update::MyRootUpdate)(tree::FelNode, models, partition_list, n
     error("root_update!() not yet implemented for $(typeof(my_root_update)). Required for root_update!.")
 end
 
+
+#--- models_update::ModelsUpdate ---
+# See example in docs "Updating a phylogenetic tree"
+#TODO: write this up properly
 
 #I also have some convenience structs for the most common cases
