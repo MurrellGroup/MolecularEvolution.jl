@@ -47,9 +47,9 @@ function metropolis_sample(
     # The prior over the (log) of the branchlengths should be specified in bl_sampler. 
     # Furthermore, a non-informative/uniform prior is assumed over the tree topolgies (excluding the branchlengths).
 
-    sample_LLs = []
+    sample_LLs = Float64[]
     samples = FelNode[]
-    models_samples = Float64[]
+    models_samples = []
     tree = initial_tree#deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
 
