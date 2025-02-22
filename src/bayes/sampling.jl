@@ -31,15 +31,17 @@ Samples tree topologies from a posterior distribution using a custom `update!` f
 - `sample_LLs`: The associated log-likelihoods of the tree (optional).
 """
 function metropolis_sample(
-    update!::Function,
+    update!::AbstractUpdate,
     initial_tree::FelNode,
-    models::Vector{<:BranchModel},
+    models,#::Vector{<:BranchModel},
     num_of_samples;
+    partition_list = 1:length(initial_tree.message),
     burn_in = 1000,
     sample_interval = 10,
     collect_LLs = false,
     midpoint_rooting = false,
     ladderize = false,
+    collect_models = false,
 )
 
     # The prior over the (log) of the branchlengths should be specified in bl_sampler. 
@@ -47,21 +49,28 @@ function metropolis_sample(
 
     sample_LLs = []
     samples = FelNode[]
-    tree = deepcopy(initial_tree)
+    models_samples = Float64[]
+    tree = initial_tree#deepcopy(initial_tree)
     iterations = burn_in + num_of_samples * sample_interval
 
     for i = 1:iterations
         # Updates the tree topolgy and branchlengths.
-        tree = update!(tree, models)
+        tree, models = update!(tree, models, partition_list = partition_list)
+        if isnothing(tree)
+            break
+        end
 
         if (i - burn_in) % sample_interval == 0 && i > burn_in
 
             push!(samples, copy_tree(tree, true))
 
             if collect_LLs
-                push!(sample_LLs, log_likelihood!(tree, models))
+                push!(sample_LLs, log_likelihood!(tree, models, partition_list = partition_list))
             end
 
+            if collect_models
+                push!(models_samples, collapse_models(update!, models))
+            end
         end
 
     end
@@ -79,9 +88,14 @@ function metropolis_sample(
         end
     end
 
-    if collect_LLs
+    if collect_LLs && collect_models
+        return samples, sample_LLs, models_samples  
+    elseif collect_LLs && !collect_models
         return samples, sample_LLs
+    elseif !collect_LLs && collect_models
+        return samples, models_samples
     end
+
 
     return samples
 end
@@ -110,11 +124,7 @@ function metropolis_sample(
     bl_sampler::UnivariateSampler = BranchlengthSampler(Normal(0, 2), Normal(-1, 1)),
     kwargs...,
 )
-    metropolis_sample(initial_tree, models, num_of_samples; kwargs...) do tree, models
-        nni_update!(softmax_sampler, tree, x -> models)
-        branchlength_update!(bl_sampler, tree, x -> models)
-        return tree
-    end
+    metropolis_sample(BayesUpdate(; branchlength_sampler = bl_sampler), initial_tree, models, num_of_samples; kwargs...)
 end
 
 # Below are some functions that help to assess the mixing by looking at the distance between leaf nodes.

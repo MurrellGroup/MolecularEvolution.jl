@@ -1,3 +1,5 @@
+include("models_update.jl")
+include("AbstractUpdate.jl")
 include("felsenstein.jl")
 include("branchlength_optim.jl")
 include("lls.jl")

@@ -34,6 +34,13 @@ abstract type UnivariateModifier end
 abstract type UnivariateOpt <: UnivariateModifier end
 abstract type UnivariateSampler <: UnivariateModifier end
 
+abstract type RootUpdate <: Function end
+abstract type RootOpt <: RootUpdate end
+abstract type RootSample <: RootUpdate end
+abstract type UniformRootPositionSample <: RootSample end
+abstract type ModelsUpdate <: Function end
+
+
 abstract type LazyDirection end
 
 #include("core/core.jl")
@@ -128,6 +135,22 @@ export
     metropolis_sample,
     metropolis_step,
     copy_tree,
+
+    #update
+    AbstractUpdate,
+    StandardUpdate,
+    BayesUpdate,
+    MaxLikUpdate,
+    RootUpdate,
+    RootOpt,
+    RootSample,
+    UniformRootPositionSample,
+    StandardRootOpt,
+    StandardRootSample,
+    ModelsUpdate,
+    StandardModelsUpdate,
+    collapse_models,
+
 
     #Tree simulation functions
     sim_tree,
