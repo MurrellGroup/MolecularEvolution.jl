@@ -53,8 +53,14 @@ end
 
 #--- 2 ---
 struct MyRootSample <: RootSample end
-#either implement the metropolis_step interface and...
-Base.length(root_sample::MyRootSample) = error() # the number of consecutive samples of root state and position for a single update call
+#=
+either implement the metropolis_step interface separately for current values of the form
+    1. root_position::@NamedTuple{root::FelNode, dist_above_node::Float64}
+    2. root_state::Vector{<:Partition}
+
+and...
+=#
+Base.length(root_sample::MyRootSample) = error("length() not yet implemented for $(typeof(root_sample)). Required for root_update!.") # the number of consecutive samples of root state and position for a single update call
 
 #or
 function (root_sample::MyRootSample)(tree::FelNode, models, partition_list, node_message::Vector{<:Partition}, temp_message::Vector{<:Partition})
@@ -65,12 +71,21 @@ end
 struct MyRootUpdate <: RootUpdate end
 
 function (my_root_update::MyRootUpdate)(tree::FelNode, models, partition_list, node_message::Vector{<:Partition}, temp_message::Vector{<:Partition})
-    error("root_update!() not yet implemented for $(typeof(my_root_update)). Required for root_update!.")
+    error("$(typeof(my_root_update)) not yet implemented as callable. Required for root_update!.")
 end
 
 
 #--- models_update::ModelsUpdate ---
-# See example in docs "Updating a phylogenetic tree"
-#TODO: write this up properly
+struct MyModelsUpdate <: ModelsUpdate end
+
+function (models_update::MyModelsUpdate)(tree::FelNode, models; partition_list = 1:length(tree.message))
+    error("$(typeof(models_update)) not yet implemented as callable.")
+end
+
+function collapse_models(::MyModelsUpdate, models)
+    error("This is optional. If removed, defaults to returning models. Overload if you want to collapse the models into its parameters during, for instance, a metropolis_sample call.")
+end
+
+# For a bayesian ModelsUpdate, see example in docs "Updating a phylogenetic tree"
 
 #I also have some convenience structs for the most common cases
