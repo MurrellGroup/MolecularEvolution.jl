@@ -1,7 +1,10 @@
+include("models_update.jl")
+include("AbstractUpdate.jl")
 include("felsenstein.jl")
 include("branchlength_optim.jl")
 include("lls.jl")
 include("nni_optim.jl")
+include("root_optim.jl")
 include("ancestors.jl")
 include("generative.jl")
 

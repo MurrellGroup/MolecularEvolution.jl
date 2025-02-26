@@ -1,6 +1,6 @@
 using MolecularEvolution
 using Documenter, Literate
-using Phylo
+using Phylo, Distributions
 using Plots
 using Compose, Cairo, Fontconfig
 using FASTX
@@ -48,6 +48,7 @@ makedocs(;
         "optimization.md",
         "ancestors.md",
         "generated/viz.md",
+        "generated/update.md",
     ],
 )
 
