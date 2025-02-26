@@ -1,0 +1,5359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.2"
+   width="70.089996mm"
+   height="49.560001mm"
+   viewBox="0 0 70.089996 49.560001"
+   stroke="none"
+   fill="#000000"
+   style="background-color:white"
+   stroke-width="0.3"
+   font-size="3.88px"
+   id="svg2859"
+   sodipodi:docname="constant_pop_simple.svg"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview2861"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-top="2"
+     fit-margin-bottom="2"
+     inkscape:zoom="3.0241875"
+     inkscape:cx="225.01912"
+     inkscape:cy="80.848162"
+     inkscape:window-width="1312"
+     inkscape:window-height="969"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2859" />
+  <defs
+     id="defs827">
+    <marker
+       id="arrow"
+       markerWidth="15"
+       markerHeight="7"
+       refX="5"
+       refY="3.5"
+       orient="auto"
+       markerUnits="strokeWidth">
+      <path
+         d="M 0,0 15,3.5 0,7 Z"
+         stroke="context-stroke"
+         fill="context-stroke"
+         id="path824" />
+    </marker>
+  </defs>
+  <g
+     stroke-opacity="1"
+     stroke-width="0.1"
+     id="img-1e96e242-1"
+     transform="translate(7.55,-0.22)">
+    <g
+       transform="translate(52.27,2.27)"
+       stroke="#000000"
+       id="g831">
+      <path
+         fill="none"
+         d="M -0.23,0 H 0.23"
+         class="primitive"
+         id="path829" />
+    </g>
+    <g
+       transform="translate(52.38,2.73)"
+       stroke="#000000"
+       id="g835">
+      <path
+         fill="none"
+         d="M -0.12,0 H 0.12"
+         class="primitive"
+         id="path833" />
+    </g>
+    <g
+       transform="translate(52.38,3.19)"
+       stroke="#000000"
+       id="g839">
+      <path
+         fill="none"
+         d="M -0.12,0 H 0.12"
+         class="primitive"
+         id="path837" />
+    </g>
+    <g
+       transform="translate(52.15,2.96)"
+       stroke="#000000"
+       id="g843">
+      <path
+         fill="none"
+         d="M -0.11,0 H 0.11"
+         class="primitive"
+         id="path841" />
+    </g>
+    <g
+       transform="translate(52.26,2.96)"
+       stroke="#000000"
+       id="g847">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path845" />
+    </g>
+    <g
+       transform="translate(52,2.62)"
+       stroke="#000000"
+       id="g851">
+      <path
+         fill="none"
+         d="M -0.04,0 H 0.04"
+         class="primitive"
+         id="path849" />
+    </g>
+    <g
+       transform="translate(52.04,2.62)"
+       stroke="#000000"
+       id="g855">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path853" />
+    </g>
+    <g
+       transform="translate(52.47,3.65)"
+       stroke="#000000"
+       id="g859">
+      <path
+         fill="none"
+         d="M -0.03,0 H 0.03"
+         class="primitive"
+         id="path857" />
+    </g>
+    <g
+       transform="translate(52.48,4.11)"
+       stroke="#000000"
+       id="g863">
+      <path
+         fill="none"
+         d="M -0.02,0 H 0.02"
+         class="primitive"
+         id="path861" />
+    </g>
+    <g
+       transform="translate(52.48,4.57)"
+       stroke="#000000"
+       id="g867">
+      <path
+         fill="none"
+         d="M -0.02,0 H 0.02"
+         class="primitive"
+         id="path865" />
+    </g>
+    <g
+       transform="translate(52.45,4.34)"
+       stroke="#000000"
+       id="g871">
+      <path
+         fill="none"
+         d="M -0.02,0 H 0.02"
+         class="primitive"
+         id="path869" />
+    </g>
+    <g
+       transform="translate(52.47,4.34)"
+       stroke="#000000"
+       id="g875">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path873" />
+    </g>
+    <g
+       transform="translate(52.2,3.99)"
+       stroke="#000000"
+       id="g879">
+      <path
+         fill="none"
+         d="M -0.24,0 H 0.24"
+         class="primitive"
+         id="path877" />
+    </g>
+    <g
+       transform="translate(52.43,3.99)"
+       stroke="#000000"
+       id="g883">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path881" />
+    </g>
+    <g
+       transform="translate(44.79,3.31)"
+       stroke="#000000"
+       id="g887">
+      <path
+         fill="none"
+         d="M -7.17,0 H 7.17"
+         class="primitive"
+         id="path885" />
+    </g>
+    <g
+       transform="translate(51.96,3.31)"
+       stroke="#000000"
+       id="g891">
+      <path
+         fill="none"
+         d="M 0,0.69 V -0.69"
+         class="primitive"
+         id="path889" />
+    </g>
+    <g
+       transform="translate(51.41,5.03)"
+       stroke="#000000"
+       id="g895">
+      <path
+         fill="none"
+         d="M -1.09,0 H 1.09"
+         class="primitive"
+         id="path893" />
+    </g>
+    <g
+       transform="translate(51.64,5.49)"
+       stroke="#000000"
+       id="g899">
+      <path
+         fill="none"
+         d="M -0.86,0 H 0.86"
+         class="primitive"
+         id="path897" />
+    </g>
+    <g
+       transform="translate(52.19,5.95)"
+       stroke="#000000"
+       id="g903">
+      <path
+         fill="none"
+         d="M -0.31,0 H 0.31"
+         class="primitive"
+         id="path901" />
+    </g>
+    <g
+       transform="translate(52.37,6.4)"
+       stroke="#000000"
+       id="g907">
+      <path
+         fill="none"
+         d="M -0.13,0 H 0.13"
+         class="primitive"
+         id="path905" />
+    </g>
+    <g
+       transform="translate(52.37,6.86)"
+       stroke="#000000"
+       id="g911">
+      <path
+         fill="none"
+         d="M -0.13,0 H 0.13"
+         class="primitive"
+         id="path909" />
+    </g>
+    <g
+       transform="translate(52.06,6.63)"
+       stroke="#000000"
+       id="g915">
+      <path
+         fill="none"
+         d="M -0.18,0 H 0.18"
+         class="primitive"
+         id="path913" />
+    </g>
+    <g
+       transform="translate(52.24,6.63)"
+       stroke="#000000"
+       id="g919">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path917" />
+    </g>
+    <g
+       transform="translate(51.33,6.29)"
+       stroke="#000000"
+       id="g923">
+      <path
+         fill="none"
+         d="m -0.55,0 h 1.1"
+         class="primitive"
+         id="path921" />
+    </g>
+    <g
+       transform="translate(51.88,6.29)"
+       stroke="#000000"
+       id="g927">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path925" />
+    </g>
+    <g
+       transform="translate(50.55,5.89)"
+       stroke="#000000"
+       id="g931">
+      <path
+         fill="none"
+         d="M -0.23,0 H 0.23"
+         class="primitive"
+         id="path929" />
+    </g>
+    <g
+       transform="translate(50.78,5.89)"
+       stroke="#000000"
+       id="g935">
+      <path
+         fill="none"
+         d="M 0,0.4 V -0.4"
+         class="primitive"
+         id="path933" />
+    </g>
+    <g
+       transform="translate(45.92,5.46)"
+       stroke="#000000"
+       id="g939">
+      <path
+         fill="none"
+         d="M -4.4,0 H 4.4"
+         class="primitive"
+         id="path937" />
+    </g>
+    <g
+       transform="translate(50.32,5.46)"
+       stroke="#000000"
+       id="g943">
+      <path
+         fill="none"
+         d="M 0,0.43 V -0.43"
+         class="primitive"
+         id="path941" />
+    </g>
+    <g
+       transform="translate(51.7,7.32)"
+       stroke="#000000"
+       id="g947">
+      <path
+         fill="none"
+         d="M -0.8,0 H 0.8"
+         class="primitive"
+         id="path945" />
+    </g>
+    <g
+       transform="translate(52.45,7.78)"
+       stroke="#000000"
+       id="g951">
+      <path
+         fill="none"
+         d="m -0.05,0 h 0.1"
+         class="primitive"
+         id="path949" />
+    </g>
+    <g
+       transform="translate(52.45,8.24)"
+       stroke="#000000"
+       id="g955">
+      <path
+         fill="none"
+         d="m -0.05,0 h 0.1"
+         class="primitive"
+         id="path953" />
+    </g>
+    <g
+       transform="translate(51.66,8.01)"
+       stroke="#000000"
+       id="g959">
+      <path
+         fill="none"
+         d="m -0.75,0 h 1.5"
+         class="primitive"
+         id="path957" />
+    </g>
+    <g
+       transform="translate(52.41,8.01)"
+       stroke="#000000"
+       id="g963">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path961" />
+    </g>
+    <g
+       transform="translate(48.19,7.67)"
+       stroke="#000000"
+       id="g967">
+      <path
+         fill="none"
+         d="M -2.72,0 H 2.72"
+         class="primitive"
+         id="path965" />
+    </g>
+    <g
+       transform="translate(50.91,7.67)"
+       stroke="#000000"
+       id="g971">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path969" />
+    </g>
+    <g
+       transform="translate(51.49,8.7)"
+       stroke="#000000"
+       id="g975">
+      <path
+         fill="none"
+         d="M -1.01,0 H 1.01"
+         class="primitive"
+         id="path973" />
+    </g>
+    <g
+       transform="translate(52.05,9.16)"
+       stroke="#000000"
+       id="g979">
+      <path
+         fill="none"
+         d="m -0.45,0 h 0.9"
+         class="primitive"
+         id="path977" />
+    </g>
+    <g
+       transform="translate(52.05,9.62)"
+       stroke="#000000"
+       id="g983">
+      <path
+         fill="none"
+         d="m -0.45,0 h 0.9"
+         class="primitive"
+         id="path981" />
+    </g>
+    <g
+       transform="translate(51.04,9.39)"
+       stroke="#000000"
+       id="g987">
+      <path
+         fill="none"
+         d="M -0.56,0 H 0.56"
+         class="primitive"
+         id="path985" />
+    </g>
+    <g
+       transform="translate(51.6,9.39)"
+       stroke="#000000"
+       id="g991">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path989" />
+    </g>
+    <g
+       transform="translate(48.43,9.04)"
+       stroke="#000000"
+       id="g995">
+      <path
+         fill="none"
+         d="m -2.05,0 h 4.1"
+         class="primitive"
+         id="path993" />
+    </g>
+    <g
+       transform="translate(50.48,9.04)"
+       stroke="#000000"
+       id="g999">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path997" />
+    </g>
+    <g
+       transform="translate(51.53,10.08)"
+       stroke="#000000"
+       id="g1003">
+      <path
+         fill="none"
+         d="M -0.97,0 H 0.97"
+         class="primitive"
+         id="path1001" />
+    </g>
+    <g
+       transform="translate(51.98,10.54)"
+       stroke="#000000"
+       id="g1007">
+      <path
+         fill="none"
+         d="M -0.52,0 H 0.52"
+         class="primitive"
+         id="path1005" />
+    </g>
+    <g
+       transform="translate(52.35,11)"
+       stroke="#000000"
+       id="g1011">
+      <path
+         fill="none"
+         d="m -0.15,0 h 0.3"
+         class="primitive"
+         id="path1009" />
+    </g>
+    <g
+       transform="translate(52.35,11.46)"
+       stroke="#000000"
+       id="g1015">
+      <path
+         fill="none"
+         d="m -0.15,0 h 0.3"
+         class="primitive"
+         id="path1013" />
+    </g>
+    <g
+       transform="translate(51.83,11.23)"
+       stroke="#000000"
+       id="g1019">
+      <path
+         fill="none"
+         d="M -0.37,0 H 0.37"
+         class="primitive"
+         id="path1017" />
+    </g>
+    <g
+       transform="translate(52.2,11.23)"
+       stroke="#000000"
+       id="g1023">
+      <path
+         fill="none"
+         d="M 0,0.23 V -0.23"
+         class="primitive"
+         id="path1021" />
+    </g>
+    <g
+       transform="translate(51.01,10.88)"
+       stroke="#000000"
+       id="g1027">
+      <path
+         fill="none"
+         d="M -0.46,0 H 0.46"
+         class="primitive"
+         id="path1025" />
+    </g>
+    <g
+       transform="translate(51.47,10.88)"
+       stroke="#000000"
+       id="g1031">
+      <path
+         fill="none"
+         d="M 0,0.34 V -0.34"
+         class="primitive"
+         id="path1029" />
+    </g>
+    <g
+       stroke-opacity="1"
+       stroke-width="0.1"
+       id="img-1e96e242-2">
+      <g
+         transform="translate(52.26,43.6)"
+         stroke="#000000"
+         id="g1035">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path1033" />
+      </g>
+      <g
+         transform="translate(52.26,44.05)"
+         stroke="#000000"
+         id="g1039">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path1037" />
+      </g>
+      <g
+         transform="translate(51.93,43.82)"
+         stroke="#000000"
+         id="g1043">
+        <path
+           fill="none"
+           d="M -0.1,0 H 0.1"
+           class="primitive"
+           id="path1041" />
+      </g>
+      <g
+         transform="translate(52.02,43.82)"
+         stroke="#000000"
+         id="g1047">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1045" />
+      </g>
+      <g
+         transform="translate(52.49,44.51)"
+         stroke="#000000"
+         id="g1051">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1049" />
+      </g>
+      <g
+         transform="translate(52.49,44.97)"
+         stroke="#000000"
+         id="g1055">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1053" />
+      </g>
+      <g
+         transform="translate(52.21,44.74)"
+         stroke="#000000"
+         id="g1059">
+        <path
+           fill="none"
+           d="M -0.28,0 H 0.28"
+           class="primitive"
+           id="path1057" />
+      </g>
+      <g
+         transform="translate(52.49,44.74)"
+         stroke="#000000"
+         id="g1063">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1061" />
+      </g>
+      <g
+         transform="translate(52.48,45.43)"
+         stroke="#000000"
+         id="g1067">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1065" />
+      </g>
+      <g
+         transform="translate(52.48,45.89)"
+         stroke="#000000"
+         id="g1071">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1069" />
+      </g>
+      <g
+         transform="translate(52.48,46.35)"
+         stroke="#000000"
+         id="g1075">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1073" />
+      </g>
+      <g
+         transform="translate(52.46,46.12)"
+         stroke="#000000"
+         id="g1079">
+        <path
+           fill="none"
+           d="M 0,0 V 0"
+           class="primitive"
+           id="path1077" />
+      </g>
+      <g
+         transform="translate(52.46,46.12)"
+         stroke="#000000"
+         id="g1083">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1081" />
+      </g>
+      <g
+         transform="translate(52.28,45.78)"
+         stroke="#000000"
+         id="g1087">
+        <path
+           fill="none"
+           d="M -0.17,0 H 0.17"
+           class="primitive"
+           id="path1085" />
+      </g>
+      <g
+         transform="translate(52.46,45.78)"
+         stroke="#000000"
+         id="g1091">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1089" />
+      </g>
+      <g
+         transform="translate(52.32,46.81)"
+         stroke="#000000"
+         id="g1095">
+        <path
+           fill="none"
+           d="M -0.18,0 H 0.18"
+           class="primitive"
+           id="path1093" />
+      </g>
+      <g
+         transform="translate(52.34,47.27)"
+         stroke="#000000"
+         id="g1099">
+        <path
+           fill="none"
+           d="M -0.16,0 H 0.16"
+           class="primitive"
+           id="path1097" />
+      </g>
+      <g
+         transform="translate(52.34,47.73)"
+         stroke="#000000"
+         id="g1103">
+        <path
+           fill="none"
+           d="M -0.16,0 H 0.16"
+           class="primitive"
+           id="path1101" />
+      </g>
+      <g
+         transform="translate(52.16,47.5)"
+         stroke="#000000"
+         id="g1107">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1105" />
+      </g>
+      <g
+         transform="translate(52.19,47.5)"
+         stroke="#000000"
+         id="g1111">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1109" />
+      </g>
+      <g
+         transform="translate(52.13,47.15)"
+         stroke="#000000"
+         id="g1115">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1113" />
+      </g>
+      <g
+         transform="translate(52.14,47.15)"
+         stroke="#000000"
+         id="g1119">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1117" />
+      </g>
+      <g
+         transform="translate(52.02,46.46)"
+         stroke="#000000"
+         id="g1123">
+        <path
+           fill="none"
+           d="M -0.09,0 H 0.09"
+           class="primitive"
+           id="path1121" />
+      </g>
+      <g
+         transform="translate(52.11,46.46)"
+         stroke="#000000"
+         id="g1127">
+        <path
+           fill="none"
+           d="M 0,0.69 V -0.69"
+           class="primitive"
+           id="path1125" />
+      </g>
+      <g
+         transform="translate(51.88,45.6)"
+         stroke="#000000"
+         id="g1131">
+        <path
+           fill="none"
+           d="m -0.05,0 h 0.1"
+           class="primitive"
+           id="path1129" />
+      </g>
+      <g
+         transform="translate(51.93,45.6)"
+         stroke="#000000"
+         id="g1135">
+        <path
+           fill="none"
+           d="M 0,0.86 V -0.86"
+           class="primitive"
+           id="path1133" />
+      </g>
+      <g
+         transform="translate(51.78,44.71)"
+         stroke="#000000"
+         id="g1139">
+        <path
+           fill="none"
+           d="m -0.05,0 h 0.1"
+           class="primitive"
+           id="path1137" />
+      </g>
+      <g
+         transform="translate(51.83,44.71)"
+         stroke="#000000"
+         id="g1143">
+        <path
+           fill="none"
+           d="M 0,0.89 V -0.89"
+           class="primitive"
+           id="path1141" />
+      </g>
+      <g
+         transform="translate(51.66,43.64)"
+         stroke="#000000"
+         id="g1147">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1145" />
+      </g>
+      <g
+         transform="translate(51.73,43.64)"
+         stroke="#000000"
+         id="g1151">
+        <path
+           fill="none"
+           d="M 0,1.08 V -1.08"
+           class="primitive"
+           id="path1149" />
+      </g>
+      <g
+         transform="translate(50.96,42.21)"
+         stroke="#000000"
+         id="g1155">
+        <path
+           fill="none"
+           d="M -0.63,0 H 0.63"
+           class="primitive"
+           id="path1153" />
+      </g>
+      <g
+         transform="translate(51.59,42.21)"
+         stroke="#000000"
+         id="g1159">
+        <path
+           fill="none"
+           d="M 0,1.43 V -1.43"
+           class="primitive"
+           id="path1157" />
+      </g>
+      <g
+         transform="translate(50.14,41.07)"
+         stroke="#000000"
+         id="g1163">
+        <path
+           fill="none"
+           d="M -0.18,0 H 0.18"
+           class="primitive"
+           id="path1161" />
+      </g>
+      <g
+         transform="translate(50.32,41.07)"
+         stroke="#000000"
+         id="g1167">
+        <path
+           fill="none"
+           d="M 0,1.14 V -1.14"
+           class="primitive"
+           id="path1165" />
+      </g>
+      <g
+         transform="translate(49.06,39.5)"
+         stroke="#000000"
+         id="g1171">
+        <path
+           fill="none"
+           d="M -0.9,0 H 0.9"
+           class="primitive"
+           id="path1169" />
+      </g>
+      <g
+         transform="translate(49.96,39.5)"
+         stroke="#000000"
+         id="g1175">
+        <path
+           fill="none"
+           d="M 0,1.56 V -1.56"
+           class="primitive"
+           id="path1173" />
+      </g>
+      <g
+         transform="translate(45.81,36.25)"
+         stroke="#000000"
+         id="g1179">
+        <path
+           fill="none"
+           d="m -2.35,0 h 4.7"
+           class="primitive"
+           id="path1177" />
+      </g>
+      <g
+         transform="translate(48.16,36.25)"
+         stroke="#000000"
+         id="g1183">
+        <path
+           fill="none"
+           d="m 0,3.25 v -6.5"
+           class="primitive"
+           id="path1181" />
+      </g>
+      <g
+         transform="translate(42.75,31.72)"
+         stroke="#000000"
+         id="g1187">
+        <path
+           fill="none"
+           d="M -0.7,0 H 0.7"
+           class="primitive"
+           id="path1185" />
+      </g>
+      <g
+         transform="translate(43.46,31.72)"
+         stroke="#000000"
+         id="g1191">
+        <path
+           fill="none"
+           d="M 0,4.53 V -4.53"
+           class="primitive"
+           id="path1189" />
+      </g>
+      <g
+         transform="translate(41.19,27.29)"
+         stroke="#000000"
+         id="g1195">
+        <path
+           fill="none"
+           d="M -0.86,0 H 0.86"
+           class="primitive"
+           id="path1193" />
+      </g>
+      <g
+         transform="translate(42.05,27.29)"
+         stroke="#000000"
+         id="g1199">
+        <path
+           fill="none"
+           d="M 0,4.43 V -4.43"
+           class="primitive"
+           id="path1197" />
+      </g>
+      <g
+         transform="translate(29.16,24.08)"
+         stroke="#000000"
+         id="g1203">
+        <path
+           fill="none"
+           d="M -11.17,0 H 11.17"
+           class="primitive"
+           id="path1201" />
+      </g>
+      <g
+         transform="translate(40.33,24.08)"
+         stroke="#000000"
+         id="g1207">
+        <path
+           fill="none"
+           d="M 0,3.21 V -3.21"
+           class="primitive"
+           id="path1205" />
+      </g>
+      <g
+         transform="translate(10.25,19.7)"
+         stroke="#000000"
+         id="g1211">
+        <path
+           fill="none"
+           d="M -7.75,0 H 7.75"
+           class="primitive"
+           id="path1209" />
+      </g>
+      <g
+         transform="translate(17.99,19.7)"
+         stroke="#000000"
+         id="g1215">
+        <path
+           fill="none"
+           d="M 0,4.38 V -4.38"
+           class="primitive"
+           id="path1213" />
+      </g>
+      <g
+         transform="translate(2.5,12.45)"
+         stroke="#000000"
+         id="g1219">
+        <path
+           fill="none"
+           d="M 0,0 V 0"
+           class="primitive"
+           id="path1217" />
+      </g>
+      <g
+         transform="translate(2.5,12.45)"
+         stroke="#000000"
+         id="g1223">
+        <path
+           fill="none"
+           d="M 0,7.25 V -7.25"
+           class="primitive"
+           id="path1221" />
+      </g>
+    </g>
+    <g
+       stroke-opacity="1"
+       stroke-width="0.1"
+       id="img-1e96e242-3">
+      <g
+         transform="translate(52.15,35.33)"
+         stroke="#000000"
+         id="g1228">
+        <path
+           fill="none"
+           d="m -0.35,0 h 0.7"
+           class="primitive"
+           id="path1226" />
+      </g>
+      <g
+         transform="translate(52.16,35.79)"
+         stroke="#000000"
+         id="g1232">
+        <path
+           fill="none"
+           d="M -0.34,0 H 0.34"
+           class="primitive"
+           id="path1230" />
+      </g>
+      <g
+         transform="translate(52.3,36.25)"
+         stroke="#000000"
+         id="g1236">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1234" />
+      </g>
+      <g
+         transform="translate(52.3,36.71)"
+         stroke="#000000"
+         id="g1240">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1238" />
+      </g>
+      <g
+         transform="translate(51.97,36.48)"
+         stroke="#000000"
+         id="g1244">
+        <path
+           fill="none"
+           d="M -0.14,0 H 0.14"
+           class="primitive"
+           id="path1242" />
+      </g>
+      <g
+         transform="translate(52.11,36.48)"
+         stroke="#000000"
+         id="g1248">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1246" />
+      </g>
+      <g
+         transform="translate(51.81,36.13)"
+         stroke="#000000"
+         id="g1252">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1250" />
+      </g>
+      <g
+         transform="translate(51.83,36.13)"
+         stroke="#000000"
+         id="g1256">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1254" />
+      </g>
+      <g
+         transform="translate(51.78,35.73)"
+         stroke="#000000"
+         id="g1260">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1258" />
+      </g>
+      <g
+         transform="translate(51.8,35.73)"
+         stroke="#000000"
+         id="g1264">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1262" />
+      </g>
+      <g
+         transform="translate(51.46,34.96)"
+         stroke="#000000"
+         id="g1268">
+        <path
+           fill="none"
+           d="M -0.3,0 H 0.3"
+           class="primitive"
+           id="path1266" />
+      </g>
+      <g
+         transform="translate(51.75,34.96)"
+         stroke="#000000"
+         id="g1272">
+        <path
+           fill="none"
+           d="M 0,0.77 V -0.77"
+           class="primitive"
+           id="path1270" />
+      </g>
+      <g
+         transform="translate(50.41,33.88)"
+         stroke="#000000"
+         id="g1276">
+        <path
+           fill="none"
+           d="m -0.75,0 h 1.5"
+           class="primitive"
+           id="path1274" />
+      </g>
+      <g
+         transform="translate(51.16,33.88)"
+         stroke="#000000"
+         id="g1280">
+        <path
+           fill="none"
+           d="M 0,1.08 V -1.08"
+           class="primitive"
+           id="path1278" />
+      </g>
+      <g
+         transform="translate(48.91,33)"
+         stroke="#000000"
+         id="g1284">
+        <path
+           fill="none"
+           d="m -0.75,0 h 1.5"
+           class="primitive"
+           id="path1282" />
+      </g>
+      <g
+         transform="translate(49.66,33)"
+         stroke="#000000"
+         id="g1288">
+        <path
+           fill="none"
+           d="M 0,0.88 V -0.88"
+           class="primitive"
+           id="path1286" />
+      </g>
+      <g
+         transform="translate(51.52,37.17)"
+         stroke="#000000"
+         id="g1292">
+        <path
+           fill="none"
+           d="M -0.98,0 H 0.98"
+           class="primitive"
+           id="path1290" />
+      </g>
+      <g
+         transform="translate(51.52,37.63)"
+         stroke="#000000"
+         id="g1296">
+        <path
+           fill="none"
+           d="M -0.98,0 H 0.98"
+           class="primitive"
+           id="path1294" />
+      </g>
+      <g
+         transform="translate(50.39,37.4)"
+         stroke="#000000"
+         id="g1300">
+        <path
+           fill="none"
+           d="M -0.14,0 H 0.14"
+           class="primitive"
+           id="path1298" />
+      </g>
+      <g
+         transform="translate(50.53,37.4)"
+         stroke="#000000"
+         id="g1304">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1302" />
+      </g>
+      <g
+         transform="translate(52.04,38.09)"
+         stroke="#000000"
+         id="g1308">
+        <path
+           fill="none"
+           d="M -0.46,0 H 0.46"
+           class="primitive"
+           id="path1306" />
+      </g>
+      <g
+         transform="translate(52.15,38.54)"
+         stroke="#000000"
+         id="g1312">
+        <path
+           fill="none"
+           d="m -0.35,0 h 0.7"
+           class="primitive"
+           id="path1310" />
+      </g>
+      <g
+         transform="translate(52.48,39)"
+         stroke="#000000"
+         id="g1316">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1314" />
+      </g>
+      <g
+         transform="translate(52.48,39.46)"
+         stroke="#000000"
+         id="g1320">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1318" />
+      </g>
+      <g
+         transform="translate(52.12,39.23)"
+         stroke="#000000"
+         id="g1324">
+        <path
+           fill="none"
+           d="M -0.33,0 H 0.33"
+           class="primitive"
+           id="path1322" />
+      </g>
+      <g
+         transform="translate(52.45,39.23)"
+         stroke="#000000"
+         id="g1328">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1326" />
+      </g>
+      <g
+         transform="translate(51.68,38.89)"
+         stroke="#000000"
+         id="g1332">
+        <path
+           fill="none"
+           d="M -0.11,0 H 0.11"
+           class="primitive"
+           id="path1330" />
+      </g>
+      <g
+         transform="translate(51.79,38.89)"
+         stroke="#000000"
+         id="g1336">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1334" />
+      </g>
+      <g
+         transform="translate(50.91,38.49)"
+         stroke="#000000"
+         id="g1340">
+        <path
+           fill="none"
+           d="M -0.66,0 H 0.66"
+           class="primitive"
+           id="path1338" />
+      </g>
+      <g
+         transform="translate(51.57,38.49)"
+         stroke="#000000"
+         id="g1344">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1342" />
+      </g>
+      <g
+         transform="translate(50.11,37.94)"
+         stroke="#000000"
+         id="g1348">
+        <path
+           fill="none"
+           d="m -0.15,0 h 0.3"
+           class="primitive"
+           id="path1346" />
+      </g>
+      <g
+         transform="translate(50.25,37.94)"
+         stroke="#000000"
+         id="g1352">
+        <path
+           fill="none"
+           d="m 0,0.55 v -1.1"
+           class="primitive"
+           id="path1350" />
+      </g>
+      <g
+         transform="translate(51.41,39.92)"
+         stroke="#000000"
+         id="g1356">
+        <path
+           fill="none"
+           d="M -1.09,0 H 1.09"
+           class="primitive"
+           id="path1354" />
+      </g>
+      <g
+         transform="translate(52.09,40.38)"
+         stroke="#000000"
+         id="g1360">
+        <path
+           fill="none"
+           d="M -0.41,0 H 0.41"
+           class="primitive"
+           id="path1358" />
+      </g>
+      <g
+         transform="translate(52.31,40.84)"
+         stroke="#000000"
+         id="g1364">
+        <path
+           fill="none"
+           d="M -0.19,0 H 0.19"
+           class="primitive"
+           id="path1362" />
+      </g>
+      <g
+         transform="translate(52.32,41.3)"
+         stroke="#000000"
+         id="g1368">
+        <path
+           fill="none"
+           d="M -0.18,0 H 0.18"
+           class="primitive"
+           id="path1366" />
+      </g>
+      <g
+         transform="translate(52.32,41.76)"
+         stroke="#000000"
+         id="g1372">
+        <path
+           fill="none"
+           d="M -0.18,0 H 0.18"
+           class="primitive"
+           id="path1370" />
+      </g>
+      <g
+         transform="translate(52.13,41.53)"
+         stroke="#000000"
+         id="g1376">
+        <path
+           fill="none"
+           d="M 0,0 V 0"
+           class="primitive"
+           id="path1374" />
+      </g>
+      <g
+         transform="translate(52.13,41.53)"
+         stroke="#000000"
+         id="g1380">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1378" />
+      </g>
+      <g
+         transform="translate(51.9,41.18)"
+         stroke="#000000"
+         id="g1384">
+        <path
+           fill="none"
+           d="M -0.23,0 H 0.23"
+           class="primitive"
+           id="path1382" />
+      </g>
+      <g
+         transform="translate(52.13,41.18)"
+         stroke="#000000"
+         id="g1388">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1386" />
+      </g>
+      <g
+         transform="translate(51.63,40.78)"
+         stroke="#000000"
+         id="g1392">
+        <path
+           fill="none"
+           d="M -0.04,0 H 0.04"
+           class="primitive"
+           id="path1390" />
+      </g>
+      <g
+         transform="translate(51.68,40.78)"
+         stroke="#000000"
+         id="g1396">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1394" />
+      </g>
+      <g
+         transform="translate(52.17,42.22)"
+         stroke="#000000"
+         id="g1400">
+        <path
+           fill="none"
+           d="M -0.33,0 H 0.33"
+           class="primitive"
+           id="path1398" />
+      </g>
+      <g
+         transform="translate(52.35,42.68)"
+         stroke="#000000"
+         id="g1404">
+        <path
+           fill="none"
+           d="m -0.15,0 h 0.3"
+           class="primitive"
+           id="path1402" />
+      </g>
+      <g
+         transform="translate(52.35,43.14)"
+         stroke="#000000"
+         id="g1408">
+        <path
+           fill="none"
+           d="m -0.15,0 h 0.3"
+           class="primitive"
+           id="path1406" />
+      </g>
+      <g
+         transform="translate(52.03,42.91)"
+         stroke="#000000"
+         id="g1412">
+        <path
+           fill="none"
+           d="M -0.18,0 H 0.18"
+           class="primitive"
+           id="path1410" />
+      </g>
+      <g
+         transform="translate(52.2,42.91)"
+         stroke="#000000"
+         id="g1416">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1414" />
+      </g>
+      <g
+         transform="translate(51.79,42.56)"
+         stroke="#000000"
+         id="g1420">
+        <path
+           fill="none"
+           d="M -0.06,0 H 0.06"
+           class="primitive"
+           id="path1418" />
+      </g>
+      <g
+         transform="translate(51.85,42.56)"
+         stroke="#000000"
+         id="g1424">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1422" />
+      </g>
+      <g
+         transform="translate(52.26,43.6)"
+         stroke="#000000"
+         id="g1428">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path1426" />
+      </g>
+    </g>
+    <g
+       stroke-opacity="1"
+       stroke-width="0.1"
+       id="img-1e96e242-4">
+      <g
+         transform="translate(51.27,26.38)"
+         stroke="#000000"
+         id="g1433">
+        <path
+           fill="none"
+           d="M -1.04,0 H 1.04"
+           class="primitive"
+           id="path1431" />
+      </g>
+      <g
+         transform="translate(52.31,26.38)"
+         stroke="#000000"
+         id="g1437">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1435" />
+      </g>
+      <g
+         transform="translate(51.73,27.07)"
+         stroke="#000000"
+         id="g1441">
+        <path
+           fill="none"
+           d="M -0.77,0 H 0.77"
+           class="primitive"
+           id="path1439" />
+      </g>
+      <g
+         transform="translate(51.87,27.53)"
+         stroke="#000000"
+         id="g1445">
+        <path
+           fill="none"
+           d="M -0.63,0 H 0.63"
+           class="primitive"
+           id="path1443" />
+      </g>
+      <g
+         transform="translate(52.37,27.98)"
+         stroke="#000000"
+         id="g1449">
+        <path
+           fill="none"
+           d="M -0.13,0 H 0.13"
+           class="primitive"
+           id="path1447" />
+      </g>
+      <g
+         transform="translate(52.42,28.44)"
+         stroke="#000000"
+         id="g1453">
+        <path
+           fill="none"
+           d="M -0.08,0 H 0.08"
+           class="primitive"
+           id="path1451" />
+      </g>
+      <g
+         transform="translate(52.42,28.9)"
+         stroke="#000000"
+         id="g1457">
+        <path
+           fill="none"
+           d="M -0.08,0 H 0.08"
+           class="primitive"
+           id="path1455" />
+      </g>
+      <g
+         transform="translate(52.29,28.67)"
+         stroke="#000000"
+         id="g1461">
+        <path
+           fill="none"
+           d="M -0.04,0 H 0.04"
+           class="primitive"
+           id="path1459" />
+      </g>
+      <g
+         transform="translate(52.33,28.67)"
+         stroke="#000000"
+         id="g1465">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1463" />
+      </g>
+      <g
+         transform="translate(51.75,28.33)"
+         stroke="#000000"
+         id="g1469">
+        <path
+           fill="none"
+           d="m -0.5,0 h 1"
+           class="primitive"
+           id="path1467" />
+      </g>
+      <g
+         transform="translate(52.24,28.33)"
+         stroke="#000000"
+         id="g1473">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1471" />
+      </g>
+      <g
+         transform="translate(51.22,27.93)"
+         stroke="#000000"
+         id="g1477">
+        <path
+           fill="none"
+           d="M -0.03,0 H 0.03"
+           class="primitive"
+           id="path1475" />
+      </g>
+      <g
+         transform="translate(51.25,27.93)"
+         stroke="#000000"
+         id="g1481">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1479" />
+      </g>
+      <g
+         transform="translate(52.26,29.36)"
+         stroke="#000000"
+         id="g1485">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path1483" />
+      </g>
+      <g
+         transform="translate(52.46,29.82)"
+         stroke="#000000"
+         id="g1489">
+        <path
+           fill="none"
+           d="M -0.04,0 H 0.04"
+           class="primitive"
+           id="path1487" />
+      </g>
+      <g
+         transform="translate(52.46,30.28)"
+         stroke="#000000"
+         id="g1493">
+        <path
+           fill="none"
+           d="M -0.04,0 H 0.04"
+           class="primitive"
+           id="path1491" />
+      </g>
+      <g
+         transform="translate(52.34,30.05)"
+         stroke="#000000"
+         id="g1497">
+        <path
+           fill="none"
+           d="M -0.09,0 H 0.09"
+           class="primitive"
+           id="path1495" />
+      </g>
+      <g
+         transform="translate(52.43,30.05)"
+         stroke="#000000"
+         id="g1501">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1499" />
+      </g>
+      <g
+         transform="translate(52.38,30.74)"
+         stroke="#000000"
+         id="g1505">
+        <path
+           fill="none"
+           d="M -0.12,0 H 0.12"
+           class="primitive"
+           id="path1503" />
+      </g>
+      <g
+         transform="translate(52.47,31.2)"
+         stroke="#000000"
+         id="g1509">
+        <path
+           fill="none"
+           d="M -0.03,0 H 0.03"
+           class="primitive"
+           id="path1507" />
+      </g>
+      <g
+         transform="translate(52.47,31.66)"
+         stroke="#000000"
+         id="g1513">
+        <path
+           fill="none"
+           d="M -0.03,0 H 0.03"
+           class="primitive"
+           id="path1511" />
+      </g>
+      <g
+         transform="translate(52.35,31.43)"
+         stroke="#000000"
+         id="g1517">
+        <path
+           fill="none"
+           d="M -0.09,0 H 0.09"
+           class="primitive"
+           id="path1515" />
+      </g>
+      <g
+         transform="translate(52.44,31.43)"
+         stroke="#000000"
+         id="g1521">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1519" />
+      </g>
+      <g
+         transform="translate(52.26,31.08)"
+         stroke="#000000"
+         id="g1525">
+        <path
+           fill="none"
+           d="M 0,0 V 0"
+           class="primitive"
+           id="path1523" />
+      </g>
+      <g
+         transform="translate(52.26,31.08)"
+         stroke="#000000"
+         id="g1529">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1527" />
+      </g>
+      <g
+         transform="translate(52.14,30.57)"
+         stroke="#000000"
+         id="g1533">
+        <path
+           fill="none"
+           d="M -0.11,0 H 0.11"
+           class="primitive"
+           id="path1531" />
+      </g>
+      <g
+         transform="translate(52.26,30.57)"
+         stroke="#000000"
+         id="g1537">
+        <path
+           fill="none"
+           d="M 0,0.52 V -0.52"
+           class="primitive"
+           id="path1535" />
+      </g>
+      <g
+         transform="translate(51.6,29.96)"
+         stroke="#000000"
+         id="g1541">
+        <path
+           fill="none"
+           d="M -0.42,0 H 0.42"
+           class="primitive"
+           id="path1539" />
+      </g>
+      <g
+         transform="translate(52.03,29.96)"
+         stroke="#000000"
+         id="g1545">
+        <path
+           fill="none"
+           d="M 0,0.6 V -0.6"
+           class="primitive"
+           id="path1543" />
+      </g>
+      <g
+         transform="translate(51.07,28.95)"
+         stroke="#000000"
+         id="g1549">
+        <path
+           fill="none"
+           d="M -0.11,0 H 0.11"
+           class="primitive"
+           id="path1547" />
+      </g>
+      <g
+         transform="translate(51.18,28.95)"
+         stroke="#000000"
+         id="g1553">
+        <path
+           fill="none"
+           d="M 0,1.02 V -1.02"
+           class="primitive"
+           id="path1551" />
+      </g>
+      <g
+         transform="translate(50.59,28.01)"
+         stroke="#000000"
+         id="g1557">
+        <path
+           fill="none"
+           d="M -0.36,0 H 0.36"
+           class="primitive"
+           id="path1555" />
+      </g>
+      <g
+         transform="translate(50.95,28.01)"
+         stroke="#000000"
+         id="g1561">
+        <path
+           fill="none"
+           d="M 0,0.94 V -0.94"
+           class="primitive"
+           id="path1559" />
+      </g>
+      <g
+         transform="translate(46.84,27.19)"
+         stroke="#000000"
+         id="g1565">
+        <path
+           fill="none"
+           d="M -3.38,0 H 3.38"
+           class="primitive"
+           id="path1563" />
+      </g>
+      <g
+         transform="translate(50.22,27.19)"
+         stroke="#000000"
+         id="g1569">
+        <path
+           fill="none"
+           d="M 0,0.81 V -0.81"
+           class="primitive"
+           id="path1567" />
+      </g>
+      <g
+         transform="translate(51.08,32.12)"
+         stroke="#000000"
+         id="g1573">
+        <path
+           fill="none"
+           d="M -1.42,0 H 1.42"
+           class="primitive"
+           id="path1571" />
+      </g>
+      <g
+         transform="translate(52.3,32.58)"
+         stroke="#000000"
+         id="g1577">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1575" />
+      </g>
+      <g
+         transform="translate(52.3,33.03)"
+         stroke="#000000"
+         id="g1581">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1579" />
+      </g>
+      <g
+         transform="translate(51.63,32.81)"
+         stroke="#000000"
+         id="g1585">
+        <path
+           fill="none"
+           d="M -0.47,0 H 0.47"
+           class="primitive"
+           id="path1583" />
+      </g>
+      <g
+         transform="translate(52.09,32.81)"
+         stroke="#000000"
+         id="g1589">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1587" />
+      </g>
+      <g
+         transform="translate(52.31,33.49)"
+         stroke="#000000"
+         id="g1593">
+        <path
+           fill="none"
+           d="M -0.19,0 H 0.19"
+           class="primitive"
+           id="path1591" />
+      </g>
+      <g
+         transform="translate(52.31,33.95)"
+         stroke="#000000"
+         id="g1597">
+        <path
+           fill="none"
+           d="M -0.19,0 H 0.19"
+           class="primitive"
+           id="path1595" />
+      </g>
+      <g
+         transform="translate(52.09,33.72)"
+         stroke="#000000"
+         id="g1601">
+        <path
+           fill="none"
+           d="M -0.03,0 H 0.03"
+           class="primitive"
+           id="path1599" />
+      </g>
+      <g
+         transform="translate(52.12,33.72)"
+         stroke="#000000"
+         id="g1605">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1603" />
+      </g>
+      <g
+         transform="translate(52.43,34.41)"
+         stroke="#000000"
+         id="g1609">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1607" />
+      </g>
+      <g
+         transform="translate(52.43,34.87)"
+         stroke="#000000"
+         id="g1613">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1611" />
+      </g>
+      <g
+         transform="translate(52.21,34.64)"
+         stroke="#000000"
+         id="g1617">
+        <path
+           fill="none"
+           d="m -0.15,0 h 0.3"
+           class="primitive"
+           id="path1615" />
+      </g>
+      <g
+         transform="translate(52.35,34.64)"
+         stroke="#000000"
+         id="g1621">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1619" />
+      </g>
+      <g
+         transform="translate(51.91,34.18)"
+         stroke="#000000"
+         id="g1625">
+        <path
+           fill="none"
+           d="m -0.15,0 h 0.3"
+           class="primitive"
+           id="path1623" />
+      </g>
+      <g
+         transform="translate(52.06,34.18)"
+         stroke="#000000"
+         id="g1629">
+        <path
+           fill="none"
+           d="M 0,0.46 V -0.46"
+           class="primitive"
+           id="path1627" />
+      </g>
+      <g
+         transform="translate(52.15,35.33)"
+         stroke="#000000"
+         id="g1633">
+        <path
+           fill="none"
+           d="m -0.35,0 h 0.7"
+           class="primitive"
+           id="path1631" />
+      </g>
+    </g>
+    <g
+       stroke-opacity="1"
+       stroke-width="0.1"
+       id="img-1e96e242-5">
+      <g
+         transform="translate(52.02,18.57)"
+         stroke="#000000"
+         id="g1638">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1636" />
+      </g>
+      <g
+         transform="translate(52.43,19.26)"
+         stroke="#000000"
+         id="g1642">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1640" />
+      </g>
+      <g
+         transform="translate(52.43,19.72)"
+         stroke="#000000"
+         id="g1646">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1644" />
+      </g>
+      <g
+         transform="translate(52,19.49)"
+         stroke="#000000"
+         id="g1650">
+        <path
+           fill="none"
+           d="M -0.36,0 H 0.36"
+           class="primitive"
+           id="path1648" />
+      </g>
+      <g
+         transform="translate(52.37,19.49)"
+         stroke="#000000"
+         id="g1654">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1652" />
+      </g>
+      <g
+         transform="translate(50.98,19.03)"
+         stroke="#000000"
+         id="g1658">
+        <path
+           fill="none"
+           d="M -0.66,0 H 0.66"
+           class="primitive"
+           id="path1656" />
+      </g>
+      <g
+         transform="translate(51.64,19.03)"
+         stroke="#000000"
+         id="g1662">
+        <path
+           fill="none"
+           d="M 0,0.46 V -0.46"
+           class="primitive"
+           id="path1660" />
+      </g>
+      <g
+         transform="translate(48.39,18.46)"
+         stroke="#000000"
+         id="g1666">
+        <path
+           fill="none"
+           d="M -1.92,0 H 1.92"
+           class="primitive"
+           id="path1664" />
+      </g>
+      <g
+         transform="translate(50.31,18.46)"
+         stroke="#000000"
+         id="g1670">
+        <path
+           fill="none"
+           d="M 0,0.57 V -0.57"
+           class="primitive"
+           id="path1668" />
+      </g>
+      <g
+         transform="translate(46.07,17.4)"
+         stroke="#000000"
+         id="g1674">
+        <path
+           fill="none"
+           d="M -0.4,0 H 0.4"
+           class="primitive"
+           id="path1672" />
+      </g>
+      <g
+         transform="translate(46.47,17.4)"
+         stroke="#000000"
+         id="g1678">
+        <path
+           fill="none"
+           d="M 0,1.06 V -1.06"
+           class="primitive"
+           id="path1676" />
+      </g>
+      <g
+         transform="translate(31.83,15.32)"
+         stroke="#000000"
+         id="g1682">
+        <path
+           fill="none"
+           d="M -13.84,0 H 13.84"
+           class="primitive"
+           id="path1680" />
+      </g>
+      <g
+         transform="translate(45.66,15.32)"
+         stroke="#000000"
+         id="g1686">
+        <path
+           fill="none"
+           d="M 0,2.08 V -2.08"
+           class="primitive"
+           id="path1684" />
+      </g>
+      <g
+         transform="translate(52.3,20.18)"
+         stroke="#000000"
+         id="g1690">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1688" />
+      </g>
+      <g
+         transform="translate(52.3,20.64)"
+         stroke="#000000"
+         id="g1694">
+        <path
+           fill="none"
+           d="M -0.2,0 H 0.2"
+           class="primitive"
+           id="path1692" />
+      </g>
+      <g
+         transform="translate(51.26,20.41)"
+         stroke="#000000"
+         id="g1698">
+        <path
+           fill="none"
+           d="M -0.84,0 H 0.84"
+           class="primitive"
+           id="path1696" />
+      </g>
+      <g
+         transform="translate(52.11,20.41)"
+         stroke="#000000"
+         id="g1702">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1700" />
+      </g>
+      <g
+         transform="translate(52.41,21.1)"
+         stroke="#000000"
+         id="g1706">
+        <path
+           fill="none"
+           d="M -0.09,0 H 0.09"
+           class="primitive"
+           id="path1704" />
+      </g>
+      <g
+         transform="translate(52.41,21.56)"
+         stroke="#000000"
+         id="g1710">
+        <path
+           fill="none"
+           d="M -0.09,0 H 0.09"
+           class="primitive"
+           id="path1708" />
+      </g>
+      <g
+         transform="translate(51.37,21.33)"
+         stroke="#000000"
+         id="g1714">
+        <path
+           fill="none"
+           d="m -0.95,0 h 1.9"
+           class="primitive"
+           id="path1712" />
+      </g>
+      <g
+         transform="translate(52.32,21.33)"
+         stroke="#000000"
+         id="g1718">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1716" />
+      </g>
+      <g
+         transform="translate(45.38,20.87)"
+         stroke="#000000"
+         id="g1722">
+        <path
+           fill="none"
+           d="M -5.05,0 H 5.05"
+           class="primitive"
+           id="path1720" />
+      </g>
+      <g
+         transform="translate(50.42,20.87)"
+         stroke="#000000"
+         id="g1726">
+        <path
+           fill="none"
+           d="M 0,0.46 V -0.46"
+           class="primitive"
+           id="path1724" />
+      </g>
+      <g
+         transform="translate(50.76,22.02)"
+         stroke="#000000"
+         id="g1730">
+        <path
+           fill="none"
+           d="M -1.74,0 H 1.74"
+           class="primitive"
+           id="path1728" />
+      </g>
+      <g
+         transform="translate(52.37,22.47)"
+         stroke="#000000"
+         id="g1734">
+        <path
+           fill="none"
+           d="M -0.13,0 H 0.13"
+           class="primitive"
+           id="path1732" />
+      </g>
+      <g
+         transform="translate(52.43,22.93)"
+         stroke="#000000"
+         id="g1738">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1736" />
+      </g>
+      <g
+         transform="translate(52.43,23.39)"
+         stroke="#000000"
+         id="g1742">
+        <path
+           fill="none"
+           d="M -0.07,0 H 0.07"
+           class="primitive"
+           id="path1740" />
+      </g>
+      <g
+         transform="translate(52.3,23.16)"
+         stroke="#000000"
+         id="g1746">
+        <path
+           fill="none"
+           d="m -0.05,0 h 0.1"
+           class="primitive"
+           id="path1744" />
+      </g>
+      <g
+         transform="translate(52.35,23.16)"
+         stroke="#000000"
+         id="g1750">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1748" />
+      </g>
+      <g
+         transform="translate(52.06,22.82)"
+         stroke="#000000"
+         id="g1754">
+        <path
+           fill="none"
+           d="M -0.19,0 H 0.19"
+           class="primitive"
+           id="path1752" />
+      </g>
+      <g
+         transform="translate(52.25,22.82)"
+         stroke="#000000"
+         id="g1758">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1756" />
+      </g>
+      <g
+         transform="translate(52.36,23.85)"
+         stroke="#000000"
+         id="g1762">
+        <path
+           fill="none"
+           d="M -0.14,0 H 0.14"
+           class="primitive"
+           id="path1760" />
+      </g>
+      <g
+         transform="translate(52.36,24.31)"
+         stroke="#000000"
+         id="g1766">
+        <path
+           fill="none"
+           d="M -0.14,0 H 0.14"
+           class="primitive"
+           id="path1764" />
+      </g>
+      <g
+         transform="translate(52.21,24.08)"
+         stroke="#000000"
+         id="g1770">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1768" />
+      </g>
+      <g
+         transform="translate(52.22,24.08)"
+         stroke="#000000"
+         id="g1774">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1772" />
+      </g>
+      <g
+         transform="translate(52.48,24.77)"
+         stroke="#000000"
+         id="g1778">
+        <path
+           fill="none"
+           d="M -0.02,0 H 0.02"
+           class="primitive"
+           id="path1776" />
+      </g>
+      <g
+         transform="translate(52.49,25.23)"
+         stroke="#000000"
+         id="g1782">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1780" />
+      </g>
+      <g
+         transform="translate(52.49,25.69)"
+         stroke="#000000"
+         id="g1786">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1784" />
+      </g>
+      <g
+         transform="translate(52.46,25.46)"
+         stroke="#000000"
+         id="g1790">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1788" />
+      </g>
+      <g
+         transform="translate(52.47,25.46)"
+         stroke="#000000"
+         id="g1794">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1792" />
+      </g>
+      <g
+         transform="translate(52.33,25.11)"
+         stroke="#000000"
+         id="g1798">
+        <path
+           fill="none"
+           d="M -0.13,0 H 0.13"
+           class="primitive"
+           id="path1796" />
+      </g>
+      <g
+         transform="translate(52.46,25.11)"
+         stroke="#000000"
+         id="g1802">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1800" />
+      </g>
+      <g
+         transform="translate(52.03,24.6)"
+         stroke="#000000"
+         id="g1806">
+        <path
+           fill="none"
+           d="M -0.16,0 H 0.16"
+           class="primitive"
+           id="path1804" />
+      </g>
+      <g
+         transform="translate(52.2,24.6)"
+         stroke="#000000"
+         id="g1810">
+        <path
+           fill="none"
+           d="M 0,0.52 V -0.52"
+           class="primitive"
+           id="path1808" />
+      </g>
+      <g
+         transform="translate(50.44,23.71)"
+         stroke="#000000"
+         id="g1814">
+        <path
+           fill="none"
+           d="M -1.42,0 H 1.42"
+           class="primitive"
+           id="path1812" />
+      </g>
+      <g
+         transform="translate(51.87,23.71)"
+         stroke="#000000"
+         id="g1818">
+        <path
+           fill="none"
+           d="M 0,0.89 V -0.89"
+           class="primitive"
+           id="path1816" />
+      </g>
+      <g
+         transform="translate(45.54,22.86)"
+         stroke="#000000"
+         id="g1822">
+        <path
+           fill="none"
+           d="M -3.49,0 H 3.49"
+           class="primitive"
+           id="path1820" />
+      </g>
+      <g
+         transform="translate(49.02,22.86)"
+         stroke="#000000"
+         id="g1826">
+        <path
+           fill="none"
+           d="m 0,0.85 v -1.7"
+           class="primitive"
+           id="path1824" />
+      </g>
+      <g
+         transform="translate(52.4,26.15)"
+         stroke="#000000"
+         id="g1830">
+        <path
+           fill="none"
+           d="M -0.1,0 H 0.1"
+           class="primitive"
+           id="path1828" />
+      </g>
+      <g
+         transform="translate(52.4,26.61)"
+         stroke="#000000"
+         id="g1834">
+        <path
+           fill="none"
+           d="M -0.1,0 H 0.1"
+           class="primitive"
+           id="path1832" />
+      </g>
+      <g
+         transform="translate(51.27,26.38)"
+         stroke="#000000"
+         id="g1838">
+        <path
+           fill="none"
+           d="M -1.04,0 H 1.04"
+           class="primitive"
+           id="path1836" />
+      </g>
+    </g>
+    <g
+       stroke-opacity="1"
+       stroke-width="0.1"
+       id="img-1e96e242-6">
+      <g
+         transform="translate(51.47,10.88)"
+         stroke="#000000"
+         id="g1843">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1841" />
+      </g>
+      <g
+         transform="translate(48.47,10.48)"
+         stroke="#000000"
+         id="g1847">
+        <path
+           fill="none"
+           d="M -2.09,0 H 2.09"
+           class="primitive"
+           id="path1845" />
+      </g>
+      <g
+         transform="translate(50.56,10.48)"
+         stroke="#000000"
+         id="g1851">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1849" />
+      </g>
+      <g
+         transform="translate(45.92,9.76)"
+         stroke="#000000"
+         id="g1855">
+        <path
+           fill="none"
+           d="m -0.45,0 h 0.9"
+           class="primitive"
+           id="path1853" />
+      </g>
+      <g
+         transform="translate(46.38,9.76)"
+         stroke="#000000"
+         id="g1859">
+        <path
+           fill="none"
+           d="M 0,0.72 V -0.72"
+           class="primitive"
+           id="path1857" />
+      </g>
+      <g
+         transform="translate(43.49,8.71)"
+         stroke="#000000"
+         id="g1863">
+        <path
+           fill="none"
+           d="M -1.98,0 H 1.98"
+           class="primitive"
+           id="path1861" />
+      </g>
+      <g
+         transform="translate(45.47,8.71)"
+         stroke="#000000"
+         id="g1867">
+        <path
+           fill="none"
+           d="m 0,1.05 v -2.1"
+           class="primitive"
+           id="path1865" />
+      </g>
+      <g
+         transform="translate(39.57,7.09)"
+         stroke="#000000"
+         id="g1871">
+        <path
+           fill="none"
+           d="m -1.95,0 h 3.9"
+           class="primitive"
+           id="path1869" />
+      </g>
+      <g
+         transform="translate(41.51,7.09)"
+         stroke="#000000"
+         id="g1875">
+        <path
+           fill="none"
+           d="M 0,1.63 V -1.63"
+           class="primitive"
+           id="path1873" />
+      </g>
+      <g
+         transform="translate(20.06,5.2)"
+         stroke="#000000"
+         id="g1879">
+        <path
+           fill="none"
+           d="M -17.56,0 H 17.56"
+           class="primitive"
+           id="path1877" />
+      </g>
+      <g
+         transform="translate(37.62,5.2)"
+         stroke="#000000"
+         id="g1883">
+        <path
+           fill="none"
+           d="M 0,1.89 V -1.89"
+           class="primitive"
+           id="path1881" />
+      </g>
+      <g
+         transform="translate(51.92,11.91)"
+         stroke="#000000"
+         id="g1887">
+        <path
+           fill="none"
+           d="M -0.58,0 H 0.58"
+           class="primitive"
+           id="path1885" />
+      </g>
+      <g
+         transform="translate(52.15,12.37)"
+         stroke="#000000"
+         id="g1891">
+        <path
+           fill="none"
+           d="m -0.35,0 h 0.7"
+           class="primitive"
+           id="path1889" />
+      </g>
+      <g
+         transform="translate(52.38,12.83)"
+         stroke="#000000"
+         id="g1895">
+        <path
+           fill="none"
+           d="M -0.12,0 H 0.12"
+           class="primitive"
+           id="path1893" />
+      </g>
+      <g
+         transform="translate(52.38,13.29)"
+         stroke="#000000"
+         id="g1899">
+        <path
+           fill="none"
+           d="M -0.12,0 H 0.12"
+           class="primitive"
+           id="path1897" />
+      </g>
+      <g
+         transform="translate(52.03,13.06)"
+         stroke="#000000"
+         id="g1903">
+        <path
+           fill="none"
+           d="M -0.23,0 H 0.23"
+           class="primitive"
+           id="path1901" />
+      </g>
+      <g
+         transform="translate(52.26,13.06)"
+         stroke="#000000"
+         id="g1907">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1905" />
+      </g>
+      <g
+         transform="translate(51.57,12.72)"
+         stroke="#000000"
+         id="g1911">
+        <path
+           fill="none"
+           d="M -0.23,0 H 0.23"
+           class="primitive"
+           id="path1909" />
+      </g>
+      <g
+         transform="translate(51.8,12.72)"
+         stroke="#000000"
+         id="g1915">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1913" />
+      </g>
+      <g
+         transform="translate(49.9,12.32)"
+         stroke="#000000"
+         id="g1919">
+        <path
+           fill="none"
+           d="M -1.44,0 H 1.44"
+           class="primitive"
+           id="path1917" />
+      </g>
+      <g
+         transform="translate(51.34,12.32)"
+         stroke="#000000"
+         id="g1923">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1921" />
+      </g>
+      <g
+         transform="translate(50.96,13.75)"
+         stroke="#000000"
+         id="g1927">
+        <path
+           fill="none"
+           d="M -1.54,0 H 1.54"
+           class="primitive"
+           id="path1925" />
+      </g>
+      <g
+         transform="translate(51.64,14.21)"
+         stroke="#000000"
+         id="g1931">
+        <path
+           fill="none"
+           d="M -0.86,0 H 0.86"
+           class="primitive"
+           id="path1929" />
+      </g>
+      <g
+         transform="translate(51.85,14.67)"
+         stroke="#000000"
+         id="g1935">
+        <path
+           fill="none"
+           d="m -0.65,0 h 1.3"
+           class="primitive"
+           id="path1933" />
+      </g>
+      <g
+         transform="translate(51.85,15.13)"
+         stroke="#000000"
+         id="g1939">
+        <path
+           fill="none"
+           d="m -0.65,0 h 1.3"
+           class="primitive"
+           id="path1937" />
+      </g>
+      <g
+         transform="translate(50.99,14.9)"
+         stroke="#000000"
+         id="g1943">
+        <path
+           fill="none"
+           d="M -0.21,0 H 0.21"
+           class="primitive"
+           id="path1941" />
+      </g>
+      <g
+         transform="translate(51.2,14.9)"
+         stroke="#000000"
+         id="g1947">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1945" />
+      </g>
+      <g
+         transform="translate(50.1,14.55)"
+         stroke="#000000"
+         id="g1951">
+        <path
+           fill="none"
+           d="M -0.68,0 H 0.68"
+           class="primitive"
+           id="path1949" />
+      </g>
+      <g
+         transform="translate(50.78,14.55)"
+         stroke="#000000"
+         id="g1955">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path1953" />
+      </g>
+      <g
+         transform="translate(48.94,14.15)"
+         stroke="#000000"
+         id="g1959">
+        <path
+           fill="none"
+           d="M -0.48,0 H 0.48"
+           class="primitive"
+           id="path1957" />
+      </g>
+      <g
+         transform="translate(49.42,14.15)"
+         stroke="#000000"
+         id="g1963">
+        <path
+           fill="none"
+           d="M 0,0.4 V -0.4"
+           class="primitive"
+           id="path1961" />
+      </g>
+      <g
+         transform="translate(47.06,13.23)"
+         stroke="#000000"
+         id="g1967">
+        <path
+           fill="none"
+           d="M -1.4,0 H 1.4"
+           class="primitive"
+           id="path1965" />
+      </g>
+      <g
+         transform="translate(48.46,13.23)"
+         stroke="#000000"
+         id="g1971">
+        <path
+           fill="none"
+           d="M 0,0.92 V -0.92"
+           class="primitive"
+           id="path1969" />
+      </g>
+      <g
+         transform="translate(52.33,15.59)"
+         stroke="#000000"
+         id="g1975">
+        <path
+           fill="none"
+           d="M -0.17,0 H 0.17"
+           class="primitive"
+           id="path1973" />
+      </g>
+      <g
+         transform="translate(52.33,16.05)"
+         stroke="#000000"
+         id="g1979">
+        <path
+           fill="none"
+           d="M -0.17,0 H 0.17"
+           class="primitive"
+           id="path1977" />
+      </g>
+      <g
+         transform="translate(51.69,15.82)"
+         stroke="#000000"
+         id="g1983">
+        <path
+           fill="none"
+           d="M -0.47,0 H 0.47"
+           class="primitive"
+           id="path1981" />
+      </g>
+      <g
+         transform="translate(52.16,15.82)"
+         stroke="#000000"
+         id="g1987">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path1985" />
+      </g>
+      <g
+         transform="translate(52.25,16.51)"
+         stroke="#000000"
+         id="g1991">
+        <path
+           fill="none"
+           d="m -0.25,0 h 0.5"
+           class="primitive"
+           id="path1989" />
+      </g>
+      <g
+         transform="translate(52.49,16.97)"
+         stroke="#000000"
+         id="g1995">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1993" />
+      </g>
+      <g
+         transform="translate(52.49,17.42)"
+         stroke="#000000"
+         id="g1999">
+        <path
+           fill="none"
+           d="M -0.01,0 H 0.01"
+           class="primitive"
+           id="path1997" />
+      </g>
+      <g
+         transform="translate(52.24,17.19)"
+         stroke="#000000"
+         id="g2003">
+        <path
+           fill="none"
+           d="M -0.23,0 H 0.23"
+           class="primitive"
+           id="path2001" />
+      </g>
+      <g
+         transform="translate(52.47,17.19)"
+         stroke="#000000"
+         id="g2007">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path2005" />
+      </g>
+      <g
+         transform="translate(51.61,16.85)"
+         stroke="#000000"
+         id="g2011">
+        <path
+           fill="none"
+           d="M -0.4,0 H 0.4"
+           class="primitive"
+           id="path2009" />
+      </g>
+      <g
+         transform="translate(52.01,16.85)"
+         stroke="#000000"
+         id="g2015">
+        <path
+           fill="none"
+           d="M 0,0.34 V -0.34"
+           class="primitive"
+           id="path2013" />
+      </g>
+      <g
+         transform="translate(48.84,16.33)"
+         stroke="#000000"
+         id="g2019">
+        <path
+           fill="none"
+           d="M -2.37,0 H 2.37"
+           class="primitive"
+           id="path2017" />
+      </g>
+      <g
+         transform="translate(51.21,16.33)"
+         stroke="#000000"
+         id="g2023">
+        <path
+           fill="none"
+           d="M 0,0.52 V -0.52"
+           class="primitive"
+           id="path2021" />
+      </g>
+      <g
+         transform="translate(51.41,17.88)"
+         stroke="#000000"
+         id="g2027">
+        <path
+           fill="none"
+           d="M -1.09,0 H 1.09"
+           class="primitive"
+           id="path2025" />
+      </g>
+      <g
+         transform="translate(52.26,18.34)"
+         stroke="#000000"
+         id="g2031">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path2029" />
+      </g>
+      <g
+         transform="translate(52.26,18.8)"
+         stroke="#000000"
+         id="g2035">
+        <path
+           fill="none"
+           d="M -0.24,0 H 0.24"
+           class="primitive"
+           id="path2033" />
+      </g>
+      <g
+         transform="translate(51.83,18.57)"
+         stroke="#000000"
+         id="g2039">
+        <path
+           fill="none"
+           d="M -0.19,0 H 0.19"
+           class="primitive"
+           id="path2037" />
+      </g>
+      <g
+         transform="translate(52.02,18.57)"
+         stroke="#000000"
+         id="g2043">
+        <path
+           fill="none"
+           d="M 0,0.23 V -0.23"
+           class="primitive"
+           id="path2041" />
+      </g>
+    </g>
+  </g>
+  <g
+     fill-opacity="1"
+     id="img-1e96e242-7"
+     transform="translate(7.55,-0.22)">
+    <g
+       transform="translate(52.5,2.27)"
+       fill="#000000"
+       id="g2049">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2047" />
+    </g>
+    <g
+       transform="translate(52.5,2.73)"
+       fill="#000000"
+       id="g2053">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2051" />
+    </g>
+    <g
+       transform="translate(52.5,3.19)"
+       fill="#000000"
+       id="g2057">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2055" />
+    </g>
+    <g
+       transform="translate(52.26,2.96)"
+       fill="#000000"
+       id="g2061">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2059" />
+    </g>
+    <g
+       transform="translate(52.04,2.62)"
+       fill="#000000"
+       id="g2065">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2063" />
+    </g>
+    <g
+       transform="translate(52.5,3.65)"
+       fill="#000000"
+       id="g2069">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2067" />
+    </g>
+    <g
+       transform="translate(52.5,4.11)"
+       fill="#000000"
+       id="g2073">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2071" />
+    </g>
+    <g
+       transform="translate(52.5,4.57)"
+       fill="#000000"
+       id="g2077">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2075" />
+    </g>
+    <g
+       transform="translate(52.47,4.34)"
+       fill="#000000"
+       id="g2081">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2079" />
+    </g>
+    <g
+       transform="translate(52.43,3.99)"
+       fill="#000000"
+       id="g2085">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2083" />
+    </g>
+    <g
+       transform="translate(51.96,3.31)"
+       fill="#000000"
+       id="g2089">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2087" />
+    </g>
+    <g
+       transform="translate(52.5,5.03)"
+       fill="#000000"
+       id="g2093">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2091" />
+    </g>
+    <g
+       transform="translate(52.5,5.49)"
+       fill="#000000"
+       id="g2097">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2095" />
+    </g>
+    <g
+       transform="translate(52.5,5.95)"
+       fill="#000000"
+       id="g2101">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2099" />
+    </g>
+    <g
+       transform="translate(52.5,6.4)"
+       fill="#000000"
+       id="g2105">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2103" />
+    </g>
+    <g
+       transform="translate(52.5,6.86)"
+       fill="#000000"
+       id="g2109">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2107" />
+    </g>
+    <g
+       transform="translate(52.24,6.63)"
+       fill="#000000"
+       id="g2113">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2111" />
+    </g>
+    <g
+       transform="translate(51.88,6.29)"
+       fill="#000000"
+       id="g2117">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2115" />
+    </g>
+    <g
+       transform="translate(50.78,5.89)"
+       fill="#000000"
+       id="g2121">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2119" />
+    </g>
+    <g
+       transform="translate(50.32,5.46)"
+       fill="#000000"
+       id="g2125">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2123" />
+    </g>
+    <g
+       transform="translate(52.5,7.32)"
+       fill="#000000"
+       id="g2129">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2127" />
+    </g>
+    <g
+       transform="translate(52.5,7.78)"
+       fill="#000000"
+       id="g2133">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2131" />
+    </g>
+    <g
+       transform="translate(52.5,8.24)"
+       fill="#000000"
+       id="g2137">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2135" />
+    </g>
+    <g
+       transform="translate(52.41,8.01)"
+       fill="#000000"
+       id="g2141">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2139" />
+    </g>
+    <g
+       transform="translate(50.91,7.67)"
+       fill="#000000"
+       id="g2145">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2143" />
+    </g>
+    <g
+       transform="translate(52.5,8.7)"
+       fill="#000000"
+       id="g2149">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2147" />
+    </g>
+    <g
+       transform="translate(52.5,9.16)"
+       fill="#000000"
+       id="g2153">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2151" />
+    </g>
+    <g
+       transform="translate(52.5,9.62)"
+       fill="#000000"
+       id="g2157">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2155" />
+    </g>
+    <g
+       transform="translate(51.6,9.39)"
+       fill="#000000"
+       id="g2161">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2159" />
+    </g>
+    <g
+       transform="translate(50.48,9.04)"
+       fill="#000000"
+       id="g2165">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2163" />
+    </g>
+    <g
+       transform="translate(52.5,10.08)"
+       fill="#000000"
+       id="g2169">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2167" />
+    </g>
+    <g
+       transform="translate(52.5,10.54)"
+       fill="#000000"
+       id="g2173">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2171" />
+    </g>
+    <g
+       transform="translate(52.5,11)"
+       fill="#000000"
+       id="g2177">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2175" />
+    </g>
+    <g
+       transform="translate(52.5,11.46)"
+       fill="#000000"
+       id="g2181">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2179" />
+    </g>
+    <g
+       transform="translate(52.2,11.23)"
+       fill="#000000"
+       id="g2185">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2183" />
+    </g>
+    <g
+       transform="translate(51.47,10.88)"
+       fill="#000000"
+       id="g2189">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2187" />
+    </g>
+    <g
+       transform="translate(50.56,10.48)"
+       fill="#000000"
+       id="g2193">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2191" />
+    </g>
+    <g
+       transform="translate(46.38,9.76)"
+       fill="#000000"
+       id="g2197">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2195" />
+    </g>
+    <g
+       transform="translate(45.47,8.71)"
+       fill="#000000"
+       id="g2201">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2199" />
+    </g>
+    <g
+       transform="translate(41.51,7.09)"
+       fill="#000000"
+       id="g2205">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2203" />
+    </g>
+    <g
+       transform="translate(37.62,5.2)"
+       fill="#000000"
+       id="g2209">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2207" />
+    </g>
+    <g
+       transform="translate(52.5,11.91)"
+       fill="#000000"
+       id="g2213">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2211" />
+    </g>
+    <g
+       transform="translate(52.5,12.37)"
+       fill="#000000"
+       id="g2217">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2215" />
+    </g>
+    <g
+       transform="translate(52.5,12.83)"
+       fill="#000000"
+       id="g2221">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2219" />
+    </g>
+    <g
+       transform="translate(52.5,13.29)"
+       fill="#000000"
+       id="g2225">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2223" />
+    </g>
+    <g
+       transform="translate(52.26,13.06)"
+       fill="#000000"
+       id="g2229">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2227" />
+    </g>
+    <g
+       transform="translate(51.8,12.72)"
+       fill="#000000"
+       id="g2233">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2231" />
+    </g>
+    <g
+       transform="translate(51.34,12.32)"
+       fill="#000000"
+       id="g2237">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2235" />
+    </g>
+    <g
+       transform="translate(52.5,13.75)"
+       fill="#000000"
+       id="g2241">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2239" />
+    </g>
+    <g
+       transform="translate(52.5,14.21)"
+       fill="#000000"
+       id="g2245">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2243" />
+    </g>
+    <g
+       transform="translate(52.5,14.67)"
+       fill="#000000"
+       id="g2249">
+      <circle
+         cx="0"
+         cy="0"
+         r="0"
+         class="primitive"
+         id="circle2247" />
+    </g>
+    <g
+       fill-opacity="1"
+       id="img-1e96e242-8">
+      <g
+         transform="translate(52.5,38.54)"
+         fill="#000000"
+         id="g2253">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2251" />
+      </g>
+      <g
+         transform="translate(52.5,39)"
+         fill="#000000"
+         id="g2257">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2255" />
+      </g>
+      <g
+         transform="translate(52.5,39.46)"
+         fill="#000000"
+         id="g2261">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2259" />
+      </g>
+      <g
+         transform="translate(52.45,39.23)"
+         fill="#000000"
+         id="g2265">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2263" />
+      </g>
+      <g
+         transform="translate(51.79,38.89)"
+         fill="#000000"
+         id="g2269">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2267" />
+      </g>
+      <g
+         transform="translate(51.57,38.49)"
+         fill="#000000"
+         id="g2273">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2271" />
+      </g>
+      <g
+         transform="translate(50.25,37.94)"
+         fill="#000000"
+         id="g2277">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2275" />
+      </g>
+      <g
+         transform="translate(52.5,39.92)"
+         fill="#000000"
+         id="g2281">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2279" />
+      </g>
+      <g
+         transform="translate(52.5,40.38)"
+         fill="#000000"
+         id="g2285">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2283" />
+      </g>
+      <g
+         transform="translate(52.5,40.84)"
+         fill="#000000"
+         id="g2289">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2287" />
+      </g>
+      <g
+         transform="translate(52.5,41.3)"
+         fill="#000000"
+         id="g2293">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2291" />
+      </g>
+      <g
+         transform="translate(52.5,41.76)"
+         fill="#000000"
+         id="g2297">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2295" />
+      </g>
+      <g
+         transform="translate(52.13,41.53)"
+         fill="#000000"
+         id="g2301">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2299" />
+      </g>
+      <g
+         transform="translate(52.13,41.18)"
+         fill="#000000"
+         id="g2305">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2303" />
+      </g>
+      <g
+         transform="translate(51.68,40.78)"
+         fill="#000000"
+         id="g2309">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2307" />
+      </g>
+      <g
+         transform="translate(52.5,42.22)"
+         fill="#000000"
+         id="g2313">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2311" />
+      </g>
+      <g
+         transform="translate(52.5,42.68)"
+         fill="#000000"
+         id="g2317">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2315" />
+      </g>
+      <g
+         transform="translate(52.5,43.14)"
+         fill="#000000"
+         id="g2321">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2319" />
+      </g>
+      <g
+         transform="translate(52.2,42.91)"
+         fill="#000000"
+         id="g2325">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2323" />
+      </g>
+      <g
+         transform="translate(51.85,42.56)"
+         fill="#000000"
+         id="g2329">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2327" />
+      </g>
+      <g
+         transform="translate(52.5,43.6)"
+         fill="#000000"
+         id="g2333">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2331" />
+      </g>
+      <g
+         transform="translate(52.5,44.05)"
+         fill="#000000"
+         id="g2337">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2335" />
+      </g>
+      <g
+         transform="translate(52.02,43.82)"
+         fill="#000000"
+         id="g2341">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2339" />
+      </g>
+      <g
+         transform="translate(52.5,44.51)"
+         fill="#000000"
+         id="g2345">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2343" />
+      </g>
+      <g
+         transform="translate(52.5,44.97)"
+         fill="#000000"
+         id="g2349">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2347" />
+      </g>
+      <g
+         transform="translate(52.49,44.74)"
+         fill="#000000"
+         id="g2353">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2351" />
+      </g>
+      <g
+         transform="translate(52.5,45.43)"
+         fill="#000000"
+         id="g2357">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2355" />
+      </g>
+      <g
+         transform="translate(52.5,45.89)"
+         fill="#000000"
+         id="g2361">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2359" />
+      </g>
+      <g
+         transform="translate(52.5,46.35)"
+         fill="#000000"
+         id="g2365">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2363" />
+      </g>
+      <g
+         transform="translate(52.46,46.12)"
+         fill="#000000"
+         id="g2369">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2367" />
+      </g>
+      <g
+         transform="translate(52.46,45.78)"
+         fill="#000000"
+         id="g2373">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2371" />
+      </g>
+      <g
+         transform="translate(52.5,46.81)"
+         fill="#000000"
+         id="g2377">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2375" />
+      </g>
+      <g
+         transform="translate(52.5,47.27)"
+         fill="#000000"
+         id="g2381">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2379" />
+      </g>
+      <g
+         transform="translate(52.5,47.73)"
+         fill="#000000"
+         id="g2385">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2383" />
+      </g>
+      <g
+         transform="translate(52.19,47.5)"
+         fill="#000000"
+         id="g2389">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2387" />
+      </g>
+      <g
+         transform="translate(52.14,47.15)"
+         fill="#000000"
+         id="g2393">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2391" />
+      </g>
+      <g
+         transform="translate(52.11,46.46)"
+         fill="#000000"
+         id="g2397">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2395" />
+      </g>
+      <g
+         transform="translate(51.93,45.6)"
+         fill="#000000"
+         id="g2401">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2399" />
+      </g>
+      <g
+         transform="translate(51.83,44.71)"
+         fill="#000000"
+         id="g2405">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2403" />
+      </g>
+      <g
+         transform="translate(51.73,43.64)"
+         fill="#000000"
+         id="g2409">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2407" />
+      </g>
+      <g
+         transform="translate(51.59,42.21)"
+         fill="#000000"
+         id="g2413">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2411" />
+      </g>
+      <g
+         transform="translate(50.32,41.07)"
+         fill="#000000"
+         id="g2417">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2415" />
+      </g>
+      <g
+         transform="translate(49.96,39.5)"
+         fill="#000000"
+         id="g2421">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2419" />
+      </g>
+      <g
+         transform="translate(48.16,36.25)"
+         fill="#000000"
+         id="g2425">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2423" />
+      </g>
+      <g
+         transform="translate(43.46,31.72)"
+         fill="#000000"
+         id="g2429">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2427" />
+      </g>
+      <g
+         transform="translate(42.05,27.29)"
+         fill="#000000"
+         id="g2433">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2431" />
+      </g>
+      <g
+         transform="translate(40.33,24.08)"
+         fill="#000000"
+         id="g2437">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2435" />
+      </g>
+      <g
+         transform="translate(17.99,19.7)"
+         fill="#000000"
+         id="g2441">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2439" />
+      </g>
+      <g
+         transform="translate(2.5,12.45)"
+         fill="#000000"
+         id="g2445">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2443" />
+      </g>
+    </g>
+    <g
+       fill-opacity="1"
+       id="img-1e96e242-9">
+      <g
+         transform="translate(52.5,26.15)"
+         fill="#000000"
+         id="g2450">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2448" />
+      </g>
+      <g
+         transform="translate(52.5,26.61)"
+         fill="#000000"
+         id="g2454">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2452" />
+      </g>
+      <g
+         transform="translate(52.31,26.38)"
+         fill="#000000"
+         id="g2458">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2456" />
+      </g>
+      <g
+         transform="translate(52.5,27.07)"
+         fill="#000000"
+         id="g2462">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2460" />
+      </g>
+      <g
+         transform="translate(52.5,27.53)"
+         fill="#000000"
+         id="g2466">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2464" />
+      </g>
+      <g
+         transform="translate(52.5,27.98)"
+         fill="#000000"
+         id="g2470">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2468" />
+      </g>
+      <g
+         transform="translate(52.5,28.44)"
+         fill="#000000"
+         id="g2474">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2472" />
+      </g>
+      <g
+         transform="translate(52.5,28.9)"
+         fill="#000000"
+         id="g2478">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2476" />
+      </g>
+      <g
+         transform="translate(52.33,28.67)"
+         fill="#000000"
+         id="g2482">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2480" />
+      </g>
+      <g
+         transform="translate(52.24,28.33)"
+         fill="#000000"
+         id="g2486">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2484" />
+      </g>
+      <g
+         transform="translate(51.25,27.93)"
+         fill="#000000"
+         id="g2490">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2488" />
+      </g>
+      <g
+         transform="translate(52.5,29.36)"
+         fill="#000000"
+         id="g2494">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2492" />
+      </g>
+      <g
+         transform="translate(52.5,29.82)"
+         fill="#000000"
+         id="g2498">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2496" />
+      </g>
+      <g
+         transform="translate(52.5,30.28)"
+         fill="#000000"
+         id="g2502">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2500" />
+      </g>
+      <g
+         transform="translate(52.43,30.05)"
+         fill="#000000"
+         id="g2506">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2504" />
+      </g>
+      <g
+         transform="translate(52.5,30.74)"
+         fill="#000000"
+         id="g2510">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2508" />
+      </g>
+      <g
+         transform="translate(52.5,31.2)"
+         fill="#000000"
+         id="g2514">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2512" />
+      </g>
+      <g
+         transform="translate(52.5,31.66)"
+         fill="#000000"
+         id="g2518">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2516" />
+      </g>
+      <g
+         transform="translate(52.44,31.43)"
+         fill="#000000"
+         id="g2522">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2520" />
+      </g>
+      <g
+         transform="translate(52.26,31.08)"
+         fill="#000000"
+         id="g2526">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2524" />
+      </g>
+      <g
+         transform="translate(52.26,30.57)"
+         fill="#000000"
+         id="g2530">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2528" />
+      </g>
+      <g
+         transform="translate(52.03,29.96)"
+         fill="#000000"
+         id="g2534">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2532" />
+      </g>
+      <g
+         transform="translate(51.18,28.95)"
+         fill="#000000"
+         id="g2538">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2536" />
+      </g>
+      <g
+         transform="translate(50.95,28.01)"
+         fill="#000000"
+         id="g2542">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2540" />
+      </g>
+      <g
+         transform="translate(50.22,27.19)"
+         fill="#000000"
+         id="g2546">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2544" />
+      </g>
+      <g
+         transform="translate(52.5,32.12)"
+         fill="#000000"
+         id="g2550">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2548" />
+      </g>
+      <g
+         transform="translate(52.5,32.58)"
+         fill="#000000"
+         id="g2554">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2552" />
+      </g>
+      <g
+         transform="translate(52.5,33.03)"
+         fill="#000000"
+         id="g2558">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2556" />
+      </g>
+      <g
+         transform="translate(52.09,32.81)"
+         fill="#000000"
+         id="g2562">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2560" />
+      </g>
+      <g
+         transform="translate(52.5,33.49)"
+         fill="#000000"
+         id="g2566">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2564" />
+      </g>
+      <g
+         transform="translate(52.5,33.95)"
+         fill="#000000"
+         id="g2570">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2568" />
+      </g>
+      <g
+         transform="translate(52.12,33.72)"
+         fill="#000000"
+         id="g2574">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2572" />
+      </g>
+      <g
+         transform="translate(52.5,34.41)"
+         fill="#000000"
+         id="g2578">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2576" />
+      </g>
+      <g
+         transform="translate(52.5,34.87)"
+         fill="#000000"
+         id="g2582">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2580" />
+      </g>
+      <g
+         transform="translate(52.35,34.64)"
+         fill="#000000"
+         id="g2586">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2584" />
+      </g>
+      <g
+         transform="translate(52.06,34.18)"
+         fill="#000000"
+         id="g2590">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2588" />
+      </g>
+      <g
+         transform="translate(52.5,35.33)"
+         fill="#000000"
+         id="g2594">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2592" />
+      </g>
+      <g
+         transform="translate(52.5,35.79)"
+         fill="#000000"
+         id="g2598">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2596" />
+      </g>
+      <g
+         transform="translate(52.5,36.25)"
+         fill="#000000"
+         id="g2602">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2600" />
+      </g>
+      <g
+         transform="translate(52.5,36.71)"
+         fill="#000000"
+         id="g2606">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2604" />
+      </g>
+      <g
+         transform="translate(52.11,36.48)"
+         fill="#000000"
+         id="g2610">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2608" />
+      </g>
+      <g
+         transform="translate(51.83,36.13)"
+         fill="#000000"
+         id="g2614">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2612" />
+      </g>
+      <g
+         transform="translate(51.8,35.73)"
+         fill="#000000"
+         id="g2618">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2616" />
+      </g>
+      <g
+         transform="translate(51.75,34.96)"
+         fill="#000000"
+         id="g2622">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2620" />
+      </g>
+      <g
+         transform="translate(51.16,33.88)"
+         fill="#000000"
+         id="g2626">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2624" />
+      </g>
+      <g
+         transform="translate(49.66,33)"
+         fill="#000000"
+         id="g2630">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2628" />
+      </g>
+      <g
+         transform="translate(52.5,37.17)"
+         fill="#000000"
+         id="g2634">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2632" />
+      </g>
+      <g
+         transform="translate(52.5,37.63)"
+         fill="#000000"
+         id="g2638">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2636" />
+      </g>
+      <g
+         transform="translate(50.53,37.4)"
+         fill="#000000"
+         id="g2642">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2640" />
+      </g>
+      <g
+         transform="translate(52.5,38.09)"
+         fill="#000000"
+         id="g2646">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2644" />
+      </g>
+      <g
+         transform="translate(52.5,38.54)"
+         fill="#000000"
+         id="g2650">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2648" />
+      </g>
+    </g>
+    <g
+       fill-opacity="1"
+       id="img-1e96e242-10">
+      <g
+         transform="translate(52.5,14.67)"
+         fill="#000000"
+         id="g2655">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2653" />
+      </g>
+      <g
+         transform="translate(52.5,15.13)"
+         fill="#000000"
+         id="g2659">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2657" />
+      </g>
+      <g
+         transform="translate(51.2,14.9)"
+         fill="#000000"
+         id="g2663">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2661" />
+      </g>
+      <g
+         transform="translate(50.78,14.55)"
+         fill="#000000"
+         id="g2667">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2665" />
+      </g>
+      <g
+         transform="translate(49.42,14.15)"
+         fill="#000000"
+         id="g2671">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2669" />
+      </g>
+      <g
+         transform="translate(48.46,13.23)"
+         fill="#000000"
+         id="g2675">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2673" />
+      </g>
+      <g
+         transform="translate(52.5,15.59)"
+         fill="#000000"
+         id="g2679">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2677" />
+      </g>
+      <g
+         transform="translate(52.5,16.05)"
+         fill="#000000"
+         id="g2683">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2681" />
+      </g>
+      <g
+         transform="translate(52.16,15.82)"
+         fill="#000000"
+         id="g2687">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2685" />
+      </g>
+      <g
+         transform="translate(52.5,16.51)"
+         fill="#000000"
+         id="g2691">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2689" />
+      </g>
+      <g
+         transform="translate(52.5,16.97)"
+         fill="#000000"
+         id="g2695">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2693" />
+      </g>
+      <g
+         transform="translate(52.5,17.42)"
+         fill="#000000"
+         id="g2699">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2697" />
+      </g>
+      <g
+         transform="translate(52.47,17.19)"
+         fill="#000000"
+         id="g2703">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2701" />
+      </g>
+      <g
+         transform="translate(52.01,16.85)"
+         fill="#000000"
+         id="g2707">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2705" />
+      </g>
+      <g
+         transform="translate(51.21,16.33)"
+         fill="#000000"
+         id="g2711">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2709" />
+      </g>
+      <g
+         transform="translate(52.5,17.88)"
+         fill="#000000"
+         id="g2715">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2713" />
+      </g>
+      <g
+         transform="translate(52.5,18.34)"
+         fill="#000000"
+         id="g2719">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2717" />
+      </g>
+      <g
+         transform="translate(52.5,18.8)"
+         fill="#000000"
+         id="g2723">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2721" />
+      </g>
+      <g
+         transform="translate(52.02,18.57)"
+         fill="#000000"
+         id="g2727">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2725" />
+      </g>
+      <g
+         transform="translate(52.5,19.26)"
+         fill="#000000"
+         id="g2731">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2729" />
+      </g>
+      <g
+         transform="translate(52.5,19.72)"
+         fill="#000000"
+         id="g2735">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2733" />
+      </g>
+      <g
+         transform="translate(52.37,19.49)"
+         fill="#000000"
+         id="g2739">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2737" />
+      </g>
+      <g
+         transform="translate(51.64,19.03)"
+         fill="#000000"
+         id="g2743">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2741" />
+      </g>
+      <g
+         transform="translate(50.31,18.46)"
+         fill="#000000"
+         id="g2747">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2745" />
+      </g>
+      <g
+         transform="translate(46.47,17.4)"
+         fill="#000000"
+         id="g2751">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2749" />
+      </g>
+      <g
+         transform="translate(45.66,15.32)"
+         fill="#000000"
+         id="g2755">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2753" />
+      </g>
+      <g
+         transform="translate(52.5,20.18)"
+         fill="#000000"
+         id="g2759">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2757" />
+      </g>
+      <g
+         transform="translate(52.5,20.64)"
+         fill="#000000"
+         id="g2763">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2761" />
+      </g>
+      <g
+         transform="translate(52.11,20.41)"
+         fill="#000000"
+         id="g2767">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2765" />
+      </g>
+      <g
+         transform="translate(52.5,21.1)"
+         fill="#000000"
+         id="g2771">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2769" />
+      </g>
+      <g
+         transform="translate(52.5,21.56)"
+         fill="#000000"
+         id="g2775">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2773" />
+      </g>
+      <g
+         transform="translate(52.32,21.33)"
+         fill="#000000"
+         id="g2779">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2777" />
+      </g>
+      <g
+         transform="translate(50.42,20.87)"
+         fill="#000000"
+         id="g2783">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2781" />
+      </g>
+      <g
+         transform="translate(52.5,22.02)"
+         fill="#000000"
+         id="g2787">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2785" />
+      </g>
+      <g
+         transform="translate(52.5,22.47)"
+         fill="#000000"
+         id="g2791">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2789" />
+      </g>
+      <g
+         transform="translate(52.5,22.93)"
+         fill="#000000"
+         id="g2795">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2793" />
+      </g>
+      <g
+         transform="translate(52.5,23.39)"
+         fill="#000000"
+         id="g2799">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2797" />
+      </g>
+      <g
+         transform="translate(52.35,23.16)"
+         fill="#000000"
+         id="g2803">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2801" />
+      </g>
+      <g
+         transform="translate(52.25,22.82)"
+         fill="#000000"
+         id="g2807">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2805" />
+      </g>
+      <g
+         transform="translate(52.5,23.85)"
+         fill="#000000"
+         id="g2811">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2809" />
+      </g>
+      <g
+         transform="translate(52.5,24.31)"
+         fill="#000000"
+         id="g2815">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2813" />
+      </g>
+      <g
+         transform="translate(52.22,24.08)"
+         fill="#000000"
+         id="g2819">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2817" />
+      </g>
+      <g
+         transform="translate(52.5,24.77)"
+         fill="#000000"
+         id="g2823">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2821" />
+      </g>
+      <g
+         transform="translate(52.5,25.23)"
+         fill="#000000"
+         id="g2827">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2825" />
+      </g>
+      <g
+         transform="translate(52.5,25.69)"
+         fill="#000000"
+         id="g2831">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2829" />
+      </g>
+      <g
+         transform="translate(52.47,25.46)"
+         fill="#000000"
+         id="g2835">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2833" />
+      </g>
+      <g
+         transform="translate(52.46,25.11)"
+         fill="#000000"
+         id="g2839">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2837" />
+      </g>
+      <g
+         transform="translate(52.2,24.6)"
+         fill="#000000"
+         id="g2843">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2841" />
+      </g>
+      <g
+         transform="translate(51.87,23.71)"
+         fill="#000000"
+         id="g2847">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2845" />
+      </g>
+      <g
+         transform="translate(49.02,22.86)"
+         fill="#000000"
+         id="g2851">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2849" />
+      </g>
+      <g
+         transform="translate(52.5,26.15)"
+         fill="#000000"
+         id="g2855">
+        <circle
+           cx="0"
+           cy="0"
+           r="0"
+           class="primitive"
+           id="circle2853" />
+      </g>
+    </g>
+  </g>
+</svg>
