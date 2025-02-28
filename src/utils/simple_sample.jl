@@ -6,13 +6,13 @@ end
 """
     BranchlengthSampler
 
-    A type that allows you to specify a additive proposal function in the log domain and a prior distrubution over the log of the branchlengths. It also holds the acceptance ratio acc_ratio (acc_ratio[1] stores the number of accepts, and acc_ratio[2] stores the number of rejects).
+    A type that allows you to specify a additive proposal function in the log domain and a prior distrubution over the log of the branchlengths. It also stores `acc_ratio` which is a tuple of `(ratio, total, #acceptances)`, where `ratio::Float64` is the acceptance ratio, `total::Int64` is the total number of proposals, and `#acceptances::Int64` is the number of acceptances.
 """
-struct BranchlengthSampler <: UnivariateSampler
-    acc_ratio::Vector{Int}
+mutable struct BranchlengthSampler <: UnivariateSampler
+    acc_ratio::Tuple{Float64, Int64, Int64} #(ratio, total, #acceptances)
     log_bl_proposal::Distribution
     log_bl_prior::Distribution
-    BranchlengthSampler(log_bl_proposal,log_bl_prior) = new([0,0],log_bl_proposal,log_bl_prior)
+    BranchlengthSampler(log_bl_proposal,log_bl_prior) = new((0.0, 0, 0),log_bl_proposal,log_bl_prior)
 end 
 
 """  
@@ -61,11 +61,13 @@ proposal(modifier::BranchlengthSampler, curr_value) = exp(log(curr_value) + rand
 log_prior(modifier::BranchlengthSampler, x) = logpdf(modifier.log_bl_prior, log(x + 1e-12))
 #Default definition. Overload it for your own modifier type
 function apply_decision(modifier, accept::Bool)
+    ratio, total, acc = modifier.acc_ratio
+    total += 1
     if accept
-        modifier.acc_ratio[1] += 1
-    else
-        modifier.acc_ratio[2] += 1
+        acc += 1
     end
+    ratio = acc / total
+    modifier.acc_ratio = (ratio, total, acc)
 end
 
 tr(modifier, x) = x
