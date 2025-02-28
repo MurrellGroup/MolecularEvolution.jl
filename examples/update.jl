@@ -43,7 +43,7 @@ mutable struct MyModelSampler{
     T1<:ContinuousUnivariateDistribution,
     T2<:ContinuousUnivariateDistribution,
 } <: ModelsUpdate
-    acc_ratio::Vector{Int}
+    acc_ratio::Tuple{Float64, Int64, Int64}
     log_var_drift_proposal::T1
     log_var_drift_prior::T2
     mean_drift::Float64
@@ -52,7 +52,7 @@ mutable struct MyModelSampler{
         log_var_drift_prior::T2,
         mean_drift::Float64,
     ) where {T1<:ContinuousUnivariateDistribution, T2<:ContinuousUnivariateDistribution}
-        new{T1, T2}([0, 0], log_var_drift_proposal, log_var_drift_prior, mean_drift)
+        new{T1, T2}((0.0, 0, 0), log_var_drift_proposal, log_var_drift_prior, mean_drift)
     end
 end
 # Then we let this struct implement our [`metropolis_step`](@ref) interface

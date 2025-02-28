@@ -10,11 +10,11 @@ mutable struct StandardRootOpt <: RootOpt
 end
 
 struct StandardRootSample <: UniformRootPositionSample
-    acc_ratio::Array{Int64,1}
+    acc_ratio::Tuple{Float64, Int64, Int64}
     consecutive::Int64
 
     function StandardRootSample(consecutive::Int64)
-        new(zeros(Int64, 2), consecutive)
+        new((0.0, 0, 0), consecutive)
     end
 end
 
