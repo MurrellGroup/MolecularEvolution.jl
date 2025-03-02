@@ -1,5 +1,5 @@
 using MolecularEvolution
-using Documenter, Literate
+using Documenter, DocumenterVitepress, Literate
 using Phylo, Distributions
 using Plots
 using Compose, Cairo, Fontconfig
@@ -32,23 +32,39 @@ makedocs(;
     authors = "Ben Murrell <benjamin.murrell@ki.se> and contributors",
     repo = "https://github.com/MurrellGroup/MolecularEvolution.jl/blob/{commit}{path}#{line}",
     sitename = "MolecularEvolution.jl",
-    format = Documenter.HTML(;
-        prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://MurrellGroup.github.io/MolecularEvolution.jl",
-        edit_link = "main",
+    format = DocumenterVitepress.MarkdownVitepress(;
+        repo = "https://github.com/MurrellGroup/MolecularEvolution.jl",
+        #=prettyurls = get(ENV, "CI", "false") == "true",=#
+        deploy_url = "https://MurrellGroup.github.io/MolecularEvolution.jl",
+        devbranch = "main",
+        devurl = "dev",
         assets = ["assets/favicon.ico"],
+    #=for local hosting
+    
+        md_output_path = ".",
+        build_vitepress = false
+    ),
+    clean = false,
+    =#
     ),
     pages = [
-        "Home" => "index.md",
-        "framework.md",
+        "Core Concepts" => [
+            "intro.md",
+            "framework.md",
+            "models.md",
+        ],
+        "Methods & Algorithms" => [
+            "simulation.md",
+            "optimization.md",
+            "ancestors.md",
+        ],
+        "Extensions & Utilities" => [
+            "IO.md",
+            "generated/viz.md",
+            "generated/update.md",
+        ],
         "examples.md",
-        "IO.md",
-        "models.md",
-        "simulation.md",
-        "optimization.md",
-        "ancestors.md",
-        "generated/viz.md",
-        "generated/update.md",
+        "api.md"
     ],
 )
 
