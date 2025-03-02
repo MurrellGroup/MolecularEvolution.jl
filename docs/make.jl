@@ -30,7 +30,6 @@ DocMeta.setdocmeta!(
 makedocs(;
     modules = [MolecularEvolution],
     authors = "Ben Murrell <benjamin.murrell@ki.se> and contributors",
-    repo = "https://github.com/MurrellGroup/MolecularEvolution.jl/blob/{commit}{path}#{line}",
     sitename = "MolecularEvolution.jl",
     format = DocumenterVitepress.MarkdownVitepress(;
         repo = "https://github.com/MurrellGroup/MolecularEvolution.jl",
