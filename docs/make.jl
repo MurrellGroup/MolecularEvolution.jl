@@ -68,4 +68,10 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo = "github.com/MurrellGroup/MolecularEvolution.jl", devbranch = "main")
+deploydocs(;
+    repo = "github.com/MurrellGroup/MolecularEvolution.jl",
+    target = "build", # this is where Vitepress stores its output
+    devbranch = "main",
+    branch = "gh-pages",
+    push_preview = true,
+)
