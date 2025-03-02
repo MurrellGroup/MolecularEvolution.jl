@@ -43,16 +43,34 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
+      id-token: write
+      statuses: write  # Add this permission
+    # Add this concurrency setting
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4  # Update to v4
+        with:
+          fetch-depth: 0
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
-      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/cache@v1
+      # Replace julia-buildpkg with more specific documentation dependencies
+      - name: Install documentation dependencies
+        run: julia --project=docs -e 'using Pkg; pkg"dev ."; Pkg.instantiate(); Pkg.precompile(); Pkg.status()'
       - uses: julia-actions/julia-docdeploy@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          GKSwstype: "100"
+          JULIA_DEBUG: "Documenter"
+          DATADEPS_ALWAYS_ACCEPT: true  # Add this
+      # Keep your doctest step
+      - name: Run doctests
+        run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
             using MolecularEvolution
