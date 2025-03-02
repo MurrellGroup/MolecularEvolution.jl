@@ -65,6 +65,10 @@ makedocs(;
         "examples.md",
         "api.md"
     ],
+    draft = false,
+    source = "src", 
+    build = "build",
+    warnonly = true,
 )
 
 deploydocs(;
