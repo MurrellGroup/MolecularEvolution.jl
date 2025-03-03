@@ -77,10 +77,3 @@ jobs:
           GKSwstype: "100" # for Plots.jl plots (if you have them)
           JULIA_DEBUG: "Documenter"
           DATADEPS_ALWAYS_ACCEPT: true
-      - name: Run doctests
-        run: |
-          julia --project=docs -e '
-            using Documenter: DocMeta, doctest
-            using MolecularEvolution
-            DocMeta.setdocmeta!(MolecularEvolution, :DocTestSetup, :(using MolecularEvolution); recursive=true)
-            doctest(MolecularEvolution)'

@@ -31,10 +31,10 @@ makedocs(;
     modules = [MolecularEvolution],
     authors = "Ben Murrell <benjamin.murrell@ki.se> and contributors",
     sitename = "MolecularEvolution.jl",
+    checkdocs = :all,
     format = DocumenterVitepress.MarkdownVitepress(;
         repo = "https://github.com/MurrellGroup/MolecularEvolution.jl",
         #=prettyurls = get(ENV, "CI", "false") == "true",=#
-        deploy_url = "https://MurrellGroup.github.io/MolecularEvolution.jl",
         devbranch = "main",
         devurl = "dev",
         assets = ["assets/favicon.ico"],
