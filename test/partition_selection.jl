@@ -87,6 +87,6 @@ begin
 
     updater = MaxLikUpdate(root=1)
     tree, bm_models = updater(tree, bm_models, partition_list = [1])
-    updater = BayesUpdate(root=0, models=1)
+    updater = BayesUpdate(root=1, models=1)
     tree, bm_models = updater(tree, bm_models, partition_list = [1])
 end

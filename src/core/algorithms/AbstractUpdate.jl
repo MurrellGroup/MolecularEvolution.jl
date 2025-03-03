@@ -70,7 +70,7 @@ end
             Normal(0, 2),
             Normal(-1, 1),
         ),
-        root_sampler::RootSample = StandardRootSample(1),
+        root_sampler::RootSample = StandardRootSample(1.0, 1),
         models_sampler::ModelsUpdate = StandardModelsUpdate()
     )
 
@@ -86,7 +86,7 @@ BayesUpdate(;
         Normal(0, 2),
         Normal(-1, 1),
     ),
-    root_sampler = StandardRootSample(1),
+    root_sampler = StandardRootSample(1.0, 1),
     models_sampler::ModelsUpdate = StandardModelsUpdate(),
 ) = StandardUpdate(
     nni,
