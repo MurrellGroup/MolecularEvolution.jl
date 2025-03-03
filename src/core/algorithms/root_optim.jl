@@ -11,7 +11,7 @@ end
 
 mutable struct StandardRootSample <: UniformRootPositionSample
     acc_ratio::Tuple{Float64, Int64, Int64}
-    radius::Float64
+    radius::Float64 #[0, 1] multiplier of the total branchlength
     consecutive::Int64
 
     function StandardRootSample(radius::Float64,consecutive::Int64)
@@ -20,7 +20,7 @@ mutable struct StandardRootSample <: UniformRootPositionSample
 end
 
 Base.length(root_sample::StandardRootSample) = root_sample.consecutive
-radius(root_sample::StandardRootSample) = root_sample.radius
+radius(root_sample::StandardRootSample, total_bl::Real) = root_sample.radius * total_bl
 
 #Assume that felsenstein_roundtrip! has been called
 #Compute the log likelihood of observations below this root-candidate
@@ -264,18 +264,25 @@ function traverse(node0::FelNode, dist_above_node0::Float64, radius::Float64)
     return points, weights
 end
 
+function total_bl(node::FelNode)
+    while !isroot(node)
+        node = node.parent
+    end
+    return sum(n.branchlength for n in nodes(node))
+end
+
 function log_proposal(modifier::UniformRootPositionSample,
     x::@NamedTuple{root::FelNode, dist_above_node::Float64},
     conditioned_on::@NamedTuple{root::FelNode, dist_above_node::Float64})
-    points, weights = traverse(conditioned_on..., radius(modifier))
+    points, weights = traverse(conditioned_on..., radius(modifier, total_bl(x.root)))
     #if x is not within radius(modifier) of conditioned_on, then we should return log(0.0)
     return -log(sum(weights))
 end
 
 # Propose a new root position with a local uniform distribution
 function proposal(modifier::UniformRootPositionSample, curr_value::@NamedTuple{root::FelNode, dist_above_node::Float64})
-    points, weights = traverse(curr_value..., radius(modifier))
-    #Sample a new root position within radius radius(modifier)
+    points, weights = traverse(curr_value..., radius(modifier, total_bl(curr_value.root)))
+    #Sample a new root position within radius radius(modifier, <total branchlength>)
     cum = cumsum(weights)
     sample = rand() * cum[end]
     idx = searchsortedfirst(cum, sample)
