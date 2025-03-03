@@ -10,11 +10,30 @@ function getBaseRepository(base: string): string {
 }
 
 const baseTemp = {
-  base: 'REPLACE_ME_DOCUMENTER_VITEPRESS',// TODO: replace this in makedocs!
+  base: '/MurrellGroup.github.io/MolecularEvolution.jl/',// TODO: replace this in makedocs!
 }
 
 const navTemp = {
-  nav: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
+  nav: [
+{ text: 'Core Concepts', collapsed: false, items: [
+{ text: 'Intro', link: '/intro' },
+{ text: 'The MolecularEvolution.jl Framework', link: '/framework' },
+{ text: 'Models', link: '/models' }]
+ },
+{ text: 'Methods & Algorithms', collapsed: false, items: [
+{ text: 'Simulation', link: '/simulation' },
+{ text: 'Optimization', link: '/optimization' },
+{ text: 'Ancestral Reconstruction', link: '/ancestors' }]
+ },
+{ text: 'Extensions & Utilities', collapsed: false, items: [
+{ text: 'Input/Output', link: '/IO' },
+{ text: 'Visualization', link: '/generated/viz' },
+{ text: 'Updating a phylogenetic tree', link: '/generated/update' }]
+ },
+{ text: 'Examples', link: '/examples' },
+{ text: 'Full API', link: '/api' }
+]
+,
 }
 
 const nav = [
@@ -26,14 +45,14 @@ const nav = [
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: 'REPLACE_ME_DOCUMENTER_VITEPRESS',// TODO: replace this in makedocs!
-  title: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
-  description: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
+  base: '/MurrellGroup.github.io/MolecularEvolution.jl/',// TODO: replace this in makedocs!
+  title: 'MolecularEvolution.jl',
+  description: 'Documentation for MolecularEvolution.jl',
   lastUpdated: true,
   cleanUrls: true,
-  outDir: 'REPLACE_ME_DOCUMENTER_VITEPRESS', // This is required for MarkdownVitepress to work correctly...
+  outDir: '../final_site', // This is required for MarkdownVitepress to work correctly...
   head: [
-    ['link', { rel: 'icon', href: 'REPLACE_ME_DOCUMENTER_VITEPRESS_FAVICON' }],
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['script', {src: `${getBaseRepository(baseTemp.base)}versions.js`}],
     // ['script', {src: '/versions.js'], for custom domains, I guess if deploy_url is available.
     ['script', {src: `${baseTemp.base}siteinfo.js`}]
@@ -68,7 +87,7 @@ export default defineConfig({
   },
   themeConfig: {
     outline: 'deep',
-    logo: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
+    logo: { src: '/logo.png', width: 24, height: 24},
     search: {
       provider: 'local',
       options: {
@@ -76,10 +95,29 @@ export default defineConfig({
       }
     },
     nav,
-    sidebar: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
-    editLink: 'REPLACE_ME_DOCUMENTER_VITEPRESS',
+    sidebar: [
+{ text: 'Core Concepts', collapsed: false, items: [
+{ text: 'Intro', link: '/intro' },
+{ text: 'The MolecularEvolution.jl Framework', link: '/framework' },
+{ text: 'Models', link: '/models' }]
+ },
+{ text: 'Methods & Algorithms', collapsed: false, items: [
+{ text: 'Simulation', link: '/simulation' },
+{ text: 'Optimization', link: '/optimization' },
+{ text: 'Ancestral Reconstruction', link: '/ancestors' }]
+ },
+{ text: 'Extensions & Utilities', collapsed: false, items: [
+{ text: 'Input/Output', link: '/IO' },
+{ text: 'Visualization', link: '/generated/viz' },
+{ text: 'Updating a phylogenetic tree', link: '/generated/update' }]
+ },
+{ text: 'Examples', link: '/examples' },
+{ text: 'Full API', link: '/api' }
+]
+,
+    editLink: { pattern: "https://https://github.com/MurrellGroup/MolecularEvolution.jl/edit/main/docs/src/:path" },
     socialLinks: [
-      { icon: 'github', link: 'REPLACE_ME_DOCUMENTER_VITEPRESS' }
+      { icon: 'github', link: 'https://github.com/MurrellGroup/MolecularEvolution.jl' }
     ],
     footer: {
       message: 'Made with <a href="https://luxdl.github.io/DocumenterVitepress.jl/dev/" target="_blank"><strong>DocumenterVitepress.jl</strong></a><br>',
