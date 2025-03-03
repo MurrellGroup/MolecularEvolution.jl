@@ -9,16 +9,18 @@ mutable struct StandardRootOpt <: RootOpt
     K::Int
 end
 
-struct StandardRootSample <: UniformRootPositionSample
+mutable struct StandardRootSample <: UniformRootPositionSample
     acc_ratio::Tuple{Float64, Int64, Int64}
+    radius::Float64 #[0, 1] multiplier of the total branchlength
     consecutive::Int64
 
-    function StandardRootSample(consecutive::Int64)
-        new((0.0, 0, 0), consecutive)
+    function StandardRootSample(radius::Float64,consecutive::Int64)
+        new((0.0, 0, 0), radius, consecutive)
     end
 end
 
 Base.length(root_sample::StandardRootSample) = root_sample.consecutive
+radius(root_sample::StandardRootSample, total_bl::Real) = root_sample.radius * total_bl
 
 #Assume that felsenstein_roundtrip! has been called
 #Compute the log likelihood of observations below this root-candidate
@@ -211,13 +213,83 @@ function (root_sample::RootSample)(tree::FelNode, models, partition_list, node_m
     return merge(sampled_position, (state=sampled_state,))
 end
 
-# Propose a new root position with a global uniform distribution
-function proposal(::UniformRootPositionSample, curr_value::@NamedTuple{root::FelNode, dist_above_node::Float64})
-    nodelist = getnodelist(curr_value.root)
-    cum = cumsum(n.branchlength for n in nodelist)
+
+function traverse(node0::FelNode, dist_above_node0::Float64, radius::Float64)
+    stack = [(node0, dist_above_node0, radius, length(node0.children)+1)]
+    points = Vector{Tuple{FelNode, Float64, Int64}}()
+    weights = Vector{Float64}()
+
+    while !isempty(stack)
+        node, dist_above_node, radius_left, prev_ind = pop!(stack)
+                                            #interpret 1,2,... as which child ind we're coming from (if it's out of range, we're at node0), 
+                                            #0 as we're coming from root,
+        if prev_ind > 0 && !isroot(node) #Upward traversal
+            child_ind = findfirst(x -> x == node, node.parent.children)
+            radius_that_would_be_left = radius_left - (node.branchlength - dist_above_node)
+            if radius_that_would_be_left < 0.0
+                push!(points, (node, dist_above_node + radius_left, child_ind))
+                push!(weights, radius_left)
+            else
+                radius_that_would_be_left != 0.0 && push!(stack, (node.parent, 0.0, radius_that_would_be_left, child_ind))
+                push!(points, (node, node.branchlength, child_ind)) #(node, node.branchlength) <=> (node.parent, 0.0)
+                push!(weights, node.branchlength - dist_above_node)
+            end
+        end
+        #Downward traversal
+        radius_that_would_be_left = radius_left - dist_above_node
+        if radius_that_would_be_left < 0.0
+            push!(points, (node, -radius_that_would_be_left, 0))
+            push!(weights, radius_left)
+            continue
+        end
+        if dist_above_node != 0.0 #node0 may add itself, otherwise dist_above_node is 0.0
+            push!(points, (node, 0.0, 0)) #most cases down will be true, but when it is false, we want to remember that
+            push!(weights, dist_above_node)
+        end
+        for (child_ind, child) in enumerate(node.children)
+            if child_ind == prev_ind
+                continue
+            end
+            radius_that_would_be_left = radius_left - dist_above_node - child.branchlength
+            if radius_that_would_be_left < 0.0
+                push!(points, (child, -radius_that_would_be_left, 0))
+                push!(weights, radius_left - dist_above_node)
+                continue
+            end
+            radius_that_would_be_left != 0.0 && push!(stack, (child, 0.0, radius_that_would_be_left, 0))
+            push!(points, (child, 0.0, 0))
+            push!(weights, child.branchlength)
+        end
+    end
+    return points, weights
+end
+
+function total_bl(node::FelNode)
+    while !isroot(node)
+        node = node.parent
+    end
+    return sum(n.branchlength for n in nodes(node))
+end
+
+function log_proposal(modifier::UniformRootPositionSample,
+    x::@NamedTuple{root::FelNode, dist_above_node::Float64},
+    conditioned_on::@NamedTuple{root::FelNode, dist_above_node::Float64})
+    points, weights = traverse(conditioned_on..., radius(modifier, total_bl(x.root)))
+    #if x is not within radius(modifier) of conditioned_on, then we should return log(0.0)
+    return -log(sum(weights))
+end
+
+# Propose a new root position with a local uniform distribution
+function proposal(modifier::UniformRootPositionSample, curr_value::@NamedTuple{root::FelNode, dist_above_node::Float64})
+    points, weights = traverse(curr_value..., radius(modifier, total_bl(curr_value.root)))
+    #Sample a new root position within radius radius(modifier, <total branchlength>)
+    cum = cumsum(weights)
     sample = rand() * cum[end]
     idx = searchsortedfirst(cum, sample)
-    return (root=nodelist[idx], dist_above_node=cum[idx] - sample)
+    diff = cum[idx] - sample
+    node, dist_above_node, prev_ind = points[idx]
+    dist_above_node += prev_ind > 0 ? -diff : diff
+    return (root=node, dist_above_node=dist_above_node)
 end
 
 log_prior(::UniformRootPositionSample, curr_value::@NamedTuple{root::FelNode, dist_above_node::Float64}) = 0.0 #Uninformative/improper prior

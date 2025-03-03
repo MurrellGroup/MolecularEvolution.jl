@@ -61,7 +61,10 @@ either implement the metropolis_step interface separately for current values of 
 and...
 =#
 Base.length(root_sample::MyRootSample) = error("length() not yet implemented for $(typeof(root_sample)). Required for root_update!.") # the number of consecutive samples of root state and position for a single update call
-
+#=
+(if you want to be a subtype of UniformRootPositionSample, implement
+radius(::MyRootSample, total_bl::Real) = error("radius() not yet implemented for $(typeof(root_sample)). Required for root_update!.") # the local radius of the uniform proposal. Can be absolute or relative to the total branchlength.
+=#
 #or
 function (root_sample::MyRootSample)(tree::FelNode, models, partition_list, node_message::Vector{<:Partition}, temp_message::Vector{<:Partition})
     error("")

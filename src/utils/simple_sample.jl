@@ -39,6 +39,11 @@ You need a `MySampler <: Any` to implement
 Although, it is possible to transform the current value before proposing a new value, and
 then take the inverse transform to match the argument `LL` expects.
 # Extended interface
+## Hastings
+To allow for asymmetric proposals, you must overload
+- `log_proposal(modifier::MySampler, x, conditioned_on)`
+which returns a constant (`0.0` in particular) by default.
+## Transformations
 To make proposals in a transformed space, you overload
 - `tr(modifier::MySampler, x)`
 - `invtr(modifier::MySampler, x)`
@@ -49,12 +54,14 @@ function metropolis_step(LL::Function, modifier, curr_value)
     tr_prop = proposal(modifier, tr_curr_value)
     accept_proposal =
         rand() <= exp(
-            LL(invtr(modifier, tr_prop)) + log_prior(modifier, tr_prop) -
-            LL(invtr(modifier, tr_curr_value)) - log_prior(modifier, tr_curr_value),
+            LL(invtr(modifier, tr_prop)) + log_prior(modifier, tr_prop) + log_proposal(modifier, tr_curr_value, tr_prop) -
+            LL(invtr(modifier, tr_curr_value)) - log_prior(modifier, tr_curr_value) - log_proposal(modifier, tr_prop, tr_curr_value),
         )
     apply_decision(modifier, accept_proposal)
     return invtr(modifier, ifelse(accept_proposal, tr_prop, tr_curr_value))
 end
+
+log_proposal(modifier, x, y) = 0.0
 
 # The prior distribution for the variable log(branchlength). A small perturbation of +1e-12 is added to enhance numerical stability near zero.
 proposal(modifier::BranchlengthSampler, curr_value) = exp(log(curr_value) + rand(modifier.log_bl_proposal))
