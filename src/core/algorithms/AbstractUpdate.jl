@@ -31,6 +31,7 @@ A standard update can be a family of calls to [`nni_update!`](@ref), [`branchlen
         branchlength::Int,
         root::Int,
         models::Int,
+        refresh::Bool,
         nni_selection::Function,
         branchlength_modifier::UnivariateModifier,
         root_update::RootUpdate,
@@ -42,6 +43,7 @@ A standard update can be a family of calls to [`nni_update!`](@ref), [`branchlen
 - `branchlength::Int`: the number of times to update the tree by `branchlength_update!`
 - `root::Int`: the number of times to update the tree by `root_update!`
 - `models::Int`: the number of times to update the model
+- `refresh::Bool`: whether to refresh the messages in tree between update operations to ensure message consistency
 - `nni_selection::Function`: the function that selects between nni configurations
 - `branchlength_modifier::UnivariateModifier`: the modifier to update a branchlength by `branchlength_update!`
 - `root_update::RootUpdate`: updates the root by `root_update!`
@@ -54,6 +56,7 @@ struct StandardUpdate <: AbstractUpdate
     branchlength::Int
     root::Int
     models::Int
+    refresh::Bool
     nni_selection::Function
     branchlength_modifier::UnivariateModifier
     root_update::RootUpdate
@@ -66,6 +69,7 @@ end
         branchlength = 1,
         root = 0,
         models = 0,
+        refresh = false,
         branchlength_sampler::UnivariateSampler = BranchlengthSampler(
             Normal(0, 2),
             Normal(-1, 1),
@@ -82,6 +86,7 @@ BayesUpdate(;
     branchlength::Int = 1,
     root::Int = 0,
     models::Int = 0,
+    refresh::Bool = false,
     branchlength_sampler::UnivariateSampler = BranchlengthSampler(
         Normal(0, 2),
         Normal(-1, 1),
@@ -93,6 +98,7 @@ BayesUpdate(;
     branchlength,
     root,
     models,
+    refresh,
     softmax_sampler,
     branchlength_sampler,
     root_sampler,
@@ -105,6 +111,7 @@ BayesUpdate(;
         branchlength = 1,
         root = 0,
         models = 0,
+        refresh = false,
         branchlength_optimizer::UnivariateOpt = GoldenSectionOpt(),
         root_optimizer = StandardRootOpt(10),
         models_optimizer::ModelUpdate = StandardModelUpdate()
@@ -118,6 +125,7 @@ MaxLikUpdate(;
     branchlength::Int = 1,
     root::Int = 0,
     models::Int = 0,
+    refresh::Bool = false,
     branchlength_optimizer::UnivariateOpt = GoldenSectionOpt(),
     root_optimizer = StandardRootOpt(10),
     models_optimizer::ModelsUpdate = StandardModelsUpdate(),
@@ -126,20 +134,35 @@ MaxLikUpdate(;
     branchlength,
     root,
     models,
+    refresh,
     argmax,
     branchlength_optimizer,
     root_optimizer,
     models_optimizer,
 )
 
+"""
+    refresh!(tree::FelNode, models; partition_list = 1:length(tree.message))
+
+Run `felsenstein!` and `felsenstein_down!` on `tree` with `models` to refresh messages.
+"""
+function refresh!(tree::FelNode, models; partition_list = 1:length(tree.message))
+    felsenstein!(tree, models, partition_list = partition_list)
+    felsenstein_down!(tree, models, partition_list = partition_list)
+end
+
+refresh!(update::StandardUpdate, tree::FelNode, models; partition_list = 1:length(tree.message)) = update.refresh && refresh!(tree, models, partition_list = partition_list)
+
 function (update::StandardUpdate)(
     tree::FelNode,
     models;
     partition_list = 1:length(tree.message),
 )
+    update.nni > 0 && refresh!(update, tree, models, partition_list = partition_list)
     for _ = 1:update.nni
         nni_update!(update.nni_selection, tree, models, partition_list = partition_list)
     end
+    update.branchlength > 0 && refresh!(update, tree, models, partition_list = partition_list)
     for _ = 1:update.branchlength
         branchlength_update!(
             update.branchlength_modifier,
@@ -148,6 +171,7 @@ function (update::StandardUpdate)(
             partition_list = partition_list,
         )
     end
+    update.root > 0 && refresh!(update, tree, models, partition_list = partition_list)
     for _ = 1:update.root
         tree = root_update!(
             update.root_update,
@@ -156,6 +180,7 @@ function (update::StandardUpdate)(
             partition_list = partition_list,
         )
     end
+    update.models > 0 && refresh!(update, tree, models, partition_list = partition_list)
     for _ = 1:update.models
         models = update.models_update(tree, models, partition_list = partition_list)
     end

@@ -70,9 +70,11 @@ function (update::MyModelSampler)(
     models::BranchModel;
     partition_list = 1:length(tree.message),
 )
-    metropolis_step(update, models) do x::BrownianMotion
+    models = metropolis_step(update, models) do x::BrownianMotion
         log_likelihood!(tree, x)
     end
+    log_likelihood!(tree, models, partition_list = partition_list) #refresh messages
+    return models
 end
 # Now we define how the model is collapsed to its parameter
 function MolecularEvolution.collapse_models(::MyModelSampler, models::BranchModel)
@@ -83,14 +85,16 @@ update = BayesUpdate(
     nni = 0,
     branchlength = 0,
     models = 1,
-    models_sampler = MyModelSampler(Normal(0.0, 1.0), Normal(-10.0, 1.0), 0.0),
+    refresh = true,
+    models_sampler = MyModelSampler(Normal(0.0, 1.0), Normal(-1.0, 0.2), 0.0),
 )
-trees, models_samples = metropolis_sample(
+trees, LLs, models_samples = metropolis_sample(
     update,
     tree,
     BrownianMotion(0.0, 7.67),
     1000,
     burn_in = 1000,
+    collect_LLs = true,
     collect_models = true,
 )
 
@@ -111,5 +115,7 @@ p2 = plot(x_range, ll, label = "Tree likelihood")
 
 p3 = plot(x_range, prior, label = "Prior")
 plot(p1, p2, p3, layout = (1, 3), size = (1100, 400))
+#-
+plot(LLs)
 #-
 plot(models_samples)

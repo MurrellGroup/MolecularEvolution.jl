@@ -142,6 +142,7 @@ export
     StandardUpdate,
     BayesUpdate,
     MaxLikUpdate,
+    refresh!,
     RootUpdate,
     RootOpt,
     RootSample,
