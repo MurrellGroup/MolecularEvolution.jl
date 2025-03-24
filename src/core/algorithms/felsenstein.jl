@@ -45,14 +45,16 @@ function felsenstein!(tree::FelNode, models; partition_list = 1:length(tree.mess
                 end
             end
         else
-            model_list = models(node)
-            for part in partition_list
-                backward!(
-                    node.parent.child_messages[ind][part],
-                    node.message[part],
-                    model_list[part],
-                    node,
-                )
+            if !isroot(node)
+                model_list = models(node)
+                for part in partition_list
+                    backward!(
+                        node.parent.child_messages[ind][part],
+                        node.message[part],
+                        model_list[part],
+                        node,
+                    )
+                end
             end
         end
     end
