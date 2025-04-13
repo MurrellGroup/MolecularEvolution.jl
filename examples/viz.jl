@@ -74,8 +74,8 @@ model = DiagonalizedCTMC(reversibleQ(ones(6) ./ (6 * mean), rparams(4)))
 internal_message_init!(tree, NucleotidePartition(ones(4) ./ 4, 100))
 sample_down!(tree, model)
 @time trees, LLs = metropolis_sample(tree, [model], 300, collect_LLs=true);
-reference = trees[argmax(LLs)];
-# We'll use the maximum a posteriori tree as reference
+# We'll use the [`HIPSTR`](@ref) tree as reference
+reference = HIPSTR(trees);
 plot_multiple_trees(trees, reference)
 # We can pass in a weight function to fit query trees against `reference` in a weighted least squares fashion with a location and scale parameter.
 #=
@@ -99,5 +99,6 @@ values_from_phylo_tree
 savefig_tweakSVG
 tree_draw
 plot_multiple_trees
+HIPSTR
 ```
 =#
