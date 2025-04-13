@@ -1,16 +1,17 @@
 export HIPSTR
 """
-    HIPSTR(trees::Vector{<:FelNode})
+    HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
 
 Construct a Highest Independent Posterior Subtree Reconstruction (HIPSTR) tree
 from a collection of trees.
 
-The HIPSTR algorithm builds a consensus tree by finding the combination of subtrees 
-that maximizes the product of credibilities across the tree.
-
 Returns a single FelNode representing the HIPSTR consensus tree.
+
+If `set_branchlengths = true`, the branch length of a node in the HIPSTR tree will be set to the mean branch length of all nodes from the input trees that have the same clade. (By the same clade, we mean that the set of leaves below the node is the same.) Otherwise, the root branch length is 0.0 and the rest 1.0.
+
+Source: https://www.biorxiv.org/content/10.1101/2024.12.08.627395v1.full.pdf
 """
-function HIPSTR(trees::Vector{<:FelNode})
+function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
     @info "Starting HIPSTR construction from $(length(trees)) trees"
     
     # Step 1: Collect all clades, their frequencies, and child pairs
@@ -95,7 +96,7 @@ function HIPSTR(trees::Vector{<:FelNode})
             for (index, name) in reverse_leaf_dict
                 tip_hash = hash_clade(BitSet([index]))
                 if tip_hash == clade_hash
-                    node = FelNode(0.0, name)
+                    node = FelNode(1.0, name)
                     node.seqindex = index
                     return node
                 end
@@ -104,7 +105,7 @@ function HIPSTR(trees::Vector{<:FelNode})
         end
         
         # Internal node
-        node = FelNode(0.0, "")
+        node = FelNode(1.0, "")
         
         # Add children
         left_child = build_tree(left_hash)
@@ -124,13 +125,44 @@ function HIPSTR(trees::Vector{<:FelNode})
     
     # Build the final tree
     hipstr_tree = build_tree(root_hash)
+    # Set the root branchlength to 0.0
+    hipstr_tree.branchlength = 0.0
     
     # Set node indices
     set_node_indices!(hipstr_tree)
+
+    # Set branch lengths to mean
+    set_branchlengths && set_mean_branchlengths!(hipstr_tree, trees)
     
     return hipstr_tree
 end
 
+function set_mean_branchlengths!(tree::FelNode, trees::Vector{FelNode})
+    #Set branchlengths to 0.0, we'll use these as accumulators and then eventually normalize
+    tree_nodes = nodes(tree)
+    for node in tree_nodes
+        node.branchlength = 0.0
+    end
+    #Initialize container for counting the amount of terms in the accumulators
+    branch_length_counts = Dict(zip(tree_nodes, zeros(Int64, length(tree_nodes))))
+    #Go through all the trees, t...
+    for t in trees
+        #and for each matching clade, (tree_node, t_node), between tree and t...
+        matching_pairs = tree_match_pairs(tree, t, push_leaves = true)
+        for (tree_node, t_node) in matching_pairs
+            #add the branch length of t_node in t to the branch length of tree_node in tree...
+            tree_node.branchlength += t_node.branchlength
+            #and increment the counter for tree_node.
+            branch_length_counts[tree_node] += 1
+        end
+    end
+    #Then normalize the branch length of all nodes in tree by the number of matching clades.
+    for node in tree_nodes
+        branch_length_counts[node] == 0 && @warn "Branch length counts for node $(node.name) with nodeindex $(node.nodeindex) is 0. Coming from a `HIPSTR` call, this number should be strictly positive."
+        node.branchlength /= max(1, branch_length_counts[node])
+    end
+    #^^ This deviates somewhat from the HIPSTR paper. They find distributions over node ages (with respect to a molecular clock), which differs a bit from the notion of branch length.
+end
 """
 Store statistics about a clade: its frequency and observed child pairs.
 """

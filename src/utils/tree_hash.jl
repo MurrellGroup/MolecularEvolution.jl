@@ -42,25 +42,31 @@ function get_node_hashes(newt; push_leaves = false)
     #This makes a hash that matches everything except the given node
     other_hash = xor.(hash_container, all_names_hash)
     #Sort these, to make comparisons order invariant, which makes the comparison rooting invariant
+    #Only sort internal node hashes, and don't use other_hash for leaves (to avoid collisions)
+    isleafposition = isleafnode.(node_container)
+    sensitive_tuple_sort(t::Tuple{Bool, Tuple{UInt64, UInt64}}) = ifelse(t[1], (t[2][1], t[2][1]), tuple_sort(t[2]))
     #Consider making this sort an option, and then we can have a rooted comparison and an unrooted one
-    sorted_hash_pairs = tuple_sort.(collect(zip(hash_container, other_hash)))
-    return sorted_hash_pairs, node_container
+    sorted_hash_pairs = sensitive_tuple_sort.(collect(zip(isleafposition, zip(hash_container, other_hash))))
+    return sorted_hash_pairs, node_container, hash_container
 end
 
 export tree_diff
 #returns nodes in the query that don't have matching splits in the reference
 function tree_diff(query, reference)
-    newt_hc, newt_nc = get_node_hashes(query)
-    n_hc, n_nc = get_node_hashes(reference)
+    newt_hc, newt_nc, _ = get_node_hashes(query)
+    n_hc, n_nc, _ = get_node_hashes(reference)
     hashset = Set(n_hc)
     changed_nodes = newt_nc[[!(n in hashset) for n in newt_hc]]
     return changed_nodes
 end
 
 export tree_match_pairs
+#returns pairs of nodes in the query and reference trees that have the same clade (i.e. rooting dependent)
 function tree_match_pairs(query, reference; push_leaves = false)
-    newt_hc, newt_nc = get_node_hashes(query, push_leaves = push_leaves)
-    n_hc, n_nc = get_node_hashes(reference, push_leaves = push_leaves)
+    newt_hash_pairs, newt_nc, newt_hash_container = get_node_hashes(query, push_leaves = push_leaves)
+    n_hash_pairs, n_nc, n_hash_container = get_node_hashes(reference, push_leaves = push_leaves)
+    newt_hc = collect(zip(newt_hash_pairs, newt_hash_container))
+    n_hc = collect(zip(n_hash_pairs, n_hash_container))
     newt_hash2node = Dict(zip(newt_hc, newt_nc))
     n_hash2node = Dict(zip(n_hc, n_nc))
     return map(h -> (newt_hash2node[h], n_hash2node[h]), filter(x -> haskey(n_hash2node, x), newt_hc))
