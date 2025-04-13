@@ -12,7 +12,6 @@ If `set_branchlengths = true`, the branch length of a node in the HIPSTR tree wi
 Source: https://www.biorxiv.org/content/10.1101/2024.12.08.627395v1.full.pdf
 """
 function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
-    @info "Starting HIPSTR construction from $(length(trees)) trees"
     
     # Step 1: Collect all clades, their frequencies, and child pairs
     clades_stats = Dict{Tuple{UInt64, UInt64}, CladeStats}()
@@ -42,7 +41,6 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
     # Step 2: Compute the root clade hash (all tips)
     all_tips = BitSet(1:length(leaf_dict))
     root_hash = hash_clade(all_tips)
-    @info "Root clade hash: $root_hash"
     
     # Step 3: Build the credibility cache through post-order traversal
     cred_cache = Dict{Tuple{UInt64, UInt64}, Tuple{Float64, Tuple{UInt64, UInt64}, Tuple{UInt64, UInt64}}}()

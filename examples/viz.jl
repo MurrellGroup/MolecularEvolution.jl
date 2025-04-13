@@ -99,5 +99,6 @@ values_from_phylo_tree
 savefig_tweakSVG
 tree_draw
 plot_multiple_trees
+HIPSTR
 ```
 =#
