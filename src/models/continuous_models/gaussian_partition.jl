@@ -1,5 +1,15 @@
 #-----------------Gaussian prop---------------
 #Partition behavior
+"""
+# Constructors
+```julia
+GaussianPartition(mean::Float64, var::Float64, norm_const::Float64)
+GaussianPartition(mean::Float64, var::Float64) # norm_const defaults to 0.0
+GaussianPartition() # mean, var, norm_const default to 0.0, 1.0, 0.0 respectively
+```
+# Description
+A partition representing a (not necessarily normalized) Gaussian distribution. `norm_const` is the log-domain normalization constant.
+"""
 mutable struct GaussianPartition <: ContinuousPartition
     mean::Float64
     var::Float64

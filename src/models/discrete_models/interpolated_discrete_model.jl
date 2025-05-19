@@ -1,10 +1,18 @@
-#InterpolatedDiscreteModel works by storing a number of P matrices, and the "t" values to which they correspond
-#For a requested t, the returned P matrix is interpolated between it's two neighbours
-
 function check_eq_P(P)
     return maximum(std(P,dims = 1))
 end
 
+"""
+# Constructors
+```julia
+InterpolatedDiscreteModel(siz::Int64, generator, tvec::Vector{Float64})
+InterpolatedDiscreteModel(Pvec::Array{Float64,3}, tvec::Vector{Float64})
+```
+`generator` is a function that takes a time value `t` and returns a P matrix.
+# Description
+Stores a number (`siz`) of P matrices, and the time values to which they correspond.
+For a requested t, the returned P matrix is (element-wise linearly) interpolated between it's two neighbours.
+"""
 mutable struct InterpolatedDiscreteModel <: DiscreteStateModel
     tvec::Vector{Float64}
     Pvec::Array{Float64,3} #Now a tensor. Pvec[:,:,i] is the ith P matrix.
@@ -122,3 +130,5 @@ end
 function rescale!(m::InterpolatedDiscreteModel, factor::Float64)
     m.tvec .= m.tvec ./ factor
 end
+
+export InterpolatedDiscreteModel

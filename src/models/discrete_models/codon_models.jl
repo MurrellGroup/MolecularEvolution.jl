@@ -173,6 +173,11 @@ universal_genetic_code = Dict(
 
 const universal_code = GeneticCode(universal_genetic_code);
 
+"""
+    function count_F3x4(seqs::Array{String})
+
+Compute the F3x4 matrix from a set of sequences.
+"""
 function count_F3x4(seqs::Array{String})
     F3x4 = zeros(3, 4)
     for k = 1:3
@@ -194,6 +199,12 @@ function F3x4_eq_freqs(F3x4; genetic_code = universal_code)
     return eq ./ sum(eq)
 end
 
+"""
+    function MG94_F3x4(alpha, beta, nuc_matrix, F3x4; genetic_code = universal_code)
+
+Compute the (Muse and Gaut 1994) MG94-F3x4 codon substitution Q matrix parameterized by `alpha`, `beta`,
+a nucleotide substitution matrix `nuc_matrix`, and `F3x4` (see `?MolecularEvolution.count_F3x4`).
+"""
 function MG94_F3x4(alpha, beta, nuc_matrix, F3x4; genetic_code = universal_code)
     codon_matrix =
         zeros(length(genetic_code.sense_codons), length(genetic_code.sense_codons))
@@ -211,6 +222,11 @@ function MG94_F3x4(alpha, beta, nuc_matrix, F3x4; genetic_code = universal_code)
     return codon_matrix
 end
 
+"""
+    function count_F61(seqs::Array{String}; code = universal_code)
+
+Compute the F61 codon frequency vector from a set of sequences.
+"""
 function count_F61(seqs::Array{String}; code = universal_code)
     F61 = zeros(length(code.sense_codons))
     dic = proportionmap(
@@ -224,6 +240,12 @@ function count_F61(seqs::Array{String}; code = universal_code)
     return sum2one(F61)
 end
 
+"""
+    function MG94_F61(alpha, beta, nuc_matrix, F61; genetic_code = universal_code)
+
+Compute the (Muse and Gaut 1994) MG94-F61 codon substitution Q matrix parameterized by `alpha`, `beta`,
+a nucleotide substitution matrix `nuc_matrix`, and the `F61` codon frequency estimator (see `?MolecularEvolution.count_F61`).
+"""
 function MG94_F61(alpha, beta, nuc_matrix, F61; genetic_code = universal_code)
     codon_matrix =
         zeros(length(genetic_code.sense_codons), length(genetic_code.sense_codons))
@@ -239,6 +261,12 @@ function MG94_F61(alpha, beta, nuc_matrix, F61; genetic_code = universal_code)
     return codon_matrix
 end
 
+"""
+    function HB98_F61(alpha, nuc_matrix, F61; genetic_code = universal_code)
+
+Compute the (Halpern and Bruno 1998) HB98-F61 codon substitution Q matrix parameterized by `alpha`,
+a nucleotide substitution matrix `nuc_matrix`, and the `F61` codon frequency estimator (see `?MolecularEvolution.count_F61`).
+"""
 function HB98_F61(alpha, nuc_matrix, F61; genetic_code = universal_code)
     #See https://www.ncbi.nlm.nih.gov/pubmed/9656490 but beware of the typo in equation 9.
     codon_matrix =
@@ -273,6 +301,12 @@ function HB98_F61(alpha, nuc_matrix, F61; genetic_code = universal_code)
     return codon_matrix
 end
 
+"""
+    function HB98_AAfit(alpha, nuc_matrix, AA_fitness; genetic_code = universal_code)
+
+Compute the (Halpern and Bruno 1998) codon substitution Q matrix parameterized by `alpha`,
+a nucleotide substitution matrix `nuc_matrix`, and direct amino acid fitness `AA_fitness` vector.
+"""
 function HB98_AAfit(alpha, nuc_matrix, AA_fitness; genetic_code = universal_code)
     #Halpern and Bruno, but with the fitnesses directly parameterized.
     #Closer to https://academic.oup.com/mbe/article/32/4/1097/1077799
@@ -312,6 +346,15 @@ function codonHKY85(TrTv)
     ]
 end
 
+"""
+    mutable struct CodonPartition <: DiscretePartition
+# Constructors
+    CodonPartition(sites; code = universal_code)
+    CodonPartition(state, states, sites, scaling; code = universal_code)
+
+# Description
+A `DiscretePartition` where every state represents a codon. Can be customized to use different genetic codes.
+"""
 mutable struct CodonPartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int

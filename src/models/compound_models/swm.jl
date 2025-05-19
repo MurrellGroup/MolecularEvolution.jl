@@ -14,6 +14,15 @@
 #for each site?
 
 export SWMModel
+"""
+# Constructors
+```julia
+SWMModel(models::Vector{<:BranchModel})
+SWMModel(model::M, rs::Vector{Float64}) where {M <: BranchModel}
+```
+# Description
+A site-wise mixture model, for site-to-site "random effects" rate variation.
+"""
 mutable struct SWMModel <: BranchModel
     models::Vector{<:BranchModel}
     weights::Vector{Float64}
@@ -34,6 +43,16 @@ end
 export SWMPartition
 #Parts is a vector containing the various components
 #Weights is a num_components by num_sites matrix
+"""
+# Constructors
+```julia
+SWMPartition(parts::Vector{PType}) where {PType <: MultiSitePartition}
+SWMPartition(part::PType, n_parts::Int) where {PType <: MultiSitePartition}
+SWMPartition(parts::Vector{PType}, weights::Vector{Float64}, sites::Int, states::Int, models::Int) where {PType <: MultiSitePartition}
+```
+# Description
+A site-wise mixture partition for the [`SWMModel`](@ref).
+"""
 mutable struct SWMPartition{PType} <: Partition where {PType <: MultiSitePartition}
     parts::Vector{PType}
     weights::Vector{Float64}

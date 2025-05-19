@@ -2,6 +2,19 @@
 #Need to specify a Q matrix
 #Init triggers diagonalization
 #Propagation requires matrix product
+"""
+# Constructors
+```julia
+DiagonalizedCTMC(Q::Array{Float64,2})
+DiagonalizedCTMC(Qpre::Array{Float64,2}, pi::Vector{Float64})
+```
+# Description
+Takes in a Q matrix (which can be multiplied onto row-wise by `pi`) and diagonalizes it.
+When computing ``e^{Q t}`` (for different ``t``s), we now only need to exponentiate the eigenvalues,
+and perform the two change-of-basis matrix multiplications.
+!!! warning
+    Construction fails if `Q` has complex eigenvalues.
+"""
 mutable struct DiagonalizedCTMC <: PMatrixModel
     Q::Array{Float64,2}
     D::Vector{Float64}

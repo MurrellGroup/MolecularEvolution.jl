@@ -1,5 +1,14 @@
 #Define a ZeroDriftOrnsteinUhlenbeck process, with minimal functionality for simulation
 #(ie. branch_prop_down and eq freqs)
+"""
+    function ZeroDriftOrnsteinUhlenbeck(
+        mean::Float64,
+        volatility::Float64,
+        reversion::Float64,
+    )
+
+A 1D continuous Ornstein-Uhlenbeck process with mean, volatility, and reversion.
+"""
 mutable struct ZeroDriftOrnsteinUhlenbeck <: ContinuousStateModel
     mean::Float64
     volatility::Float64
@@ -39,3 +48,5 @@ function eq_freq_from_template(
     out_partition.norm_const = 0.0
     return out_partition
 end
+
+export ZeroDriftOrnsteinUhlenbeck

@@ -2,6 +2,16 @@
 #Is there a way to enforce this?
 #If there are extra fields, the copy_partition_to! will just ignore them, which isn't good.
 
+@doc """
+    abstract type DiscretePartition <: MultiSitePartition end
+
+Represents a `states`-by-`sites` matrix of probabilities. The following fields are loosely required:
+- `state`: A matrix of probabilities that are site-wise normalized.
+- `states`: The number of states.
+- `sites`: The number of sites.
+- `scaling`: A vector of log-domain probability scaling factors, one per site.
+""" DiscretePartition
+
 #Overloading the copy_partition_to! to avoid allocations.
 function copy_partition_to!(dest::T, src::T) where {T<:DiscretePartition}
     dest.state .= src.state
@@ -22,6 +32,17 @@ function partition_from_template(partition_template::T) where {T <: DiscretePart
 end
 
 #I should add a constructor that constructs a DiscretePartition from an existing array.
+"""
+    mutable struct CustomDiscretePartition <: DiscretePartition
+# Constructors
+    CustomDiscretePartition(states, sites)
+    CustomDiscretePartition(freq_vec::Vector{Float64}, sites::Int64)
+    CustomDiscretePartition(state, states, sites, scaling)
+
+# Description
+A general-purpose `DiscretePartition` that can handle any number of states. Useful for custom discrete state spaces
+that don't fit into the predefined partition types.
+"""
 mutable struct CustomDiscretePartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
@@ -41,6 +62,16 @@ mutable struct CustomDiscretePartition <: DiscretePartition
     end
 end
 
+"""
+    mutable struct NucleotidePartition <: DiscretePartition
+# Constructors
+    NucleotidePartition(sites)
+    NucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
+    NucleotidePartition(state, states, sites, scaling)
+
+# Description
+A `DiscretePartition` specifically for nucleotide sequences with 4 states (A, C, G, T).
+"""
 mutable struct NucleotidePartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
@@ -61,6 +92,16 @@ mutable struct NucleotidePartition <: DiscretePartition
     end
 end
 
+"""
+    mutable struct GappyNucleotidePartition <: DiscretePartition
+# Constructors
+    GappyNucleotidePartition(sites)
+    GappyNucleotidePartition(freq_vec::Vector{Float64}, sites::Int64)
+    GappyNucleotidePartition(state, states, sites, scaling)
+
+# Description
+A `DiscretePartition` for nucleotide sequences with 5 states (A, C, G, T, -), where '-' represents a gap.
+"""
 mutable struct GappyNucleotidePartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
@@ -81,6 +122,16 @@ mutable struct GappyNucleotidePartition <: DiscretePartition
     end
 end
 
+"""
+    mutable struct AminoAcidPartition <: DiscretePartition
+# Constructors
+    AminoAcidPartition(sites)
+    AminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
+    AminoAcidPartition(state, states, sites, scaling)
+
+# Description
+A `DiscretePartition` for amino acid sequences with 20 states representing the standard amino acids.
+"""
 mutable struct AminoAcidPartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
@@ -101,6 +152,16 @@ mutable struct AminoAcidPartition <: DiscretePartition
     end
 end
 
+"""
+    mutable struct GappyAminoAcidPartition <: DiscretePartition
+# Constructors
+    GappyAminoAcidPartition(sites)
+    GappyAminoAcidPartition(freq_vec::Vector{Float64}, sites::Int64)
+    GappyAminoAcidPartition(state, states, sites, scaling)
+
+# Description
+A `DiscretePartition` for amino acid sequences with 21 states (20 standard amino acids plus '-' for gaps).
+"""
 mutable struct GappyAminoAcidPartition <: DiscretePartition
     state::Array{Float64,2}
     states::Int
