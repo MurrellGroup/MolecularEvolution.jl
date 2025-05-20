@@ -38,7 +38,7 @@ CodonPartition
 ```
 
 We offer constructors for the following Q matrix parameterizations:
-- `MolecularEvolution.MG94_F3x4` - for example usage, see [`Example 3: FUBAR`](@ref)
+- `MolecularEvolution.MG94_F3x4` - for example usage, see [Example 3: FUBAR](@ref)
 - `MolecularEvolution.MG94_F61`
 - `MolecularEvolution.HB98_F61`
 - `MolecularEvolution.HB98_AAfit`

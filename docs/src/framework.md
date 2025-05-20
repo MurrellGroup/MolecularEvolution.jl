@@ -63,7 +63,7 @@ For phylogenetic trees with many nodes or long branch lengths, the likelihood va
 In equations (1) & (2) in the above [Algorithms](@ref) section, `parent_message` is the field of a **root**-`FelNode` which
 represents the quantity `P(R)`. The typical way we specify the root state is to, during initiliazation, pass the desired `parent_message` as the template `Partition` to [`allocate!`](@ref).
 In addition to the root-`parent_message` being incorporated in computing the likelihood of a tree,
-it's also used for downward passes, which includes: [`felsenstein_down!`](@ref), [`branchlength_optim!`](@ref), [`nni_optim!`](@ref), [`marginal_state_dict!`](@ref).
+it's also used for downward passes, which includes: [`felsenstein_down!`](@ref), [`branchlength_optim!`](@ref), [`nni_optim!`](@ref), [`marginal_state_dict`](@ref).
 
 ## Functions
 
