@@ -1,9 +1,26 @@
 export BWMModel
+"""
+    mutable struct BWMModel{M} <: DiscreteStateModel where M <: DiscreteStateModel
+
+# Fields
+- `models::Vector{<:M}`: A vector of models.
+- `weights::Vector{Float64}`: A vector of weights.
+
+# Description
+Branch-wise mixture model.
+!!! note
+    `forward!` and `backward!` are currently only defined for `M<:PMatrixModel`.
+"""
 mutable struct BWMModel{M} <: DiscreteStateModel where M <: DiscreteStateModel
     models::Vector{<:M}
     weights::Vector{Float64}
 end
 
+"""
+    BWMModel{M}(models::Vector{<:M}) where M <: DiscreteStateModel
+
+Convenience constructor where the weights are uniform.
+"""
 function BWMModel{M}(models::Vector{<:M}) where M <: DiscreteStateModel
     BWMModel{M}(models, sum2one(ones(length(models))))
 end

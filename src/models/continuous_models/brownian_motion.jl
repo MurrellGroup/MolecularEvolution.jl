@@ -1,4 +1,9 @@
 #Model behavior
+"""
+    BrownianMotion(mean_drift::Float64, var_drift::Float64)
+
+A 1D continuous Brownian motion model with mean drift and variance drift.
+"""
 mutable struct BrownianMotion <: ContinuousStateModel
     mean_drift::Float64
     var_drift::Float64

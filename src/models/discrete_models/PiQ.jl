@@ -1,6 +1,16 @@
 #F81 but for general dimensions.
 
 #Propagation in O(States)
+"""
+# Constructors
+```julia
+PiQ(r::Float64,pi::Vector{Float64}; normalize=false)
+PiQ(pi::Vector{Float64}; normalize=false)
+```
+# Description
+The F81 substitution model, but for general dimensions.
+https://www.diva-portal.org/smash/get/diva2:1878793/FULLTEXT01.pdf
+"""
 mutable struct PiQ <: DiscreteStateModel
     r::Float64
     pi::Vector{Float64}

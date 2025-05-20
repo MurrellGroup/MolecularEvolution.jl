@@ -1,4 +1,9 @@
 export CATModel
+"""
+    CATModel(models::Vector{<:BranchModel})
+
+CAT is something where you split the sites up, and assign each site to a different model (whose "data" gets stored in a contiguous block of memory).
+"""
 mutable struct CATModel <: BranchModel
     models::Vector{<:BranchModel}
     function CATModel(models::Vector{<:BranchModel})
@@ -7,6 +12,15 @@ mutable struct CATModel <: BranchModel
 end
  
 export CATPartition
+"""
+# Constructors
+```julia
+CATPartition(part_inds::Vector{Vector{Int}})
+CATPartition(part_inds::Vector{Vector{Int}}, parts::Vector{PType})
+```
+# Description
+A partition for the [`CATModel`](@ref).
+"""
 mutable struct CATPartition{PType} <: Partition where {PType <: DiscretePartition}
     part_inds::Vector{Vector{Int}}
     parts::Vector{PType}

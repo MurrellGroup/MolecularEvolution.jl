@@ -28,17 +28,42 @@ Felsenstein's algorithm recursively computes, for each node, the probability of 
 
 ![](figures/FelsensteinRecursion.svg)
 
-At the root node, we wind up with ``P(O_{all}|R)``, where ``R`` is the state at the root, and we can compute ``P(O_{all}) = \sum_{R} P(O_{all}|R) P(R)``.
+At the root node, we wind up with ``P(O_{all}|R)``, where ``R`` is the state at the root, and we can compute:
+
+```math
+P(O_{all}) = \sum_{R} P(O_{all}|R) P(R) \tag{1}
+```
+
+!!! note
+    If the root state space would happen to be continuous, then we would instead have:
+    ```math
+    P(O_{all}) = \int_{R} P(O_{all}|R) P(R) \tag{2}
+    ```
+
+After a Felsenstein pass, we can recursively compute, for each node, the probability of all observations above that node, given the state at that node. We call this algorithm `felsenstein_down!`, and it can be decomposed into the following combination of `forward!` and `combine!` operations:
+
+![](figures/FelsensteinDownRecursion.svg)
+!!! note
+    - We don't display how ``P(O_{Â}, O_L|C)`` is computed, to avoid cluttering the illustration. It, however, follows from swapping B and C.
+    - When we say "observation above", we mean the observations in the tree that aren't below, together with the **root state**.
 
 ## Technicalities
 
 ### Scaling constants
 
-Coming soon.
+For phylogenetic trees with many nodes or long branch lengths, the likelihood values can become extremely small, leading to numerical underflow in floating-point arithmetic. To maintain numerical stability, we perform computations in the log-domain. This approach is implemented in the following components:
+
+- **[`GaussianPartition`](@ref) with the field `norm_const`**. Let `part isa GaussianPartition`, then if we integrate the conditional probability of `part` over the real axis, it evaluates to `exp(part.norm_const)`.
+- **Concrete subtypes of [`DiscretePartition`](@ref) with the field `scaling`**. Let `part isa DiscretePartition`. The
+  conditional probability, `P`, of state `i` at site `j`, is computed by `P = part.state[i, j] * exp(part.scaling[j])`.
+
 
 ### Root state
 
-Coming soon.
+In equations (1) & (2) in the above [Algorithms](@ref) section, `parent_message` is the field of a **root**-`FelNode` which
+represents the quantity `P(R)`. The typical way we specify the root state is to, during initiliazation, pass the desired `parent_message` as the template `Partition` to [`allocate!`](@ref).
+In addition to the root-`parent_message` being incorporated in computing the likelihood of a tree,
+it's also used for downward passes, which includes: [`felsenstein_down!`](@ref), [`branchlength_optim!`](@ref), [`nni_optim!`](@ref), [`marginal_state_dict`](@ref).
 
 ## Functions
 
