@@ -71,9 +71,9 @@ makedocs(;
     warnonly = true,
 )
 
-deploydocs(;
+DocumenterVitepress.deploydocs(;
     repo = "github.com/MurrellGroup/MolecularEvolution.jl",
-    target = "build", # this is where Vitepress stores its output
+    target = joinpath(@__DIR__, "build"),
     devbranch = "main",
     branch = "gh-pages",
     push_preview = true,
