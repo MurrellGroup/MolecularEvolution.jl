@@ -21,20 +21,16 @@ hero:
       link: https://github.com/MurrellGroup/MolecularEvolution.jl
 features:
   - title: Flexible Model Development
-    details: Create custom evolutionary models with your own data types and probability distributions while leveraging the existing infrastructure for tree operations and likelihood calculations.
+    details: Create custom evolutionary models by defining how your new (or already existing) probability distributions evolve along a branch, and get likelihood calculations (and much more) for free! • Mix and match different models on the same phylogeny.
     link: /framework
   - title: Rich Model Library
-    details: Includes standard models like JC69, K80, GTR for nucleotides, JTT and WAG for amino acids, MG94 and GY94 for codons, plus Brownian motion for continuous traits.
+    details: Codon, AA, nucleotide and generic discrete character models as well as continuous Brownian motion in 1D. Site- and branch-wise mixture models and more.
     link: /models
   - title: Powerful Tree Operations
-    details: Optimize branch lengths, infer ancestral states, perform tree rearrangements (NNI), and sample topologies with MCMC.
+    details: Optimize model parameters, branch lengths and root state/location. Perform tree rearrangements (NNI). The above can also be made in the Bayesian framework by sampling over posterior tree and parameter spaces with MCMC. • Infer ancestral states.
     link: /optimization
   - title: Simulation Tools
-    details: Generate phylogenies using both coalescent and birth-death processes, and simulate sequence evolution on those trees.
+    details: Generate phylogenies using e.g. coalescent and logistic growth processes, and simulate both sequence evolution and continuous trait evolution on those trees.
     link: /simulation
 ---
-```
-
-```@meta
-CurrentModule = MolecularEvolution
 ```

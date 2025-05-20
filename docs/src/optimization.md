@@ -4,6 +4,9 @@ There are two distinct kinds of optimization: "global" model parameters, and the
 
 The example below will set up and optimize a ["Generalized Time Reversible" nucleotide substitution model](https://en.wikipedia.org/wiki/Substitution_model), where there are 6 rate parameters that govern the symmetric part of a rate matrix, and 4 nucleotide frequencies (that sum to 1, so only 3 underlying parameters).
 
+!!! note
+    For the Bayesian counterpart of this page, we refer you to [Set up a Bayesian model sampler](@ref) and  [Multiple trees](@ref).
+
 ## Optimizing model parameters
 
 We first need to construct an objective function. A very common use case involves parameterizing a rate matrix (along with all the constraints this entails) from a flat parameter vector. `reversibleQ` can be convenient here, which takes a vector of parameters and equilibrium frequencies and returns a reversible rate matrix.
@@ -158,5 +161,6 @@ reversibleQ
 unc2probvec
 branchlength_optim!
 nni_optim!
+root_optim!
 tree_polish!
 ```

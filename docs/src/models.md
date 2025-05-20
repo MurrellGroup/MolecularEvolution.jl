@@ -1,6 +1,6 @@
 # Models
 
-We offer a catalogue of frequent models that are already integrated with the framework and ready to be used.
+We offer a catalogue of frequently used models that are already integrated with the framework and ready to be used.
 We maintain that if a model you'd like to use is not included in the list, you can swiftly define one yourself and
 leverage our framework nonetheless.
 
@@ -25,7 +25,7 @@ And then there are two typical `BranchModel`s that will cooperate with this `Par
 !!! note
     The two above can be regarded as special cases of the more general [`PModel`](@ref), which just represents a P matrix.
 
-A typical way of constructing your Q matrix in our ecosystem is by
+A typical way of constructing your Q matrix in our ecosystem is by:
 ```@docs; canonical=false
 reversibleQ
 nonreversibleQ
