@@ -7,11 +7,12 @@ from a collection of trees.
 
 Returns a single FelNode representing the HIPSTR consensus tree.
 
-If `set_branchlengths = true`, the branch length of a node in the HIPSTR tree will be set to the mean branch length of all nodes from the input trees that have the same clade. (By the same clade, we mean that the set of leaves below the node is the same.) Otherwise, the root branch length is 0.0 and the rest 1.0.
+- If `set_branchlengths = true`, the branch length of a node in the HIPSTR tree will be set to the mean branch length of all nodes from the input trees that have the same clade. (By the same clade, we mean that the set of leaves below the node is the same.) Otherwise, the root branch length is 0.0 and the rest 1.0.
+- If `getcred = true`, then `(hipstr_tree, node2logcred)` is returned, where `node2logcred` is a dictionary mapping each `FelNode` in the `hipstr_tree` to its log-domain credibility score.
 
 Source: https://www.biorxiv.org/content/10.1101/2024.12.08.627395v1.full.pdf
 """
-function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
+function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = false)
     
     # Step 1: Collect all clades, their frequencies, and child pairs
     clades_stats = Dict{Tuple{UInt64, UInt64}, CladeStats}()
@@ -43,6 +44,9 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
     root_hash = hash_clade(all_tips)
     
     # Step 3: Build the credibility cache through post-order traversal
+    #=
+    Note: We use log credibilities to avoid underflow.
+    =#
     cred_cache = Dict{Tuple{UInt64, UInt64}, Tuple{Float64, Tuple{UInt64, UInt64}, Tuple{UInt64, UInt64}}}()
     compute_credibility = function(clade_hash)
         # Return from cache if available
@@ -50,12 +54,12 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
         
         # Base case: single tip or clade not found
         if !haskey(clades_stats, clade_hash) || isempty(clades_stats[clade_hash].child_pairs)
-            cred_cache[clade_hash] = (clades_stats[clade_hash].frequency, (0, 0), (0, 0))
-            return clades_stats[clade_hash].frequency
+            cred_cache[clade_hash] = (log(clades_stats[clade_hash].frequency), (0, 0), (0, 0))
+            return log(clades_stats[clade_hash].frequency)
         end
         
         # Find the best child pair
-        best_cred = 0.0
+        best_cred = -Inf
         best_left = (0, 0)
         best_right = (0, 0)
         
@@ -64,7 +68,7 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
             right_cred = compute_credibility(right_hash)
             
             # Product of the credibilities
-            pair_cred = left_cred * right_cred * clades_stats[clade_hash].frequency
+            pair_cred = left_cred + right_cred + log(clades_stats[clade_hash].frequency)
             
             if pair_cred > best_cred
                 best_cred = pair_cred
@@ -83,10 +87,11 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
     
     # Step 4: Construct the HIPSTR tree through another traversal
     reverse_leaf_dict = Dict(i => name for (name, i) in leaf_dict)
+    node2logcred = Dict{FelNode, Float64}()
     
     # Function to build the tree recursively
     function build_tree(clade_hash)
-        _, left_hash, right_hash = cred_cache[clade_hash]
+        cred, left_hash, right_hash = cred_cache[clade_hash]
         
         # Handle leaf case
         if left_hash == (0, 0) && right_hash == (0, 0)
@@ -96,6 +101,7 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
                 if tip_hash == clade_hash
                     node = FelNode(1.0, name)
                     node.seqindex = index
+                    node2logcred[node] = cred
                     return node
                 end
             end
@@ -104,6 +110,7 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
         
         # Internal node
         node = FelNode(1.0, "")
+        node2logcred[node] = cred
         
         # Add children
         left_child = build_tree(left_hash)
@@ -132,7 +139,11 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
     # Set branch lengths to mean
     set_branchlengths && set_mean_branchlengths!(hipstr_tree, trees)
     
-    return hipstr_tree
+    if getcred
+        return hipstr_tree, node2logcred
+    else
+        return hipstr_tree
+    end
 end
 
 function set_mean_branchlengths!(tree::FelNode, trees::Vector{FelNode})
