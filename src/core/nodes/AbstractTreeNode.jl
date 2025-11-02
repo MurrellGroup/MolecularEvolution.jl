@@ -770,6 +770,8 @@ function root2tips_traversal(
     end
 end
 
+export tree2distances
+
 """
     root2tips(root::AbstractTreeNode)
 
@@ -788,6 +790,7 @@ function root2tip_distances(root::AbstractTreeNode)
     return heightvec, node_dic
 end
 
+export root2tip_distances
 """
     tree2distances(root::AbstractTreeNode)
 
