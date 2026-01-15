@@ -137,7 +137,7 @@ And just to convince you this works, we can perturb the branch lengths, and see 
 for n in getnodelist(tree)
     n.branchlength *= (rand()+0.5)
 end
-tree_polish!(tree, optimzed_model)
+tree_polish!(tree, optimized_model)
 ```
 
 ```
