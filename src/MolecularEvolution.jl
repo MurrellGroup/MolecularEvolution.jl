@@ -43,6 +43,54 @@ abstract type ModelsUpdate <: Function end
 
 abstract type LazyDirection end
 
+"""
+    combine!(dest::Partition, src::Partition)
+
+Merge evidence from `src` into `dest`, under the assumption of conditional independence.
+
+Given two partitions representing P(obs_A|state) and P(obs_B|state), `combine!` computes
+P(obs_A, obs_B|state) and stores the result in `dest`. For discrete states, this is
+typically element-wise multiplication.
+
+This function must be implemented for any new `Partition` type to enable likelihood
+calculations.
+
+See also: [`forward!`](@ref), [`backward!`](@ref)
+"""
+function combine! end
+
+"""
+    forward!(dest::Partition, src::Partition, model::BranchModel, node::FelNode)
+
+Evolve state distributions from root toward tips along a branch.
+
+Transforms `src`, representing P(obs_above, state_top), into `dest`, representing
+P(obs_above, state_bottom), where the branch is above `node`. The `model` defines
+the transition probabilities along the branch of length `node.branchlength`.
+
+This function must be implemented for any new `BranchModel` type to enable sampling
+and downward message passing.
+
+See also: [`backward!`](@ref), [`combine!`](@ref), [`felsenstein_down!`](@ref)
+"""
+function forward! end
+
+"""
+    backward!(dest::Partition, src::Partition, model::BranchModel, node::FelNode)
+
+Reverse-evolve state distributions from tips toward root along a branch.
+
+Transforms `src`, representing P(obs_below|state_bottom), into `dest`, representing
+P(obs_below|state_top), where the branch is above `node`. The `model` defines the
+transition probabilities along the branch of length `node.branchlength`.
+
+This function must be implemented for any new `BranchModel` type to enable likelihood
+calculations via Felsenstein's algorithm.
+
+See also: [`forward!`](@ref), [`combine!`](@ref), [`felsenstein!`](@ref)
+"""
+function backward! end
+
 #include("core/core.jl")
 include("core/nodes/nodes.jl")
 include("core/algorithms/algorithms.jl")

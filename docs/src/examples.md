@@ -12,6 +12,7 @@ seqnames, seqs = read_fasta("Data/MusAA_IGHV.fasta")
 tree = read_newick_tree("Data/MusAA_IGHV.tre")
 
 #Compute AA freqs, which become the equilibrium freqs of the model, and the initial root freqs
+#gappyAAstring is an internal constant: "ACDEFGHIKLMNPQRSTVWY-"
 AA_freqs = char_proportions(seqs,MolecularEvolution.gappyAAstring)
 #Build the Q matrix
 Q = gappy_Q_from_symmetric_rate_matrix(WAGmatrix,1.0,AA_freqs)
@@ -130,6 +131,8 @@ pl
 For site-to-site "random effects" rate variation, such as under the GTR+Gamma model, we need to use a "Site-Wise Mixture" model, or `SWMModel` with its `SWMPartition`.
 
 ```julia
+using MolecularEvolution, FASTX, Distributions, ParameterHandling, NLopt
+
 #Set up a function that will return a set of rates that will, when equally weighted, VERY coarsely approx a Gamma distribution
 function equiprobable_gamma_grids(s,k)
     grids = quantile(Gamma(s,1/s),1/2k:1/k:(1-1/2k))
@@ -149,20 +152,20 @@ initial_params = (
         gam_shape=positive(1.0),
         pi=zeros(3)
 )
-flat_initial_params, unflatten = value_flatten(initial_params)
+flat_initial_params, unflatten = ParameterHandling.value_flatten(initial_params)
 num_params = length(flat_initial_params)
 
 #Setting up the Site-Wise Mixture Partition:
 #Note: this constructor sets the weights of all categories to 1/rate_cats
 #That is fine for our equi-probable category model, but this will need to be different for other models.
 rate_cats = 5
-REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,rate_cats)
+REL_partition = SWMPartition{NucleotidePartition}(initial_partition,rate_cats)
 populate_tree!(tree,REL_partition,seqnames,seqs)
 
 function build_model_vec(params; cats = rate_cats)
     r_vals = equiprobable_gamma_grids(params.gam_shape,cats)
     pi = unc2probvec(params.pi)
-    return MolecularEvolution.SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),r_vals)
+    return SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),r_vals)
 end
 
 function objective(params::NamedTuple; tree = tree)
@@ -219,16 +222,16 @@ initial_params = (
         cat_weights=zeros(length(fixed_cats)-1), #Category weights
         pi=zeros(3) #Nuc freqs
 )
-flat_initial_params, unflatten = value_flatten(initial_params)
+flat_initial_params, unflatten = ParameterHandling.value_flatten(initial_params)
 num_params = length(flat_initial_params)
 
-REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
+REL_partition = SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
 populate_tree!(tree,REL_partition,seqnames,seqs)
 
 function build_model_vec(params; cats = fixed_cats)
     cat_weights = unc2probvec(params.cat_weights)
     pi = unc2probvec(params.pi)
-    m = MolecularEvolution.SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),cats)
+    m = SWMModel(DiagonalizedCTMC(reversibleQ(params.rates,pi)),cats)
     m.weights .= cat_weights
     return m
 end
@@ -264,7 +267,7 @@ Opt LL:-3719.6290948420706
 When you have a Site-Wise Mixture (ie. REL) model, the category weights can be handled "outside" of the main likelihood calculations. This means that they can be optimized very quickly, within an objective function that is optimizing over the other parameters. The following example uses an EM approach to do this:
 
 ```julia
-using Distributions, FASTX, ParameterHandling, NLopt
+using MolecularEvolution, Distributions, FASTX, ParameterHandling, NLopt
 
 #Using rate categories with fixed values
 fixed_cats = [(i/5)^2 for i in 1:12]
@@ -278,10 +281,10 @@ initial_params = (
         rates=positive(ones(6)),
         pi=zeros(3) #Nuc freqs
 )
-flat_initial_params, unflatten = value_flatten(initial_params)
+flat_initial_params, unflatten = ParameterHandling.value_flatten(initial_params)
 num_params = length(flat_initial_params)
 
-REL_partition = MolecularEvolution.SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
+REL_partition = SWMPartition{NucleotidePartition}(initial_partition,length(fixed_cats))
 populate_tree!(tree,REL_partition,seqnames,seqs)
 
 function build_model_vec(params; cats = fixed_cats)
@@ -294,7 +297,7 @@ end
 grid_ll(v,g) = sum(log.(sum((v./sum(v)) .* g,dims = 1)))
 
 #Note: we can get away with relatively few EM iterations within the optimization cycle (in this example at least)
-function opt_weights_and_LL(temp_part::SWMPartition{PType}; iters = 25) where {PType <: MolecularEvolution.MultiSitePartition}    
+function opt_weights_and_LL(temp_part::SWMPartition{PType}; iters = 25) where {PType <: MultiSitePartition}
     g,scals = SWM_prob_grid(temp_part) 
     l = size(g)[1]
     #We can optimize the category weights without re-computing felsenstein
@@ -353,6 +356,9 @@ This can be dramatically faster than trying to directly optimize over category w
 ## Example 3: FUBAR
 This example reads codon sequences from [this FASTA file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/Flu.fasta), and a phylogeny from [this Newick tree file](https://raw.githubusercontent.com/MurrellGroup/MolecularEvolution.jl/main/docs/src/Flu.tre), and implements [`FUBAR`](https://academic.oup.com/mbe/article/30/5/1196/998247).
 
+!!! note
+    This example uses internal (non-exported) codon model functions accessed via `MolecularEvolution.count_F3x4`, `MolecularEvolution.F3x4_eq_freqs`, `MolecularEvolution.MG94_F3x4`, and `MolecularEvolution.site_LLs`.
+
 ```julia
 using MolecularEvolution, FASTX, ParameterHandling, NLopt, Plots
 
@@ -375,7 +381,7 @@ initial_params = (
         rates=positive(ones(6)), #rates must be non-negative
         beta = positive(1.0)
 )
-flat_initial_params, unflatten = value_flatten(initial_params) #See ParameterHandling.jl docs
+flat_initial_params, unflatten = ParameterHandling.value_flatten(initial_params)
 num_params = length(flat_initial_params)
 
 function build_model_vec(p; F3x4 = f3x4, alpha = 1.0)
