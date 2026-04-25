@@ -1,6 +1,6 @@
 export HIPSTR
 """
-    HIPSTR(trees::Vector{FelNode}; set_branchlengths = true)
+    HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = false, getsupport = false)
 
 Construct a Highest Independent Posterior Subtree Reconstruction (HIPSTR) tree
 from a collection of trees.
@@ -8,11 +8,13 @@ from a collection of trees.
 Returns a single FelNode representing the HIPSTR consensus tree.
 
 - If `set_branchlengths = true`, the branch length of a node in the HIPSTR tree will be set to the mean branch length of all nodes from the input trees that have the same clade. (By the same clade, we mean that the set of leaves below the node is the same.) Otherwise, the root branch length is 0.0 and the rest 1.0.
-- If `getcred = true`, then `(hipstr_tree, node2logcred)` is returned, where `node2logcred` is a dictionary mapping each `FelNode` in the `hipstr_tree` to its log-domain credibility score.
+- If `getcred = true`, then the returned tuple includes `node2logcred`, a dictionary mapping each `FelNode` in the `hipstr_tree` to its log-domain subtree credibility score.
+- If `getsupport = true`, then the returned tuple includes `node2support`, a dictionary mapping each `FelNode` in the `hipstr_tree` to its local clade support in `[0, 1]`.
+- If both `getcred` and `getsupport` are `true`, then `(hipstr_tree, node2logcred, node2support)` is returned.
 
 Source: https://www.biorxiv.org/content/10.1101/2024.12.08.627395v1.full.pdf
 """
-function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = false)
+function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = false, getsupport = false)
     
     # Step 1: Collect all clades, their frequencies, and child pairs
     clades_stats = Dict{Tuple{UInt64, UInt64}, CladeStats}()
@@ -88,10 +90,12 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = fals
     # Step 4: Construct the HIPSTR tree through another traversal
     reverse_leaf_dict = Dict(i => name for (name, i) in leaf_dict)
     node2logcred = Dict{FelNode, Float64}()
+    node2support = Dict{FelNode, Float64}()
     
     # Function to build the tree recursively
     function build_tree(clade_hash)
         cred, left_hash, right_hash = cred_cache[clade_hash]
+        support = clades_stats[clade_hash].frequency
         
         # Handle leaf case
         if left_hash == (0, 0) && right_hash == (0, 0)
@@ -102,6 +106,7 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = fals
                     node = FelNode(1.0, name)
                     node.seqindex = index
                     node2logcred[node] = cred
+                    node2support[node] = support
                     return node
                 end
             end
@@ -111,6 +116,7 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = fals
         # Internal node
         node = FelNode(1.0, "")
         node2logcred[node] = cred
+        node2support[node] = support
         
         # Add children
         left_child = build_tree(left_hash)
@@ -139,11 +145,15 @@ function HIPSTR(trees::Vector{FelNode}; set_branchlengths = true, getcred = fals
     # Set branch lengths to mean
     set_branchlengths && set_mean_branchlengths!(hipstr_tree, trees)
     
-    if getcred
+    if getcred && getsupport
+        return hipstr_tree, node2logcred, node2support
+    elseif getcred
         return hipstr_tree, node2logcred
-    else
-        return hipstr_tree
+    elseif getsupport
+        return hipstr_tree, node2support
     end
+
+    return hipstr_tree
 end
 
 function set_mean_branchlengths!(tree::FelNode, trees::Vector{FelNode})

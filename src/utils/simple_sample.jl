@@ -52,11 +52,13 @@ which are identity transformations by default.
 function metropolis_step(LL::Function, modifier, curr_value)
     tr_curr_value = tr(modifier, curr_value)
     tr_prop = proposal(modifier, tr_curr_value)
+
     accept_proposal =
-        rand() <= exp(
+          rand() <= exp(
             LL(invtr(modifier, tr_prop)) + log_prior(modifier, tr_prop) + log_proposal(modifier, tr_curr_value, tr_prop) -
             LL(invtr(modifier, tr_curr_value)) - log_prior(modifier, tr_curr_value) - log_proposal(modifier, tr_prop, tr_curr_value),
         )
+
     apply_decision(modifier, accept_proposal)
     return invtr(modifier, ifelse(accept_proposal, tr_prop, tr_curr_value))
 end

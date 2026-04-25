@@ -39,11 +39,9 @@ function sim_tree_function(
     time = 0.0,
     mutation_rate = 1.0,
 )
-    nodes = Set((node = FelNode(0.0, "tax$(i)"), time = time) for i = 1:nstart)
+    nodes = [(node = FelNode(0.0, "tax$(i)"), time = time) for i = 1:nstart]
     node_counter = length(nodes) + 1
-    last_event = 0.0
     while length(nodes) > 1 || node_counter < add_limit
-        flag = false
         ln = length(nodes)
         if ln > 1
             next_coal = inhomo_poisson_next_sample(
@@ -61,21 +59,20 @@ function sim_tree_function(
         time = min(next_coal, next_add)
         if next_add < next_coal
             push!(nodes, (node = FelNode(0.0, "tax$(node_counter)"), time = time))
-            last_event = time
             node_counter += 1
         elseif length(nodes) > 1
-            left, right = sample2_without_replacement(nodes)
+            left_ind, right_ind = sample2_without_replacement(1:length(nodes))
+            left = nodes[left_ind]
+            right = nodes[right_ind]
             merged = (node = mergenodes(left.node, right.node), time = time)
             left.node.branchlength = (time - left.time) * mutation_rate
             right.node.branchlength = (time - right.time) * mutation_rate
-            delete!(nodes, left)
-            delete!(nodes, right)
+            deleteat!(nodes, max(left_ind, right_ind))
+            deleteat!(nodes, min(left_ind, right_ind))
             push!(nodes, merged)
-            last_event = time
-            flag = true
         end
     end
-    tree = pop!(nodes).node
+    tree = only(nodes).node
     ladderize!(tree)
     return tree
 end
