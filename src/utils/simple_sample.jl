@@ -53,32 +53,11 @@ function metropolis_step(LL::Function, modifier, curr_value)
     tr_curr_value = tr(modifier, curr_value)
     tr_prop = proposal(modifier, tr_curr_value)
 
-    prop_score = try
-        score =
-            LL(invtr(modifier, tr_prop)) + log_prior(modifier, tr_prop) +
-            log_proposal(modifier, tr_curr_value, tr_prop)
-        isfinite(score) ? score : -Inf
-    catch
-        -Inf
-    end
-
-    curr_score = try
-        score =
-            LL(invtr(modifier, tr_curr_value)) + log_prior(modifier, tr_curr_value) +
-            log_proposal(modifier, tr_prop, tr_curr_value)
-        isfinite(score) ? score : -Inf
-    catch
-        -Inf
-    end
-
     accept_proposal =
-        if prop_score == -Inf
-            false
-        elseif curr_score == -Inf
-            true
-        else
-            log(rand()) <= min(0.0, prop_score - curr_score)
-        end
+          rand() <= exp(
+            LL(invtr(modifier, tr_prop)) + log_prior(modifier, tr_prop) + log_proposal(modifier, tr_curr_value, tr_prop) -
+            LL(invtr(modifier, tr_curr_value)) - log_prior(modifier, tr_curr_value) - log_proposal(modifier, tr_prop, tr_curr_value),
+        )
 
     apply_decision(modifier, accept_proposal)
     return invtr(modifier, ifelse(accept_proposal, tr_prop, tr_curr_value))

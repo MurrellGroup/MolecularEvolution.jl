@@ -324,18 +324,4 @@ function softmax(x)
     return exp_x ./ sum(exp_x)
 end
 
-function softmax_sampler(x)
-    finite_mask = isfinite.(x)
-    any(finite_mask) || return 1
-
-    scores = collect(x)
-    scores[.!finite_mask] .= -Inf
-    probs = softmax(scores)
-
-    total = sum(probs)
-    if !all(isfinite, probs) || !(total > 0.0)
-        return 1
-    end
-
-    return rand(Categorical(probs ./ total))
-end
+softmax_sampler(x) = rand(Categorical(softmax(x)))
